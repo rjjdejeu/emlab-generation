@@ -255,7 +255,7 @@ public class PowerPlant {
 
     public long calculateActualLeadtime() {
         long actual;
-        actual = getFinishedConstruction();
+        actual = getActualLeadTime();
         if (actual <= 0) {
             actual = getTechnology().getExpectedLeadtime();
         }
@@ -349,7 +349,7 @@ public class PowerPlant {
         this.actualLeadtime = actualLeadtime;
     }
 
-    public long getFinishedConstruction() {
+    public long getActualLeadTime() {
         return actualLeadtime;
     }
 
@@ -432,19 +432,19 @@ public class PowerPlant {
      */
     public void calculateAndSetActualInvestedCapital(long timeOfPermitorBuildingStart) {
         setActualInvestedCapital(this.getTechnology().getInvestmentCost(
-                timeOfPermitorBuildingStart + getFinishedConstruction() + getActualPermittime())
+                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualFixedOperatingCosts(long timeOfPermitorBuildingStart) {
         setActualFixedOperatingCost(this.getTechnology().getFixedOperatingCost(
-                timeOfPermitorBuildingStart + getFinishedConstruction() + getActualPermittime())
+                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualEfficiency(long timeOfPermitorBuildingStart) {
         this.setActualEfficiency(this.getTechnology().getEfficiency(
-                timeOfPermitorBuildingStart + getFinishedConstruction() + getActualPermittime()));
+                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime()));
     }
 
     public double calculateEmissionIntensity() {
@@ -520,7 +520,7 @@ public class PowerPlant {
         this.setDismantleTime(1000);
         this.calculateAndSetActualInvestedCapital(time);
         this.calculateAndSetActualFixedOperatingCosts(time);
-        this.setExpectedEndOfLife(time + getActualPermittime() + getFinishedConstruction()
+        this.setExpectedEndOfLife(time + getActualPermittime() + getActualLeadTime()
                 + getTechnology().getExpectedLifetime());
     }
 
