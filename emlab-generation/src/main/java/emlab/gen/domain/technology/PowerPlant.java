@@ -92,6 +92,17 @@ public class PowerPlant {
     public double ageFraction;
     public double profitability;
 
+    private double finishedConstruction;
+
+    public double getFinishedConstruction() {
+        return finishedConstruction;
+    }
+
+    public void setFinishedConstruction(double finishedConstruction) {
+        this.finishedConstruction = getConstructionStartTime() + calculateActualPermittime()
+                + calculateActualLeadtime();
+    }
+
     public double getProfitability() {
         return profitability;
     }
@@ -140,9 +151,6 @@ public class PowerPlant {
     }
 
     public boolean isExpectedToBeOperational(long time) {
-
-        double finishedConstruction = getConstructionStartTime() + calculateActualPermittime()
-                + calculateActualLeadtime();
 
         if (finishedConstruction <= time) {
             // finished construction
@@ -431,20 +439,35 @@ public class PowerPlant {
      * @param timeOfPermitorBuildingStart
      */
     public void calculateAndSetActualInvestedCapital(long timeOfPermitorBuildingStart) {
+<<<<<<< HEAD
         setActualInvestedCapital(this.getTechnology().getInvestmentCost(
                 timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+=======
+        setActualInvestedCapital(this.getTechnology()
+                .getInvestmentCost(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+>>>>>>> c7e346cc3a3412de0e22d3bcb1929df2023b3651
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualFixedOperatingCosts(long timeOfPermitorBuildingStart) {
+<<<<<<< HEAD
         setActualFixedOperatingCost(this.getTechnology().getFixedOperatingCost(
                 timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+=======
+        setActualFixedOperatingCost(this.getTechnology()
+                .getFixedOperatingCost(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+>>>>>>> c7e346cc3a3412de0e22d3bcb1929df2023b3651
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualEfficiency(long timeOfPermitorBuildingStart) {
+<<<<<<< HEAD
         this.setActualEfficiency(this.getTechnology().getEfficiency(
                 timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime()));
+=======
+        this.setActualEfficiency(this.getTechnology()
+                .getEfficiency(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime()));
+>>>>>>> c7e346cc3a3412de0e22d3bcb1929df2023b3651
     }
 
     public double calculateEmissionIntensity() {
@@ -520,8 +543,13 @@ public class PowerPlant {
         this.setDismantleTime(1000);
         this.calculateAndSetActualInvestedCapital(time);
         this.calculateAndSetActualFixedOperatingCosts(time);
+<<<<<<< HEAD
         this.setExpectedEndOfLife(time + getActualPermittime() + getActualLeadTime()
                 + getTechnology().getExpectedLifetime());
+=======
+        this.setExpectedEndOfLife(
+                time + getActualPermittime() + getActualLeadTime() + getTechnology().getExpectedLifetime());
+>>>>>>> c7e346cc3a3412de0e22d3bcb1929df2023b3651
     }
 
     @Transactional
