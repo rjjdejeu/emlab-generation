@@ -43,6 +43,8 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
+        logger.warn("Organize Renewable Tender Payments Role started");
+
         // what about the other (earlier or later) bids that need to be paid
         // out? - i have included them as well with my if statement. - and I put
         // that later in the query

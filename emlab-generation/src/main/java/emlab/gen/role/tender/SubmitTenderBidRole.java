@@ -86,6 +86,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
     @Override
     public void act(EnergyProducer agent) {
 
+        logger.warn("Submit Tender Bid Role started");
+
         long futureTimePoint = getCurrentTick() + agent.getInvestmentFutureTimeHorizon();
         logger.warn(agent + " looking at timepoint " + futureTimePoint);
 

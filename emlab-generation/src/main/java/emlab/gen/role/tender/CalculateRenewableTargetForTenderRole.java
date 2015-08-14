@@ -48,6 +48,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
+        logger.warn("Calculate Renewable Target Role started");
+
         double demandFactor;
         double targetFactor;
         Zone zone = scheme.getRegulator().getZone();
@@ -65,7 +67,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
         logger.warn("zone is " + zone);
-        logger.warn("market is" + market);
+        logger.warn("market is " + market);
         logger.warn("scheme is " + scheme);
         logger.warn("target is " + target);
 

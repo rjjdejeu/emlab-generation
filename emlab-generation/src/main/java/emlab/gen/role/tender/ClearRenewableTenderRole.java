@@ -50,6 +50,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
     @Transactional
     public void act(Regulator regulator) {
 
+        logger.warn("Clear Renewable Tender Role started");
+
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPrice = null;
         sortedTenderBidsbyPrice = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick());
