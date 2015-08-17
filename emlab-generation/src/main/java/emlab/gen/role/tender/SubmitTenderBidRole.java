@@ -99,16 +99,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         Map<ElectricitySpotMarket, Double> expectedCO2Price = determineExpectedCO2PriceInclTaxAndFundamentalForecast(
                 futureTimePoint, agent.getNumberOfYearsBacklookingForForecasting(), 0, getCurrentTick());
 
-        // logger.warn("{} expects CO2 prices {}", agent.getName(),
-        // expectedCO2Price);
+        logger.warn("{} expects CO2 prices {}", agent.getName(), expectedCO2Price);
 
         Map<ElectricitySpotMarket, Double> expectedCO2PriceOld = determineExpectedCO2PriceInclTax(futureTimePoint,
                 agent.getNumberOfYearsBacklookingForForecasting(), getCurrentTick());
-        // logger.warn("{} used to expect CO2 prices {}",
-        // agent.getName(),
-        // expectedCO2PriceOld);
 
-        // logger.warn(expectedCO2Price.toString());
+        logger.warn("{} used to expect CO2 prices {}", agent.getName(), expectedCO2PriceOld);
+
+        logger.warn(expectedCO2Price.toString());
 
         // Demand
         Map<ElectricitySpotMarket, Double> expectedDemand = new HashMap<ElectricitySpotMarket, Double>();
@@ -126,12 +124,16 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         MarketInformation marketInformation = new MarketInformation(market, expectedDemand, expectedFuelPrices,
                 expectedCO2Price.get(market).doubleValue(), futureTimePoint);
 
+        logger.warn("expected Demand is " + expectedDemand);
+
         for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
             if (technology.isIntermittent() && model.isNoPrivateIntermittentRESInvestment())
                 continue;
+
+            logger.warn("technology is: " + technology);
 
             Iterable<PowerGridNode> possibleInstallationNodes;
 
@@ -147,13 +149,27 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         .findAllPowerGridNodesByZone(market.getZone()).iterator().next());
             }
 
-            logger.warn("Calculating for " + technology.getName() + ", for Nodes: "
-                    + possibleInstallationNodes.toString());
+            // logger.warn("technology is intermittent? " +
+            // technology.isIntermittent());
+            //
+            // logger.warn("possibleInstallationNodes is: " +
+            // possibleInstallationNodes);
+            //
+            // logger.warn("Calculating for " + technology.getName() +
+            // ", for Nodes: "
+            // + possibleInstallationNodes.toString());
 
             for (PowerGridNode node : possibleInstallationNodes) {
 
                 PowerPlant plant = new PowerPlant();
+
+                // logger.warn("plant is: " + plant);
+
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
+
+                // logger.warn(" agent, node and technology is " + agent + node
+                // + technology);
+
                 // if too much capacity of this technology in the pipeline (not
                 // limited to the 5 years)
                 double expectedInstalledCapacityOfTechnology = reps.powerPlantRepository
