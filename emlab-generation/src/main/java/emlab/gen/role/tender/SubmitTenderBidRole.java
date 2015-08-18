@@ -233,11 +233,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 long numberOfSegments = reps.segmentRepository.count();
                 double totalAnnualExpectedGenerationOfPlant = 0d;
 
-                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository.findOne(null)
-                        .getSupportSchemeDuration(); // should be
-                                                     // modified when
-                                                     // location
-                                                     // specific
+                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository.findSupportSchemeDuration(1);
+                // should be
+                // modified when
+                // location
+                // specific
 
                 for (SegmentLoad segmentLoad : market.getLoadDurationCurve()) {
                     double expectedElectricityPrice = marketInformation.expectedElectricityPricesPerSegment
