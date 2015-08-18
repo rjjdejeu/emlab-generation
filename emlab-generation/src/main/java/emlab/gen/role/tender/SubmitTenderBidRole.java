@@ -233,7 +233,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 long numberOfSegments = reps.segmentRepository.count();
                 double totalAnnualExpectedGenerationOfPlant = 0d;
 
-                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository.findSupportSchemeDuration(1);
+                final long tenderTime = 1;
+                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository.findOneSupportSchemeDuration(tenderTime);
                 // should be
                 // modified when
                 // location

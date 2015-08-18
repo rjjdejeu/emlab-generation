@@ -68,7 +68,6 @@
 		p:supportSchemeDuration="15">
 
 		<property name="regulator" ref="regulator" />
-		<property name="energyProducer" ref="energyProducer"/>
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />

@@ -28,6 +28,6 @@ import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 public interface RenewableSupportSchemeTenderRepository extends GraphRepository<RenewableSupportSchemeTender> {
 
     @Query(value = "g.v(agent).out('INVESTOR_MARKET').out('ZONE').in('OF_ZONE').in('WITH_REGULATOR').supportSchemeDuration", type = QueryType.Gremlin)
-    public RenewableSupportSchemeTender findSupportSchemeDuration(long time);
+    public RenewableSupportSchemeTender findOneSupportSchemeDuration();
 
 }
