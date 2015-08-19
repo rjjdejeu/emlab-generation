@@ -31,8 +31,8 @@ import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 
 public interface TenderClearingPointRepository extends GraphRepository<TenderClearingPoint> {
 
-    @Query(value = "g.v(market).in('RENEWABLE_SUPPORT_SCHEME_TENDER').propertyFilter('time', FilterPipe.Filter.EQUAL, time)", type = QueryType.Gremlin)
+    @Query(value = "g.v(scheme).in('RENEWABLE_SUPPORT_SCHEME_TENDER').propertyFilter('time', FilterPipe.Filter.EQUAL, time)", type = QueryType.Gremlin)
     public ClearingPoint findOneClearingPointForTimeAndRenewableSupportSchemeTender(@Param("time") long time,
-            @Param("market") RenewableSupportSchemeTender renewableSupportSchemeTender);
+            @Param("scheme") RenewableSupportSchemeTender renewableSupportSchemeTender);
 
 }

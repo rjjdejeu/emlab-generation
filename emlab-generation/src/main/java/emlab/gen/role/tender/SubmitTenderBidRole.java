@@ -99,14 +99,16 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         Map<ElectricitySpotMarket, Double> expectedCO2Price = determineExpectedCO2PriceInclTaxAndFundamentalForecast(
                 futureTimePoint, agent.getNumberOfYearsBacklookingForForecasting(), 0, getCurrentTick());
 
-        logger.warn("{} expects CO2 prices {}", agent.getName(), expectedCO2Price);
+        // logger.warn("{} expects CO2 prices {}", agent.getName(),
+        // expectedCO2Price);
 
         Map<ElectricitySpotMarket, Double> expectedCO2PriceOld = determineExpectedCO2PriceInclTax(futureTimePoint,
                 agent.getNumberOfYearsBacklookingForForecasting(), getCurrentTick());
 
-        logger.warn("{} used to expect CO2 prices {}", agent.getName(), expectedCO2PriceOld);
+        // logger.warn("{} used to expect CO2 prices {}", agent.getName(),
+        // expectedCO2PriceOld);
 
-        logger.warn(expectedCO2Price.toString());
+        // logger.warn(expectedCO2Price.toString());
 
         // Demand
         Map<ElectricitySpotMarket, Double> expectedDemand = new HashMap<ElectricitySpotMarket, Double>();
@@ -123,8 +125,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         ElectricitySpotMarket market = agent.getInvestorMarket();
         MarketInformation marketInformation = new MarketInformation(market, expectedDemand, expectedFuelPrices,
                 expectedCO2Price.get(market).doubleValue(), futureTimePoint);
-
-        logger.warn("expected Demand is " + expectedDemand);
 
         for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
 
@@ -233,8 +233,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 long numberOfSegments = reps.segmentRepository.count();
                 double totalAnnualExpectedGenerationOfPlant = 0d;
 
-                final long tenderTime = 1;
-                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository.findOneSupportSchemeDuration(tenderTime);
+                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository
+                        .determineSupportSchemeDurationForEnergyProducer(agent);
                 // should be
                 // modified when
                 // location
