@@ -59,22 +59,19 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
                 .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
 
-        // logger.warn("demandFactor for this tick: " + demandFactor);
-        // logger.warn("future tender operations start time is: " +
-        // scheme.getFutureTenderOperationStartTime());
+        logger.warn("demandFactor for this tick: " + demandFactor);
 
         // get renewable energy target in factor (percent)
         RenewableTargetForTender target = reps.renewableTargetForTenderRepository
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
-        // logger.warn("zone is: " + zone);
-        // logger.warn("market is: " + market);
-        // logger.warn("regulator of the scheme is: " + scheme.getRegulator());
-        // logger.warn("target is: " + target);
+        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
+                getCurrentTick() + scheme.getFutureTenderOperationStartTime());
 
-        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(scheme.getFutureTenderOperationStartTime());
+        logger.warn("future tender operations start time is: "
+                + (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
 
-        // logger.warn("targetFactor for this tick: " + targetFactor);
+        logger.warn("targetFactor for this tick: " + targetFactor);
 
         // get totalLoad in MWh
         double totalConsumption = 0;
@@ -142,8 +139,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        // logger.warn("actual renewableTargetInMwh for this tick: " +
-        // renewableTargetInMwh);
+        logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
 
     }
 

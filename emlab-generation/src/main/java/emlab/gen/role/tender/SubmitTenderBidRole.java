@@ -133,7 +133,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
             if (technology.isIntermittent() && model.isNoPrivateIntermittentRESInvestment())
                 continue;
 
-            logger.warn("technology is: " + technology);
+            // logger.warn("technology is: " + technology);
 
             Iterable<PowerGridNode> possibleInstallationNodes;
 
