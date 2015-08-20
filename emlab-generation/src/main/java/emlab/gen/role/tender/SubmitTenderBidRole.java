@@ -133,8 +133,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
             if (technology.isIntermittent() && model.isNoPrivateIntermittentRESInvestment())
                 continue;
 
-            // logger.warn("technology is: " + technology);
-
             Iterable<PowerGridNode> possibleInstallationNodes;
 
             /*
@@ -149,12 +147,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         .findAllPowerGridNodesByZone(market.getZone()).iterator().next());
             }
 
-            // logger.warn("technology is intermittent? " +
-            // technology.isIntermittent());
-            //
+            // logger.warn("technology is " + technology +
+            // "technology is intermittent? " + technology.isIntermittent());
             // logger.warn("possibleInstallationNodes is: " +
             // possibleInstallationNodes);
-            //
+
             // logger.warn("Calculating for " + technology.getName() +
             // ", for Nodes: "
             // + possibleInstallationNodes.toString());
@@ -163,18 +160,19 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 PowerPlant plant = new PowerPlant();
 
-                // logger.warn("plant is: " + plant);
-
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
 
-                // logger.warn(" agent, node and technology is " + agent + node
-                // + technology);
+                // logger.warn(" agent is " + agent + " with technology " +
+                // technology + " and plant " + plant
+                // + " in node " + node);
 
                 // if too much capacity of this technology in the pipeline (not
                 // limited to the 5 years)
                 double expectedInstalledCapacityOfTechnology = reps.powerPlantRepository
                         .calculateCapacityOfExpectedOperationalPowerPlantsInMarketAndTechnology(market, technology,
                                 futureTimePoint);
+
+                // technology target for the tender role is null
                 PowerGeneratingTechnologyTarget technologyTarget = reps.powerGenerationTechnologyTargetRepository
                         .findOneByTechnologyAndMarket(technology, market);
                 if (technologyTarget != null) {
@@ -192,13 +190,21 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // Calculate bid quantity. No of plants to be bid - as many as
                 // the node permits
                 double ratioNodeCapacity = pgtNodeLimit / plant.getActualNominalCapacity();
-                long numberOfPlants = (long) ratioNodeCapacity; // truncates
-                                                                // towards lower
-                                                                // integer
+                double numberOfPlants = (long) ratioNodeCapacity; // truncates
+                                                                  // towards
+                                                                  // lower
+                                                                  // integer
 
-                double bidQuantityPerPlant = plant.getActualNominalCapacity();
+                logger.warn("pgtNodeLimit is: " + pgtNodeLimit);
 
-                // if cash strapped, bid quantity according to fraction of cash
+                logger.warn("actual nominal capacity is: " + plant.getActualNominalCapacity());
+
+                logger.warn("ratioNodeCapacity: " + ratioNodeCapacity);
+
+                logger.warn("numberOfPlants is: " + numberOfPlants);
+
+                // if cash strapped, bid quantity according to fraction of cash,
+                // which is translated to the number of plants
                 // available.
 
                 if (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent.getDebtRatioOfInvestments()) > agent
@@ -208,8 +214,21 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             / (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent
                                     .getDebtRatioOfInvestments()));
 
-                    numberOfPlants = Math.round(cashAvailableFraction) * numberOfPlants;
+                    if (cashAvailableFraction < 0) {
+                        cashAvailableFraction = 0;
+                    }
 
+                    numberOfPlants = cashAvailableFraction * numberOfPlants;
+
+                    logger.warn("cash availabe fraction is: " + cashAvailableFraction);
+                    logger.warn("number of plants are: " + numberOfPlants);
+
+                    numberOfPlants = (long) numberOfPlants; // truncates
+                                                            // towards
+                                                            // lower
+                                                            // integer
+
+                    logger.warn("number of plants are: " + numberOfPlants);
                 }
 
                 // computing tender bid price
@@ -278,9 +297,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // runningHours);
                 // expect to meet minimum running hours?
                 if (runningHours < plant.getTechnology().getMinimumRunningHours()) {
-                    // logger.warn(agent+
-                    // " will not bid in {} technology as he expect to
-                    // have {} running, which is lower then required",
+                    // logger.warn(
+                    // agent
+                    // +
+                    // " will not bid in {} technology as he expect to have {} running, which is lower then required",
                     // technology, runningHours);
                 } else {
 
@@ -304,48 +324,76 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     if (projectValue >= 0) {
                         bidPricePerMWh = 0d;
+
+                        // logger.warn("positive project value - bid price per mwh is: "
+                        // + bidPricePerMWh);
+
+                    } else if (totalAnnualExpectedGenerationOfPlant == 0) {
+                        bidPricePerMWh = 0d;
+                        // logger.warn(" zero totalAnnualExpectedGenerationOfPlant - bid price per mwh is "
+                        // + bidPricePerMWh);
+
                     } else {
                         // calculate discounted tender return factor term
 
                         TreeMap<Integer, Double> discountedTenderReturnFactorSummingTerm = calculateSimplePowerPlantInvestmentCashFlow(
                                 (int) tenderSchemeDuration, (int) plant.getFinishedConstruction(), 0, 1);
                         double discountedTenderReturnFactor = npv(discountedTenderReturnFactorSummingTerm, wacc);
-                        // calculate generation in MWh per year
-                        bidPricePerMWh = -projectValue
-                                / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
-                    }
+                        if (discountedTenderReturnFactor == 0) {
+                            bidPricePerMWh = 0d;
+                            // logger.warn(" zero discountedTenderReturnFactor - bid price per mwh is "
+                            // + bidPricePerMWh);
 
-                    // create and persist tender bids for number of power plants
-                    // as found earlier.
-                    for (int i = 1; i <= (int) numberOfPlants; i++) {
+                        } else {
 
-                        TenderBid bid = new TenderBid().persist();
-                        bid.setAmount(totalAnnualExpectedGenerationOfPlant);
-                        bid.setBidder(agent);
-                        bid.setPrice(bidPricePerMWh);
-                        bid.setPowerGridNode(node);
-                        bid.setTechnology(technology);
-                        bid.setStart(getCurrentTick() + plant.getFinishedConstruction());
-                        bid.setFinish(getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration);
-                        bid.setTime(getCurrentTick());
-                        bid.persist();
+                            // calculate generation in MWh per year
+                            bidPricePerMWh = -projectValue
+                                    / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
-                        logger.warn(" bid amount of " + agent + " is " + totalAnnualExpectedGenerationOfPlant);
-                        logger.warn(" bid price of " + agent + " is " + bidPricePerMWh);
-                        logger.warn(" bid node of " + agent + " is " + node);
-                        logger.warn(" bid technology of " + agent + " is " + technology);
-                        logger.warn(" bid start time tender support of " + agent + " is " + getCurrentTick()
-                                + plant.getFinishedConstruction());
-                        logger.warn(" bid end time tender support of " + agent + " is " + getCurrentTick()
-                                + plant.getFinishedConstruction() + tenderSchemeDuration);
+                            // logger.warn("totalAnnualExpectedGenerationOfPlant is "
+                            // + totalAnnualExpectedGenerationOfPlant);
+                            // logger.warn("projectvalue is: " + projectValue);
+                            // logger.warn("discounted tender return factor is: "
+                            // + totalAnnualExpectedGenerationOfPlant);
+                            logger.warn("bid price per mwh is " + bidPricePerMWh);
 
-                    }
+                            // create and persist tender bids for number of
+                            // power plants
+                            // as found earlier.
 
-                }
+                            long i = 0;
 
-            }
-        }
+                            logger.warn("Number of plants is " + numberOfPlants + "and iterator i is " + i);
+
+                            for (i = 1; i <= numberOfPlants; i++) {
+
+                                TenderBid bid = new TenderBid().persist();
+                                bid.setAmount(totalAnnualExpectedGenerationOfPlant);
+                                bid.setBidder(agent);
+                                bid.setPrice(bidPricePerMWh);
+                                bid.setPowerGridNode(node);
+                                bid.setTechnology(technology);
+                                bid.setStart(getCurrentTick() + plant.getFinishedConstruction());
+                                bid.setFinish(getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration);
+                                bid.setTime(getCurrentTick());
+                                bid.persist();
+
+                                logger.warn(agent + " has bid amount" + totalAnnualExpectedGenerationOfPlant
+                                        + " price is " + bidPricePerMWh + " with technology " + technology);
+
+                            } // end for loop for tender bids
+
+                        } // end if else discountedTenderReturnFactor == 0
+
+                    } // end if projectValue >= 0)
+
+                } // end if else for running hours
+
+            } // end for loop possible installation nodes
+
+        } // end for (PowerGeneratingTechnology technology :
+          // reps.genericRepository.findAll(PowerGeneratingTechnology.class))
     }
 
     // }

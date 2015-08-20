@@ -94,6 +94,7 @@
 		<property name="connections">
 			<set>
 				<ref bean="beneluxNode" />
+				
 			</set>
 		</property>
 	</bean>
@@ -391,17 +392,9 @@
 	<bean id="standardInvestmentRole"
 		class="emlab.gen.role.investment.InvestInPowerGenerationTechnologiesStandard" />
 
-	<!-- PowerGenerationTechnology Node Limits -->
-
-	<bean id="ligniteNodeLimitNl"
-		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
-		p:permanentUpperCapacityLimit="0">
-		<property name="powerGeneratingTechnology" ref="lignitePGT" />
-		<property name="powerGridNode" ref="beneluxNode" />
-	</bean>
+		
 
 	<!-- Initial portfolios -->
-
 
 	<bean id="powerPlantManufacturer" class="emlab.gen.domain.agent.PowerPlantManufacturer"
 		p:name="Power Plant Manufacturer" />
@@ -499,6 +492,37 @@
 		<property name="minNationalCo2PriceTrend" ref="minCo2PriceTrendNL" />
 		<property name="governedZone" ref="nl" />
 	</bean>
+	
+	<!-- Power Generation Technology Node limits -->
+	
+	<bean id="ligniteNodeLimitNl"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="beneluxNode" />
+	</bean>
+	
+	<bean id="photovoltaicNodeLimitNl"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="19637">
+		<property name="powerGeneratingTechnology" ref="photovoltaicPGT" />
+		<property name="powerGridNode" ref="beneluxNode" />
+	</bean>
+	
+	<bean id="windNodeLimitNl"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="4000.2">
+		<property name="powerGeneratingTechnology" ref="windPGT" />
+		<property name="powerGridNode" ref="beneluxNode" />
+	</bean>
+	
+	<bean id="windOffshoreNodeLimitNl"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="16945">
+		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
+		<property name="powerGridNode" ref="beneluxNode" />
+	</bean> 
+	
 
 
 	<!-- Power Genration Technologies -->

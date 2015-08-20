@@ -38,6 +38,8 @@ public class HourlyCSVTimeSeries implements HourlyTimeSeries {
 
     private String delimiter;
 
+    private boolean timeSeriesAreInDifferentColumns;
+
     private double[] hourlyArray;
 
     @Transactional
@@ -81,24 +83,53 @@ public class HourlyCSVTimeSeries implements HourlyTimeSeries {
                         filename));
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
-                String line;
-                String[] lineContentSplit = null;
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (line.startsWith(variableName)) {
-                        lineContentSplit = line.split(delimiter);
-                        break;
+                if (!timeSeriesAreInDifferentColumns) {
+
+                    String line;
+                    String[] lineContentSplit = null;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (line.startsWith(variableName)) {
+                            lineContentSplit = line.split(delimiter);
+                            break;
+                        }
                     }
+                    bufferedReader.close();
+                    double[] timeSeries = new double[lineContentSplit.length - 1];
+                    int i = 0;
+                    for (String s : lineContentSplit) {
+                        if (i > 0)
+                            timeSeries[i - 1] = Double.parseDouble(s);
+                        i++;
+                    }
+                    setHourlyArray(timeSeries, 0);
+                    this.persist();
+                } else {
+                    String firstLine = bufferedReader.readLine();
+                    String[] firstLineContentSplit = firstLine.split(delimiter);
+                    int columnNumber = -1;
+                    for (int col = 0; col < firstLineContentSplit.length; col++) {
+                        if (variableName.equals(firstLineContentSplit[col])) {
+                            columnNumber = col;
+                            break;
+                        }
+                    }
+                    if (columnNumber == -1) {
+                        throw new Exception("Couldn't find column name!");
+                    }
+
+                    String line;
+
+                    while ((line = bufferedReader.readLine()) != null) {
+                        String[] lineContentSplit = null;
+                        lineContentSplit = line.split(delimiter);
+                        data = data.concat(lineContentSplit[columnNumber] + ",");
+                    }
+                    bufferedReader.close();
+
+                    String[] vals = data.split(",");
+                    setHourlyArray(parseString(vals), 0);
+
                 }
-                bufferedReader.close();
-                double[] timeSeries = new double[lineContentSplit.length - 1];
-                int i = 0;
-                for (String s : lineContentSplit) {
-                    if (i > 0)
-                        timeSeries[i - 1] = Double.parseDouble(s);
-                    i++;
-                }
-                setHourlyArray(timeSeries, 0);
-                this.persist();
 
             } catch (Exception e) {
                 logger.error("Couldn't read CSV file: " + filename);
@@ -170,6 +201,14 @@ public class HourlyCSVTimeSeries implements HourlyTimeSeries {
 
     public void setVariableName(String variable) {
         this.variableName = variable;
+    }
+
+    public boolean isTimeSeriesAreInDifferentColumns() {
+        return timeSeriesAreInDifferentColumns;
+    }
+
+    public void setTimeSeriesAreInDifferentColumns(boolean timeSeriesAreInDifferentColumns) {
+        this.timeSeriesAreInDifferentColumns = timeSeriesAreInDifferentColumns;
     }
 
 }

@@ -27,6 +27,7 @@ import emlab.gen.domain.technology.IntermittentResourceProfile;
 import emlab.gen.domain.technology.PowerGeneratingTechnology;
 import emlab.gen.domain.technology.PowerGridNode;
 import emlab.gen.repository.Reps;
+import emlab.gen.trend.HourlyCSVTimeSeries;
 import emlab.gen.util.Utils;
 
 /**
@@ -39,7 +40,7 @@ import emlab.gen.util.Utils;
  */
 @RoleComponent
 public class DetermineResidualLoadCurvesForTwoCountriesRole extends AbstractRole<DecarbonizationModel> implements
-Role<DecarbonizationModel> {
+        Role<DecarbonizationModel> {
 
     @Autowired
     private Reps reps;
@@ -158,17 +159,21 @@ Role<DecarbonizationModel> {
         for (Zone zone : zoneList) {
 
             for (PowerGridNode node : zoneToNodeList.get(zone)) {
-                DoubleMatrix1D hourlyArray = new DenseDoubleMatrix1D(node.getHourlyDemand().getHourlyArray(getCurrentTick()));
-                double growthRate = reps.marketRepository.findElectricitySpotMarketForZone(zone).getDemandGrowthTrend()
-                        .getValue(clearingTick);
-                DoubleMatrix1D growthFactors = hourlyArray.copy();
-                growthFactors.assign(growthRate);
-                hourlyArray.assign(growthFactors, Functions.mult);
-                m.viewColumn(LOADINZONE.get(zone)).assign(hourlyArray, Functions.plus);
-                m.viewColumn(RLOADINZONE.get(zone)).assign(hourlyArray, Functions.plus);
-
+                HourlyCSVTimeSeries hourlyTimeSeriesInNode = node.getHourlyDemand();
+                if (hourlyTimeSeriesInNode != null) {
+                    DoubleMatrix1D hourlyArray = new DenseDoubleMatrix1D(
+                            hourlyTimeSeriesInNode.getHourlyArray(getCurrentTick()));
+                    double growthRate = reps.marketRepository.findElectricitySpotMarketForZone(zone)
+                            .getDemandGrowthTrend().getValue(clearingTick);
+                    DoubleMatrix1D growthFactors = hourlyArray.copy();
+                    growthFactors.assign(growthRate);
+                    hourlyArray.assign(growthFactors, Functions.mult);
+                    m.viewColumn(LOADINZONE.get(zone)).assign(hourlyArray, Functions.plus);
+                    m.viewColumn(RLOADINZONE.get(zone)).assign(hourlyArray, Functions.plus);
+                }
             }
-
+            // logger.warn("Zone: " + zone);
+            // logger.warn("" + m.viewColumn(LOADINZONE.get(zone)));
         }
 
         // 3. For each power grid node multiply the time series of each
@@ -188,8 +193,8 @@ Role<DecarbonizationModel> {
                 for (PowerGeneratingTechnology technology : technologyList) {
 
                     double intermittentCapacityOfTechnologyInNode = reps.powerPlantRepository
-                            .calculateCapacityOfOperationalIntermittentPowerPlantsByPowerGridNodeAndTechnology(node, technology,
-                                    getCurrentTick());
+                            .calculateCapacityOfOperationalIntermittentPowerPlantsByPowerGridNodeAndTechnology(node,
+                                    technology, getCurrentTick());
 
                     // logger.warn(technology.getName() + ": " +
                     // intermittentCapacityOfTechnologyInNode + " MW in Node "
@@ -234,8 +239,8 @@ Role<DecarbonizationModel> {
             for (PowerGridNode node : zoneToNodeList.get(zone)) {
 
                 for (PowerGeneratingTechnology technology : technologyList) {
-                    m.viewColumn(TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).assign(spillVector,
-                            Functions.mult);
+                    m.viewColumn(TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).assign(
+                            spillVector, Functions.mult);
                 }
             }
 
@@ -264,7 +269,7 @@ Role<DecarbonizationModel> {
 
         Map<Zone, DoubleMatrix1D> spillFactorMap = new HashMap<Zone, DoubleMatrix1D>();
         // Get old values of IPROD to calculate spill factors later on.
-        for(Zone zone: zoneList){
+        for (Zone zone : zoneList) {
             spillFactorMap.put(zone, m.viewColumn(IPROD.get(zone)).copy());
         }
 
@@ -312,7 +317,8 @@ Role<DecarbonizationModel> {
                     } else {
                         m.set(row, INTERCONNECTOR, 0);
                         m.viewColumn(RLOADINZONE.get(zoneSmallerResidual)).set(row, 0);
-                        m.viewColumn(RLOADINZONE.get(zoneBiggerResidual)).set(row, biggerResidual + m.get(row, INTERCONNECTOR));
+                        m.viewColumn(RLOADINZONE.get(zoneBiggerResidual)).set(row,
+                                biggerResidual + m.get(row, INTERCONNECTOR));
                     }
                 } else {
                     // Country BiggerResidual can import less than Country
@@ -322,11 +328,13 @@ Role<DecarbonizationModel> {
                         m.set(row, INTERCONNECTOR, m.get(row, INTERCONNECTOR) + biggerResidual);
                         m.set(row, RLOADINZONE.get(zoneBiggerResidual), 0);
                         m.set(row, RLOADINZONE.get(zoneSmallerResidual), 0);
-                        m.set(row, IPROD.get(zoneSmallerResidual), (m.get(row, IPROD.get(zoneSmallerResidual)) - biggerResidual));
+                        m.set(row, IPROD.get(zoneSmallerResidual),
+                                (m.get(row, IPROD.get(zoneSmallerResidual)) - biggerResidual));
                     } else {
                         // Interconnector capacity is limiting
                         m.set(row, INTERCONNECTOR, 0);
-                        m.set(row, RLOADINZONE.get(zoneBiggerResidual), biggerResidual + m.viewColumn(INTERCONNECTOR).get(row));
+                        m.set(row, RLOADINZONE.get(zoneBiggerResidual), biggerResidual
+                                + m.viewColumn(INTERCONNECTOR).get(row));
                         m.set(row, RLOADINZONE.get(zoneSmallerResidual), 0);
                         m.set(row, IPROD.get(zoneSmallerResidual),
                                 (m.get(row, IPROD.get(zoneSmallerResidual)) - m.get(row, INTERCONNECTOR)));
@@ -428,7 +436,6 @@ Role<DecarbonizationModel> {
             segmentInterConnectorBins[i] = new DynamicBin1D();
         }
 
-
         Map<Zone, DynamicBin1D[]> segmentRloadBinsByZone = new HashMap<Zone, DynamicBin1D[]>();
         Map<Zone, DynamicBin1D[]> segmentLoadBinsByZone = new HashMap<Zone, DynamicBin1D[]>();
 
@@ -495,21 +502,21 @@ Role<DecarbonizationModel> {
                     currentSegmentID = 1;
                     hoursAssignedToCurrentSegment = 0;
                     for (int row = 0; row < m.rows() && currentSegmentID <= noSegments; row++) {
-                        // IMPORTANT: since [] is zero-based index, it checks one index
+                        // IMPORTANT: since [] is zero-based index, it checks
+                        // one index
                         // ahead of current segment.
                         while (currentSegmentID < noSegments && hoursAssignedToCurrentSegment > 0
                                 && m.get(row, RLOADTOTAL) <= upperBoundSplit[currentSegmentID]) {
                             currentSegmentID++;
                             hoursAssignedToCurrentSegment = 0;
                         }
-                        currentBinArray[currentSegmentID - 1].add(m.get(row,columnNumber));
+                        currentBinArray[currentSegmentID - 1].add(m.get(row, columnNumber));
                         hoursAssignedToCurrentSegment++;
                     }
                     loadFactorBinMap.get(zone).get(node).put(technology, currentBinArray);
                 }
             }
         }
-
 
         // Assign hours to segments according to residual load in this country.
         // Only for error estimation purposes
@@ -555,7 +562,6 @@ Role<DecarbonizationModel> {
             }
 
         }
-
 
         // m = m.viewSorted(RLOADTOTAL).viewRowFlip();
         //
@@ -686,10 +692,7 @@ Role<DecarbonizationModel> {
         }
 
         for (Zone zone : zoneList) {
-            double intermittentCapacityOfTechnologyInZone=0;
-
-
-
+            double intermittentCapacityOfTechnologyInZone = 0;
 
             for (PowerGeneratingTechnology technology : technologyList) {
                 double productionOfTechInZone = 0;
@@ -697,12 +700,11 @@ Role<DecarbonizationModel> {
                 for (PowerGridNode node : zoneToNodeList.get(zone)) {
 
                     intermittentCapacityOfTechnologyInZone += reps.powerPlantRepository
-                            .calculateCapacityOfOperationalIntermittentPowerPlantsByPowerGridNodeAndTechnology(node, technology,
-                                    getCurrentTick());
+                            .calculateCapacityOfOperationalIntermittentPowerPlantsByPowerGridNodeAndTechnology(node,
+                                    technology, getCurrentTick());
                     productionOfTechInZone += m.viewColumn(
                             TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).zSum()
                             * intermittentCapacityOfTechnologyInZone;
-
 
                 }
 

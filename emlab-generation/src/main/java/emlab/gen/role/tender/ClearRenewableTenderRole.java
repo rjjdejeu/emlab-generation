@@ -56,6 +56,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         Iterable<TenderBid> sortedTenderBidsbyPrice = null;
         sortedTenderBidsbyPrice = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick());
 
+        // logger.warn("sortedTenderBidsbyPrice is: " +
+        // sortedTenderBidsbyPrice);
+
         // for a certain year?
         double tenderQuota = regulator.getAnnualRenewableTargetInMwh();
         double sumOfTenderBidQuantityAccepted = 0d;
@@ -74,6 +77,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         // Goes through the list of the bids that are sorted on ascending order
         // by price
         for (TenderBid currentTenderBid : sortedTenderBidsbyPrice) {
+
+            // logger.warn("bid is: " + currentTenderBid);
 
             // if the tender is not cleared yet, it collects complete bids
             if (isTheTenderCleared == false) {
