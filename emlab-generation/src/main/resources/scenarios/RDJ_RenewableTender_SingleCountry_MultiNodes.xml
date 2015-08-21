@@ -570,33 +570,55 @@
 
 
 	<!-- PowerGenerationTechnology Node Limits -->
-
-	<bean id="ligniteNodeLimitNl"
+<!-- change node limit values according to potential curves! -->
+	<bean id="ligniteNodeLimitNL"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="0">
 		<property name="powerGeneratingTechnology" ref="lignitePGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
 
-	<bean id="photovoltaicNodeLimitNl"
+	<bean id="photovoltaicNodeLimitNL"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="19637">
 		<property name="powerGeneratingTechnology" ref="photovoltaicPGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
+	
+	<bean id="biomassLimitNL"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode1" />
+	</bean> 
+	
+		<bean id="biogasNodeLimitNL"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode1" />
+	</bean> 
 
-	<bean id="windNodeLimitNl"
+	<bean id="windNodeLimitNL"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="4000.2">
 		<property name="powerGeneratingTechnology" ref="windPGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
 
-	<bean id="windOffshoreNodeLimitNl"
+	<bean id="windOffshoreNodeLimitNL"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="16945">
 		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
 		<property name="powerGridNode" ref="nlNode1" />
+	</bean>
+	
+<!-- change node limit values according to potential curves! -->
+	<bean id="windOffshoreNodeLimitNL"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="16945">
+		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
+		<property name="powerGridNode" ref="nlNode2" />
 	</bean>
 
 

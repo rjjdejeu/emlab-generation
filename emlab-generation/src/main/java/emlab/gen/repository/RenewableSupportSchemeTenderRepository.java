@@ -29,6 +29,12 @@ import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
  */
 public interface RenewableSupportSchemeTenderRepository extends GraphRepository<RenewableSupportSchemeTender> {
 
+    // @Query(value =
+    // "g.v(agent).out('INVESTOR_MARKET').out('ZONE').in('OF_ZONE').in('WITH_REGULATOR')
+    // public string
+    // determinePowerGeneratingTechnologiesEligible(@Param("agent")
+    // EnergyProducer agent );
+
     @Query(value = "g.v(agent).out('INVESTOR_MARKET').out('ZONE').in('OF_ZONE').in('WITH_REGULATOR').supportSchemeDuration", type = QueryType.Gremlin)
     public long determineSupportSchemeDurationForEnergyProducer(@Param("agent") EnergyProducer agent);
 

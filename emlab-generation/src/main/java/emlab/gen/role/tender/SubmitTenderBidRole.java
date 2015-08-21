@@ -128,6 +128,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
         for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
 
+            // for (PowerGeneratingTechnology technology :
+            // reps.renewableSupportSchemeTenderRepository
+            // .getPowerGeneratingTechnologiesEligible()) {
+
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
             if (technology.isIntermittent() && model.isNoPrivateIntermittentRESInvestment())
@@ -181,13 +185,23 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             : expectedInstalledCapacityOfTechnology;
                 }
                 double pgtNodeLimit = Double.MAX_VALUE;
+
+                logger.warn("pgtNodeLimit 1 is: " + pgtNodeLimit);
+
                 PowerGeneratingTechnologyNodeLimit pgtLimit = reps.powerGeneratingTechnologyNodeLimitRepository
                         .findOneByTechnologyAndNode(technology, plant.getLocation());
+
+                logger.warn("technlogy for pgtNodeLimit is" + technology);
+                logger.warn("plant location for pgtNodeLimit is" + plant.getLocation());
+
+                logger.warn("pgtNodeLimit 2 is: " + pgtNodeLimit);
+
                 if (pgtLimit != null) {
                     pgtNodeLimit = pgtLimit.getUpperCapacityLimit(futureTimePoint);
                 }
 
-                // Calculate bid quantity. No of plants to be bid - as many as
+                // Calculate bid quantity. Number of plants to be bid - as many
+                // as
                 // the node permits
                 double ratioNodeCapacity = pgtNodeLimit / plant.getActualNominalCapacity();
                 double numberOfPlants = (long) ratioNodeCapacity; // truncates
@@ -195,13 +209,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                                                   // lower
                                                                   // integer
 
-                logger.warn("pgtNodeLimit is: " + pgtNodeLimit);
+                logger.warn("pgtNodeLimit 3 is: " + pgtNodeLimit);
 
-                logger.warn("actual nominal capacity is: " + plant.getActualNominalCapacity());
+                // logger.warn("actual nominal capacity is: " +
+                // plant.getActualNominalCapacity());
 
-                logger.warn("ratioNodeCapacity: " + ratioNodeCapacity);
+                // logger.warn("ratioNodeCapacity: " + ratioNodeCapacity);
 
-                logger.warn("numberOfPlants is: " + numberOfPlants);
+                // logger.warn("numberOfPlants is: " + numberOfPlants);
 
                 // if cash strapped, bid quantity according to fraction of cash,
                 // which is translated to the number of plants
