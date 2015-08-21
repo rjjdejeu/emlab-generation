@@ -26,9 +26,14 @@
 
 
 	<!-- Regulator -->
-	<bean id="regulator" class="emlab.gen.domain.agent.Regulator"
-		p:name="Regulator NL" p:numberOfYearsLookingBackToForecastDemand="4">
+	<bean id="regulatorNL" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulator" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="nl" />
+	</bean>
+	
+		<bean id="regulatorDE" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulator" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
 	</bean>
 
 
@@ -38,7 +43,7 @@
 		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
 		p:supportSchemeDuration="15">
 
-		<property name="regulator" ref="regulator" />
+		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
@@ -55,7 +60,7 @@
 	<bean id="renewableTenderTarget"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap">
-		<property name="regulator" ref="regulator" />
+		<property name="regulator" ref="regulatorNL" />
 	</bean>
 
 	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
@@ -153,6 +158,15 @@
 		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
 		<property name="intermittentProductionNode" ref="nlNode2"></property>
 	</bean>
+	
+		<bean id="windOffSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_DE_windOff.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="de_node_1">
+		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
+		<property name="intermittentProductionNode" ref="deNode1"></property>
+	</bean>
+	
  
 
 	<!-- Segments of load duration curves -->
@@ -606,15 +620,15 @@
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
 
-	<bean id="windOffshoreNodeLimitNL"
+	<bean id="windOffshoreNodeLimitNL1"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="16945">
 		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
 	
-<!-- change node limit values according to potential curves! -->
-	<bean id="windOffshoreNodeLimitNL"
+
+	<bean id="windOffshoreNodeLimitNL2"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="16945">
 		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
@@ -691,6 +705,7 @@
 		</property>
 	</bean>
 
+		
 	<!-- CO2 Tax -->
 	<bean id="co2TaxTrend" class="emlab.gen.trend.StepTrend" p:start="${co2TaxStart}"
 		p:duration="${co2TaxDuration}" p:increment="${co2TaxIncrement}"
@@ -722,6 +737,12 @@
 		p:name="Country A Government">
 		<property name="minNationalCo2PriceTrend" ref="minCo2PriceTrendNL" />
 		<property name="governedZone" ref="nl" />
+	</bean>
+	
+		<bean id="governmentDE" class="emlab.gen.domain.agent.NationalGovernment"
+		p:name="Country B Government">
+		<property name="minNationalCo2PriceTrend" ref="minCo2PriceTrendNL" />
+		<property name="governedZone" ref="de" />
 	</bean>
 
 

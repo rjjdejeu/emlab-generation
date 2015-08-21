@@ -250,7 +250,7 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
         // model.getCentralForecastingYear());
         //
         // logger.warn(" took: {} seconds.", timerMarket.seconds());
-        //
+        // GOVERNED_ZONE
         // timerMarket.reset();
 
         /*

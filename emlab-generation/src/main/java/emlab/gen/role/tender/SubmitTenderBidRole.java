@@ -128,10 +128,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
         for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
 
-            // for (PowerGeneratingTechnology technology :
-            // reps.renewableSupportSchemeTenderRepository
-            // .getPowerGeneratingTechnologiesEligible()) {
-
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
             if (technology.isIntermittent() && model.isNoPrivateIntermittentRESInvestment())
