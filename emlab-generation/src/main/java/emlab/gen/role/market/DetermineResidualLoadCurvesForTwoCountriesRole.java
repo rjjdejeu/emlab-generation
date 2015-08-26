@@ -207,6 +207,12 @@ public class DetermineResidualLoadCurvesForTwoCountriesRole extends AbstractRole
                     // technology per node
                     DoubleMatrix1D hourlyProductionPerNode = new DenseDoubleMatrix1D(
                             intermittentResourceProfile.getHourlyArray(getCurrentTick()));
+
+                    // WARNING!!!!!!! This is a very memory consuming
+                    // logger.warn....!!!!!!!
+                    // logger.warn("production profiles hourly data is " +
+                    // hourlyProductionPerNode);
+
                     m.viewColumn(TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).assign(
                             hourlyProductionPerNode, Functions.plus);
                     hourlyProductionPerNode.assign(Functions.mult(intermittentCapacityOfTechnologyInNode));

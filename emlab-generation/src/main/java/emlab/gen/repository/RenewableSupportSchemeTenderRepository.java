@@ -22,6 +22,7 @@ import org.springframework.data.repository.query.Param;
 
 import emlab.gen.domain.agent.EnergyProducer;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
+import emlab.gen.domain.technology.PowerGeneratingTechnology;
 
 /**
  * @author Kaveri3012 rjjdejeu
@@ -29,6 +30,11 @@ import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
  */
 public interface RenewableSupportSchemeTenderRepository extends GraphRepository<RenewableSupportSchemeTender> {
 
+    // obtains the technologies eligible for the bid
+    @Query(value = "g.idx('__types__')[[className:'emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender']].out('TECHNOLOGIES_ELIGIBLE_ARE')", type = QueryType.Gremlin)
+    public Iterable<PowerGeneratingTechnology> findPowerGeneratingTechnologiesEligible();
+
+    // obtains the support scheme duration for the energy producer
     @Query(value = "g.v(agent).out('INVESTOR_MARKET').out('ZONE').in('OF_ZONE').in('WITH_REGULATOR').supportSchemeDuration", type = QueryType.Gremlin)
     public long determineSupportSchemeDurationForEnergyProducer(@Param("agent") EnergyProducer agent);
 

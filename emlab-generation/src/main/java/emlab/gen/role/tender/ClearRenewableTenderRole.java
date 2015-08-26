@@ -70,6 +70,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
             acceptedSubsidyPrice = 0;
         }
 
+        logger.warn("tenderQuota is " + tenderQuota);
+        // logger.warn("the tender is cleared " + isTheTenderCleared);
+
         // This epsilon is to account for rounding errors for java (only
         // relevant for exact clearing)
         double clearingEpsilon = 0.0001d;
@@ -79,6 +82,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         for (TenderBid currentTenderBid : sortedTenderBidsbyPrice) {
 
             // logger.warn("bid is: " + currentTenderBid);
+            // logger.warn("bid is: " + sortedTenderBidsbyPrice);
 
             // if the tender is not cleared yet, it collects complete bids
             if (isTheTenderCleared == false) {
@@ -149,11 +153,14 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         // database
 
         if (isTheTenderCleared == true) {
+            logger.warn("Tender CLEARED at price " + acceptedSubsidyPrice);
             ClearingPoint tenderClearingPoint = new ClearingPoint();
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
+            logger.warn("Clearing point Price {} and volume " + tenderClearingPoint.getVolume(),
+                    tenderClearingPoint.getPrice());
 
         } else {
             ClearingPoint tenderClearingPoint = new ClearingPoint();
@@ -161,6 +168,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
+            logger.warn("MARKET UNCLEARED at price" + tenderClearingPoint.getPrice());
+            logger.warn("Clearing point Price {} and volume " + tenderClearingPoint.getVolume(),
+                    tenderClearingPoint.getPrice());
 
         }
 

@@ -89,7 +89,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         logger.warn("Submit Tender Bid Role started");
 
         long futureTimePoint = getCurrentTick() + agent.getInvestmentFutureTimeHorizon();
-        logger.warn(agent + " looking at timepoint " + futureTimePoint);
+        // logger.warn(agent + " looking at timepoint " + futureTimePoint);
 
         // ==== Expectations ===
 
@@ -126,7 +126,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         MarketInformation marketInformation = new MarketInformation(market, expectedDemand, expectedFuelPrices,
                 expectedCO2Price.get(market).doubleValue(), futureTimePoint);
 
-        for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
+        for (PowerGeneratingTechnology technology : reps.renewableSupportSchemeTenderRepository
+                .findPowerGeneratingTechnologiesEligible()) {
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
@@ -182,15 +183,16 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 }
                 double pgtNodeLimit = Double.MAX_VALUE;
 
-                logger.warn("pgtNodeLimit 1 is: " + pgtNodeLimit);
+                // logger.warn("pgtNodeLimit 1 is: " + pgtNodeLimit);
 
                 PowerGeneratingTechnologyNodeLimit pgtLimit = reps.powerGeneratingTechnologyNodeLimitRepository
                         .findOneByTechnologyAndNode(technology, plant.getLocation());
 
-                logger.warn("technlogy for pgtNodeLimit is" + technology);
-                logger.warn("plant location for pgtNodeLimit is" + plant.getLocation());
+                // logger.warn("technlogy for pgtNodeLimit is" + technology);
+                // logger.warn("plant location for pgtNodeLimit is" +
+                // plant.getLocation());
 
-                logger.warn("pgtNodeLimit 2 is: " + pgtNodeLimit);
+                // logger.warn("pgtNodeLimit 2 is: " + pgtNodeLimit);
 
                 if (pgtLimit != null) {
                     pgtNodeLimit = pgtLimit.getUpperCapacityLimit(futureTimePoint);
@@ -205,7 +207,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                                                   // lower
                                                                   // integer
 
-                logger.warn("pgtNodeLimit 3 is: " + pgtNodeLimit);
+                // logger.warn("pgtNodeLimit 3 is: " + pgtNodeLimit);
 
                 // logger.warn("actual nominal capacity is: " +
                 // plant.getActualNominalCapacity());
@@ -231,15 +233,16 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     numberOfPlants = cashAvailableFraction * numberOfPlants;
 
-                    logger.warn("cash availabe fraction is: " + cashAvailableFraction);
-                    logger.warn("number of plants are: " + numberOfPlants);
+                    // logger.warn("cash availabe fraction is: " +
+                    // cashAvailableFraction);
+                    // logger.warn("number of plants are: " + numberOfPlants);
 
                     numberOfPlants = (long) numberOfPlants; // truncates
                                                             // towards
                                                             // lower
                                                             // integer
 
-                    logger.warn("number of plants are: " + numberOfPlants);
+                    // logger.warn("number of plants are: " + numberOfPlants);
                 }
 
                 // computing tender bid price
@@ -265,6 +268,9 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository
                         .determineSupportSchemeDurationForEnergyProducer(agent);
+
+                // logger.warn("tender duration is" + tenderSchemeDuration);
+
                 // should be
                 // modified when
                 // location
@@ -367,7 +373,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             // logger.warn("projectvalue is: " + projectValue);
                             // logger.warn("discounted tender return factor is: "
                             // + totalAnnualExpectedGenerationOfPlant);
-                            logger.warn("bid price per mwh is " + bidPricePerMWh);
+                            // logger.warn("bid price per mwh is " +
+                            // bidPricePerMWh);
 
                             // create and persist tender bids for number of
                             // power plants
@@ -375,7 +382,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                             long i = 0;
 
-                            logger.warn("Number of plants is " + numberOfPlants + "and iterator i is " + i);
+                            // logger.warn("Number of plants is " +
+                            // numberOfPlants + "and iterator i is " + i);
 
                             for (i = 1; i <= numberOfPlants; i++) {
 
@@ -390,8 +398,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                 bid.setTime(getCurrentTick());
                                 bid.persist();
 
-                                logger.warn(agent + " has bid amount" + totalAnnualExpectedGenerationOfPlant
-                                        + " price is " + bidPricePerMWh + " with technology " + technology);
+                                // logger.warn(agent + " has bid amount" +
+                                // totalAnnualExpectedGenerationOfPlant
+                                // + " with bid price " + bidPricePerMWh +
+                                // " with technology " + technology
+                                // + " in node " + node);
 
                             } // end for loop for tender bids
 
