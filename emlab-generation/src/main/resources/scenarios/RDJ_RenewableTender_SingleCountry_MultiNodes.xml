@@ -588,30 +588,410 @@
 	</bean>
 
 
-	<!-- PowerGenerationTechnology Node Limits in MW-->
+	<!-- PowerGenerationTechnology Node Limits in MW  NL-->
 	<!-- from file Potential_capacity_generation_FLH_perBand_de_nl_biomass_biogas 
 		and Potential_capacity_generation_FLH_perBand_de_nl_solar_wind -->
 
-	<bean id="ligniteNodeLimitNL"
+	<!-- lignite node limits NL -->
+	<bean id="ligniteNodeLimitNL0"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode0" />
+	</bean>
+	
+	<bean id="ligniteNodeLimitNL1"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
 		p:permanentUpperCapacityLimit="0">
 		<property name="powerGeneratingTechnology" ref="lignitePGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
-
-	<bean id="biomassLimitNL"
+	
+		<bean id="ligniteNodeLimitNL2"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
-		p:permanentUpperCapacityLimit="763">
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode2" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL3"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode3" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL4"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode4" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL5"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode5" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL6"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode6" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL7"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode7" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL8"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode8" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL9"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode9" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL10"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode10" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL11"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode11" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL12"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode12" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL13"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode13" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL14"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode14" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL15"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode15" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL16"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode16" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL17"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode17" />
+	</bean>
+	
+		<bean id="ligniteNodeLimitNL18"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="lignitePGT" />
+		<property name="powerGridNode" ref="nlNode18" />
+	</bean>
+
+
+	<!-- biomass node limits NL -->
+	<bean id="biomassLimitNL0"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="7006.4">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode0" />
+	</bean>
+	
+	<bean id="biomassLimitNL1"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
 		<property name="powerGeneratingTechnology" ref="biomassPGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
-
-	<bean id="biogasNodeLimitNL"
+	
+	<bean id="biomassLimitNL2"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
-		p:permanentUpperCapacityLimit="1466">
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode2" />
+	</bean>
+	
+	<bean id="biomassLimitNL3"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode3" />
+	</bean>
+	
+	<bean id="biomassLimitNL4"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode4" />
+	</bean>
+	
+	<bean id="biomassLimitNL5"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode5" />
+	</bean>
+	
+	<bean id="biomassLimitNL6"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode6" />
+	</bean>
+	
+	<bean id="biomassLimitNL7"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode7" />
+	</bean>
+	
+	<bean id="biomassLimitNL8"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode8" />
+	</bean>
+	
+	<bean id="biomassLimitNL9"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode9" />
+	</bean>
+	
+	<bean id="biomassLimitNL10"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode10" />
+	</bean>
+	
+	<bean id="biomassLimitNL11"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode11" />
+	</bean>
+	
+	<bean id="biomassLimitNL12"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode12" />
+	</bean>
+	
+	<bean id="biomassLimitNL13"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode13" />
+	</bean>
+	
+	<bean id="biomassLimitNL14"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode14" />
+	</bean>
+	
+	<bean id="biomassLimitNL15"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode15" />
+	</bean>
+	
+	<bean id="biomassLimitNL16"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode16" />
+	</bean>
+	
+	<bean id="biomassLimitNL17"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode17" />
+	</bean>
+	
+	<bean id="biomassLimitNL18"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biomassPGT" />
+		<property name="powerGridNode" ref="nlNode18" />
+	</bean>
+	
+		
+	
+	<!-- biogas node limits NL -->
+	
+	<bean id="biogasNodeLimitNL0"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="721.7">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode0" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL1"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
 		<property name="powerGeneratingTechnology" ref="biogasPGT" />
 		<property name="powerGridNode" ref="nlNode1" />
 	</bean>
+	
+	<bean id="biogasNodeLimitNL2"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode2" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL3"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode3" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL4"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode4" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL5"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode5" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL6"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode7" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL8"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode8" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL9"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode9" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL10"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode10" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL11"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode11" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL12"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode12" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL13"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode13" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL14"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode14" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL15"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode15" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL16"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode16" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL17"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode17" />
+	</bean>
+	
+	<bean id="biogasNodeLimitNL18"
+		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
+		p:permanentUpperCapacityLimit="0">
+		<property name="powerGeneratingTechnology" ref="biogasPGT" />
+		<property name="powerGridNode" ref="nlNode18" />
+	</bean>
+	
+	
 
 
 	<!-- photovoltaic node limits NL -->
@@ -924,6 +1304,14 @@
 		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
 		<property name="powerGridNode" ref="nlNode18" />
 	</bean>
+	
+		<!-- PowerGenerationTechnology Node Limits in MW  NL-->
+	<!-- from file Potential_capacity_generation_FLH_perBand_de_nl_biomass_biogas 
+		and Potential_capacity_generation_FLH_perBand_de_nl_solar_wind 
+		
+		Germany has lignite, and nuclear also zero
+		
+		-->
 
 
 	<!-- Segments of load duration curves -->
@@ -1341,11 +1729,6 @@
 
 
 
-
-
-
-
-
 	<!-- Initial portfolios -->
 
 	<bean id="powerPlantManufacturer" class="emlab.gen.domain.agent.PowerPlantManufacturer"
@@ -1354,7 +1737,7 @@
 	<bean id="powerPlantMaintainer" class="emlab.gen.domain.agent.PowerPlantMaintainer"
 		p:name="Power Plant Maintainer" />
 
-
+	<!-- Power plant Factory -->
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
 		<property name="capacityMargin" value="0.25" />
 		<property name="portfolioShares">
@@ -1381,7 +1764,7 @@
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.57</value>
+					<value>0.37</value>
 				</entry>
 				<entry>
 					<key>
@@ -1771,7 +2154,7 @@
 		p:minimumFuelQuality="1" p:maximumInstalledCapacityFractionInCountry="1"
 		p:maximumInstalledCapacityFractionPerAgent="1"
 		p:baseSegmentDependentAvailability="0.40"
-		p:peakSegmentDependentAvailability="0.05" p:intermittent="false"
+		p:peakSegmentDependentAvailability="0.05" p:intermittent="true"
 		p:applicableForLongTermContract="true">
 	</bean>
 
@@ -1844,7 +2227,7 @@
 		p:maximumInstalledCapacityFractionPerAgent="1"
 		p:baseSegmentDependentAvailability="0.20"
 		p:peakSegmentDependentAvailability="0.04"
-		p:applicableForLongTermContract="true" p:intermittent="false">
+		p:applicableForLongTermContract="true" p:intermittent="true">
 	</bean>
 
 

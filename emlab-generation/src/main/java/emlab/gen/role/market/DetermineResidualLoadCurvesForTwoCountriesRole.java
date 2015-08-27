@@ -202,28 +202,28 @@ public class DetermineResidualLoadCurvesForTwoCountriesRole extends AbstractRole
 
                     IntermittentResourceProfile intermittentResourceProfile = reps.intermittentResourceProfileRepository
                             .findIntermittentResourceProfileByTechnologyAndNode(technology, node);
-
                     // Calculates hourly production of intermittent renewable
                     // technology per node
-                    DoubleMatrix1D hourlyProductionPerNode = new DenseDoubleMatrix1D(
-                            intermittentResourceProfile.getHourlyArray(getCurrentTick()));
+                    if (intermittentResourceProfile != null) {
+                        DoubleMatrix1D hourlyProductionPerNode = new DenseDoubleMatrix1D(
+                                intermittentResourceProfile.getHourlyArray(getCurrentTick()));
 
-                    // WARNING!!!!!!! This is a very memory consuming
-                    // logger.warn....!!!!!!!
-                    // logger.warn("production profiles hourly data is " +
-                    // hourlyProductionPerNode);
+                        // WARNING!!!!!!! This is a very memory consuming
+                        // logger.warn....!!!!!!!
+                        // logger.warn("production profiles hourly data is " +
+                        // hourlyProductionPerNode);
 
-                    m.viewColumn(TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).assign(
-                            hourlyProductionPerNode, Functions.plus);
-                    hourlyProductionPerNode.assign(Functions.mult(intermittentCapacityOfTechnologyInNode));
-                    m.viewColumn(IPROD.get(zone)).assign(hourlyProductionPerNode, Functions.plus);
-                    // Add to zonal-technological RES column
+                        m.viewColumn(TECHNOLOGYLOADFACTORSFORZONEANDNODE.get(zone).get(node).get(technology)).assign(
+                                hourlyProductionPerNode, Functions.plus);
+                        hourlyProductionPerNode.assign(Functions.mult(intermittentCapacityOfTechnologyInNode));
+                        m.viewColumn(IPROD.get(zone)).assign(hourlyProductionPerNode, Functions.plus);
+                        // Add to zonal-technological RES column
 
-                    // Substracts the above from the residual load curve
-                    m.viewColumn(RLOADINZONE.get(zone)).assign(hourlyProductionPerNode, Functions.minus);
+                        // Substracts the above from the residual load curve
+                        m.viewColumn(RLOADINZONE.get(zone)).assign(hourlyProductionPerNode, Functions.minus);
 
+                    }
                 }
-
             }
 
             m.viewColumn(RLOADTOTAL).assign(m.viewColumn(RLOADINZONE.get(zone)), Functions.plus);
