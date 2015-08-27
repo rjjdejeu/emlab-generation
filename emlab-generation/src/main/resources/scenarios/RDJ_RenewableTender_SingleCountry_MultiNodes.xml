@@ -230,7 +230,7 @@
 
 
 	<!-- Intermittent Production Profiles (each first node - the zeroth node - contains existing 
-		capacity 'potential', should maybe used for initial portfolios since it existing) -->
+		capacity ) -->
 		
 
 	<!-- Photovoltaic nodes Netherlands -->
