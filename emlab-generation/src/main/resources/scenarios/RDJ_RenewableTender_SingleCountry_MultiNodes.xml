@@ -200,15 +200,6 @@
 		<property name="intermittentProductionNode" ref="nlNode3"></property>
 	</bean>
 	
-		<bean id="photovoltaicNodeNL4" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_NL_solarPV.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_4">
-		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
-		<property name="intermittentProductionNode" ref="nlNode4"></property>
-	</bean>
-	
-	
 	
 		
 
