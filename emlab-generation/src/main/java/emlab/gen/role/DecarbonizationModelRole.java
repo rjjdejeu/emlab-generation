@@ -452,7 +452,7 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
 
                 }
 
-            }
+            } // end while loop
 
             logger.warn("n iterator WHILE Loop is: " + iteratorWhileLoop);
             resetWillingnessToInvest();
