@@ -175,6 +175,7 @@
 
 
 	<!-- Intermittent Production Profiles NL -->
+	<!-- p:timeSeriesAreInDifferentColumns="true" is used to transpose the data, which is needed to read the data -->
 
 	<bean id="photovoltaicNodeNL" class="emlab.gen.domain.technology.IntermittentResourceProfile"
 		p:filename="/data/Production_NL_solarPV_2010.csv"
