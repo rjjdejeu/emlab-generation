@@ -58,6 +58,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(zone);
 
+        logger.warn("electricity spot market is: " + market);
+
         // get demand factor
         demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
                 .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
@@ -107,12 +109,17 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                     .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
                             scheme.getFutureTenderOperationStartTime());
 
+            logger.warn("expectedTechnologyCapacity is: " + expectedTechnologyCapacity);
+
             for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByTechnology(technology,
                     scheme.getFutureTenderOperationStartTime())) {
                 for (Segment segment : reps.segmentRepository.findAll()) {
 
                     if (technology.isIntermittent()) {
                         factor = plant.getIntermittentTechnologyNodeLoadFactor().getLoadFactorForSegment(segment);
+                        logger.warn("technology.isIntermittent? (this logger should not happen)"
+                                + technology.isIntermittent());
+
                     } else {
                         double segmentID = segment.getSegmentID();
                         double min = technology.getPeakSegmentDependentAvailability();
@@ -125,12 +132,20 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                         double range = max - min;
                         factor = max - segmentPortion * range;
 
+                        // logger.warn("factor is: " + factor);
+
                     }
 
                     fullLoadHours += factor * segment.getLengthInHours();
+
+                    // logger.warn("segment.getLengthInHours is: " +
+                    // segment.getLengthInHours());
+
+                    // logger.warn("fullLoadHours is: " + fullLoadHours);
                 }
             }
             expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
+
             totalExpectedGeneration += expectedGenerationPerTechnology;
         }
 
