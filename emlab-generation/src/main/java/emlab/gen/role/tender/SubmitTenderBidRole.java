@@ -342,13 +342,12 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     if (projectValue >= 0) {
                         bidPricePerMWh = 0d;
 
-                        // logger.warn("positive project value - bid price per mwh is: "
-                        // + bidPricePerMWh);
+                        logger.warn("positive project value - bid price per mwh is: " + bidPricePerMWh);
 
                     } else if (totalAnnualExpectedGenerationOfPlant == 0) {
                         bidPricePerMWh = 0d;
-                        // logger.warn(" zero totalAnnualExpectedGenerationOfPlant - bid price per mwh is "
-                        // + bidPricePerMWh);
+                        logger.warn(" zero totalAnnualExpectedGenerationOfPlant - bid price per mwh is "
+                                + bidPricePerMWh);
 
                     } else {
                         // calculate discounted tender return factor term
@@ -359,8 +358,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                         if (discountedTenderReturnFactor == 0) {
                             bidPricePerMWh = 0d;
-                            // logger.warn(" zero discountedTenderReturnFactor - bid price per mwh is "
-                            // + bidPricePerMWh);
+                            logger.warn(" zero discountedTenderReturnFactor - bid price per mwh is " + bidPricePerMWh);
 
                         } else {
 
@@ -373,8 +371,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             // logger.warn("projectvalue is: " + projectValue);
                             // logger.warn("discounted tender return factor is: "
                             // + totalAnnualExpectedGenerationOfPlant);
-                            // logger.warn("bid price per mwh is " +
-                            // bidPricePerMWh);
+                            logger.warn("bid price per mwh is laste ELSE " + bidPricePerMWh);
 
                             // create and persist tender bids for number of
                             // power plants
@@ -398,11 +395,9 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                 bid.setTime(getCurrentTick());
                                 bid.persist();
 
-                                // logger.warn(agent + " has bid amount" +
-                                // totalAnnualExpectedGenerationOfPlant
-                                // + " with bid price " + bidPricePerMWh +
-                                // " with technology " + technology
-                                // + " in node " + node);
+                                logger.warn(agent + " has bid amount " + totalAnnualExpectedGenerationOfPlant
+                                        + " with bid price " + bidPricePerMWh + " with technology " + technology
+                                        + " in node " + node);
 
                             } // end for loop for tender bids
 

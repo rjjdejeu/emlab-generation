@@ -92,7 +92,10 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
     @Override
     public void act(T agent) {
 
-        logger.warn("agent is: " + agent);
+        // Timer timerIndividualInvestment = new Timer();
+        // timerIndividualInvestment.start();
+
+        // logger.warn("agent is: " + agent);
 
         long futureTimePoint = getCurrentTick() + agent.getInvestmentFutureTimeHorizon();
         // logger.warn(agent + " is looking at timepoint " + futureTimePoint);
@@ -163,7 +166,7 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
 
         for (PowerGeneratingTechnology technology : reps.genericRepository.findAll(PowerGeneratingTechnology.class)) {
 
-            logger.warn("technoogy is: " + technology);
+            // logger.warn("technoogy is: " + technology);
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
@@ -190,7 +193,7 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
 
             for (PowerGridNode node : possibleInstallationNodes) {
 
-                logger.warn("node is: " + node);
+                // logger.warn("node is: " + node);
 
                 PowerPlant plant = new PowerPlant();
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
@@ -431,6 +434,10 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
             // he does not invest now
             setNotWillingToInvest(agent);
         }
+
+        // timerIndividualInvestment.stop();
+        // logger.warn("        took: {} seconds.",
+        // timerIndividualInvestment.seconds());
     }
 
     // }

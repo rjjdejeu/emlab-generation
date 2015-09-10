@@ -433,7 +433,7 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
         if (getCurrentTick() > 1) {
             boolean someOneStillWillingToInvest = true;
 
-            int iteratorWhileLoop = 0;
+            // int iteratorWhileLoop = 0;
 
             while (someOneStillWillingToInvest) {
                 someOneStillWillingToInvest = false;
@@ -442,22 +442,25 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
                         .findAllEnergyProducersExceptForRenewableTargetInvestorsAtRandom()) {
                     // invest in new plants
                     if (producer.isWillingToInvest()) {
-                        logger.warn("producer.isWillingToInvest() is: " + producer.isWillingToInvest());
+                        // logger.warn("producer.isWillingToInvest() is: " +
+                        // producer.isWillingToInvest());
                         genericInvestmentRole.act(producer);
                         // producer.act(investInPowerGenerationTechnologiesRole);
                         someOneStillWillingToInvest = true;
 
-                        logger.warn("someOneStillWillingToInvest in IF is: " + someOneStillWillingToInvest);
+                        // logger.warn("someOneStillWillingToInvest in IF is: "
+                        // + someOneStillWillingToInvest);
                     }
 
                 }
 
             } // end while loop
 
-            logger.warn("n iterator WHILE Loop is: " + iteratorWhileLoop);
+            // logger.warn("n iterator WHILE Loop is: " + iteratorWhileLoop);
             resetWillingnessToInvest();
 
-            logger.warn("someOneStillWillingToInvest in WHILE is: " + someOneStillWillingToInvest);
+            // logger.warn("someOneStillWillingToInvest in WHILE is: " +
+            // someOneStillWillingToInvest);
 
         }
         // logger.warn("\t subsidized investment.");
