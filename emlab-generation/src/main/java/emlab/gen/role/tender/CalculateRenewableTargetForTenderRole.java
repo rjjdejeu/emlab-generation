@@ -53,6 +53,9 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         double demandFactor;
         double targetFactor;
         Zone zone = scheme.getRegulator().getZone();
+
+        logger.warn("Calculate Renewable Target Role started of zone: " + zone);
+
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(zone);
 
         // get demand factor
@@ -71,7 +74,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         // logger.warn("future tender operations start time is: "
         // + (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
 
-        // logger.warn("targetFactor for this tick: " + targetFactor);
+        logger.warn("targetFactor for this tick: " + targetFactor);
 
         // get totalLoad in MWh
         double totalConsumption = 0;
@@ -80,7 +83,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             totalConsumption += segmentLoad.getBaseLoad() * demandFactor * segmentLoad.getSegment().getLengthInHours();
         }
 
-        // logger.warn("totalConsumption for this tick: " + totalConsumption);
+        logger.warn("totalConsumption for this tick: " + totalConsumption);
 
         // renewable target for tender operation start year in MWh is
         double renewableTargetInMwh = targetFactor * totalConsumption;
@@ -98,8 +101,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
 
-            // logger.warn("eligble techs are: " +
-            // scheme.getPowerGeneratingTechnologiesEligible());
+            logger.warn("eligble techs are: " + scheme.getPowerGeneratingTechnologiesEligible());
 
             double expectedTechnologyCapacity = reps.powerPlantRepository
                     .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
@@ -132,8 +134,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             totalExpectedGeneration += expectedGenerationPerTechnology;
         }
 
-        // logger.warn("totalExpectedGeneration is: " +
-        // totalExpectedGeneration);
+        logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
+        logger.warn("totalExpectedGeneration is: " + totalExpectedGeneration);
 
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 

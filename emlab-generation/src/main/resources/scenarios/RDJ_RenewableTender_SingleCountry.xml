@@ -512,7 +512,7 @@
 	<!-- change node limit value according to potential curves! -->
 		<bean id="biomassLimitNL"
 		class="emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit"
-		p:permanentUpperCapacityLimit="16057">
+		p:permanentUpperCapacityLimit="7003.7">
 		<property name="powerGeneratingTechnology" ref="biomassPGT" />
 		<property name="powerGridNode" ref="beneluxNode" />
 	</bean> 

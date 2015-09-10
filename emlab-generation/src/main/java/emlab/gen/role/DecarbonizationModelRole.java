@@ -174,9 +174,10 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
         logger.warn("  0b. Dismantling");
         timerMarket.reset();
         timerMarket.start();
-        for (ElectricitySpotMarket market : reps.marketRepository.findAllElectricitySpotMarketsAsList()) {
-            dismantlePowerPlantOperationalLossRole.act(market);
-        }
+        // for (ElectricitySpotMarket market :
+        // reps.marketRepository.findAllElectricitySpotMarketsAsList()) {
+        // dismantlePowerPlantOperationalLossRole.act(market);
+        // }
         timerMarket.stop();
         logger.warn("        took: {} seconds.", timerMarket.seconds());
 
