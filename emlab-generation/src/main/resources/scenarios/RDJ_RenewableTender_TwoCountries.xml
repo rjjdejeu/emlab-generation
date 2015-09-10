@@ -25,6 +25,7 @@
 	</bean>
 
 
+
 	<!-- Regulator -->
 	<bean id="regulatorNL" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulator" p:numberOfYearsLookingBackToForecastDemand="4">
