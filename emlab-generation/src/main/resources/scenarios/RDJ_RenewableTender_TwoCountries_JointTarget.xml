@@ -21,8 +21,7 @@
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="true"
-		p:jointTargetImplemented="false">
+		p:renewableTenderSchemeImplemented="true">
 	</bean>
 
 
@@ -43,6 +42,7 @@
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
+		p:jointTargetImplemented="false"
 		p:supportSchemeDuration="15">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
