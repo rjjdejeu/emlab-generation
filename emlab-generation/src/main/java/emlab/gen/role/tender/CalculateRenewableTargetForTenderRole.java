@@ -72,7 +72,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * should be adjusted what probably will take less time.
          */
 
-        if (scheme.isJointTargetImplemented() == false) {
+        
 
             // get renewable energy target in factor (percent)
             RenewableTargetForTender target = reps.renewableTargetForTenderRepository
@@ -208,7 +208,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
             logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
         }
-    }
+    
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,
             long numberOfYearsBacklookingForForecasting, long futureTimePoint) {
