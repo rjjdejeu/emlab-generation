@@ -38,8 +38,8 @@ import emlab.gen.util.GeometricTrendRegression;
  */
 
 @RoleComponent
-public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender> implements
-        Role<RenewableSupportSchemeTender> {
+public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender>
+        implements Role<RenewableSupportSchemeTender> {
 
     @Autowired
     Reps reps;
@@ -61,8 +61,9 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         logger.warn("electricity spot market is: " + market);
 
         // get demand factor
-        demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
-                .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
+        demandFactor = predictDemandForElectricitySpotMarket(market,
+                scheme.getRegulator().getNumberOfYearsLookingBackToForecastDemand(),
+                scheme.getFutureTenderOperationStartTime());
 
         logger.warn("demandFactor for this tick: " + demandFactor);
 
@@ -72,142 +73,144 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * should be adjusted what probably will take less time.
          */
 
-        if (scheme.isJointTargetImplemented() == false) {
+        // get renewable energy target in factor (percent)
+        RenewableTargetForTender target = reps.renewableTargetForTenderRepository
+                .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
-            // get renewable energy target in factor (percent)
-            RenewableTargetForTender target = reps.renewableTargetForTenderRepository
-                    .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
+        targetFactor = target.getYearlyRenewableTargetTimeSeries()
+                .getValue(getCurrentTick() + scheme.getFutureTenderOperationStartTime());
 
-            targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
-                    getCurrentTick() + scheme.getFutureTenderOperationStartTime());
+        // logger.warn("future tender operations start time is: "
+        // + (getCurrentTick() +
+        // scheme.getFutureTenderOperationStartTime()));
 
-            // logger.warn("future tender operations start time is: "
-            // + (getCurrentTick() +
-            // scheme.getFutureTenderOperationStartTime()));
+        logger.warn("targetFactor for this tick: " + targetFactor);
 
-            logger.warn("targetFactor for this tick: " + targetFactor);
+        // get totalLoad in MWh
+        double totalConsumption = 0;
+        for (SegmentLoad segmentLoad : market.getLoadDurationCurve()) {
 
-            // get totalLoad in MWh
-            double totalConsumption = 0;
-            for (SegmentLoad segmentLoad : reps.segmentLoadRepository.findAll()) {
+            totalConsumption += segmentLoad.getBaseLoad() * demandFactor * segmentLoad.getSegment().getLengthInHours();
 
-                totalConsumption += segmentLoad.getBaseLoad() * demandFactor
-                        * segmentLoad.getSegment().getLengthInHours();
+        }
 
-                logger.warn("segment hours are :" + segmentLoad.getSegment().getLengthInHours());
+        logger.warn("totalConsumption for this tick: " + totalConsumption);
 
-                logger.warn("segment load is: " + segmentLoad.getBaseLoad());
+        // renewable target for tender operation start year in MWh is
+        double renewableTargetInMwh = targetFactor * totalConsumption;
 
-            }
+        // logger.warn("renewableTargetInMwh for this tick: " +
+        // renewableTargetInMwh);ccc3a888463bbfa93a046d8411e3268c559de299
 
-            logger.warn("totalConsumption for this tick: " + totalConsumption);
+        // calculate expected generation, and subtract that from annual
+        // target.
+        // will be ActualTarget
+        double expectedGenerationPerTechnology = 0d;
+        double totalExpectedGeneration = 0d;
+        long numberOfSegments = reps.segmentRepository.count();
+        double factor = 0d;
 
-            // renewable target for tender operation start year in MWh is
-            double renewableTargetInMwh = targetFactor * totalConsumption;
+        for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
 
-            // logger.warn("renewableTargetInMwh for this tick: " +
-            // renewableTargetInMwh);
-
-            // calculate expected generation, and subtract that from annual
-            // target.
-            // will be ActualTarget
-            double expectedGenerationPerTechnology = 0d;
-            double totalExpectedGeneration = 0d;
-            long numberOfSegments = reps.segmentRepository.count();
-            double factor = 0d;
             double fullLoadHours = 0d;
 
-            for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
+            logger.warn("eligble techs are: " + scheme.getPowerGeneratingTechnologiesEligible());
 
-                logger.warn("eligble techs are: " + scheme.getPowerGeneratingTechnologiesEligible());
+            double expectedTechnologyCapacity = reps.powerPlantRepository
+                    .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
+                            scheme.getFutureTenderOperationStartTime());
 
-                double expectedTechnologyCapacity = reps.powerPlantRepository
-                        .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
-                                scheme.getFutureTenderOperationStartTime());
+            logger.warn("expectedTechnologyCapacity is: " + expectedTechnologyCapacity);
 
-                logger.warn("expectedTechnologyCapacity is: " + expectedTechnologyCapacity);
+            for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByTechnology(technology,
+                    scheme.getFutureTenderOperationStartTime())) {
+                fullLoadHours = 0d;
+                for (Segment segment : reps.segmentRepository.findAll()) {
+                    double fullLoadHoursPerSegment = 0d;
 
-                for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByTechnology(technology,
-                        scheme.getFutureTenderOperationStartTime())) {
-                    for (Segment segment : reps.segmentRepository.findAll()) {
+                    if (technology.isIntermittent()) {
+                        factor = plant.getIntermittentTechnologyNodeLoadFactor().getLoadFactorForSegment(segment);
+                        logger.warn("technology.isIntermittent? (this logger should not happen): "
+                                + technology.isIntermittent());
 
-                        if (technology.isIntermittent()) {
-                            factor = plant.getIntermittentTechnologyNodeLoadFactor().getLoadFactorForSegment(segment);
-                            logger.warn("technology.isIntermittent? (this logger should not happen): "
-                                    + technology.isIntermittent());
+                    } else {
+                        double segmentID = segment.getSegmentID();
+                        double min = technology.getPeakSegmentDependentAvailability();
+                        double max = technology.getBaseSegmentDependentAvailability();
+                        double segmentPortion = (numberOfSegments - segmentID) / (numberOfSegments - 1); // start
+                        // counting
+                        // at
+                        // 1.
 
-                        } else {
-                            double segmentID = segment.getSegmentID();
-                            double min = technology.getPeakSegmentDependentAvailability();
-                            double max = technology.getBaseSegmentDependentAvailability();
-                            double segmentPortion = (numberOfSegments - segmentID) / (numberOfSegments - 1); // start
-                            // counting
-                            // at
-                            // 1.
+                        double range = max - min;
+                        factor = max - segmentPortion * range;
 
-                            double range = max - min;
-                            factor = max - segmentPortion * range;
+                        // logger.warn("factor is: " + factor);
 
-                            // logger.warn("factor is: " + factor);
-
-                        }
-
-                        fullLoadHours += factor * segment.getLengthInHours();
-
-                        // logger.warn("segment.getLengthInHours is: " +
-                        // segment.getLengthInHours());
-
-                        // logger.warn("fullLoadHours is: " + fullLoadHours);
                     }
+
+                    fullLoadHoursPerSegment = factor * segment.getLengthInHours();
+                    fullLoadHours += fullLoadHoursPerSegment;
+
+                    // logger.warn("segment availability factor is: " + factor);
+
+                    // logger.warn("segment.getLengthInHours is: " +
+                    // segment.getLengthInHours());
+
+                    // logger.warn("fullLoadHours per segment is: " +
+                    // fullLoadHoursPerSegment);
                 }
-                expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
 
-                totalExpectedGeneration += expectedGenerationPerTechnology;
             }
+            expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
+            // logger.warn("fullLoadHours is: " + fullLoadHours);
+            // logger.warn("expectedTechnologyCapacity is: " +
+            // expectedTechnologyCapacity);
 
-            logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
-            logger.warn("totalExpectedGeneration is: " + totalExpectedGeneration);
-
-            /*
-             * To compare
-             * 
-             * Electricity consumption in 2011 was for 1) NL: 1.17E+08 MWh 2)
-             * DE: 5.79E+08 MWh 3) source
-             * http://www.indexmundi.com/facts/indicators
-             * /EG.USE.ELEC.KH/rankings
-             * 
-             * Total electricity production in 2011 for 1) NL: 1.09E+08 MWh 2)
-             * DE: 5.77+08 MWh 3) source
-             * http://ec.europa.eu/eurostat/statistics-explained/images
-             * /d/d9/Net_electricity_generation
-             * %2C_1990%E2%80%932013_%28thousand_GWh%29_YB15.png
-             * 
-             * Total RENEWABLE electricity production in 2010 for 1) NL:
-             * 1.04E+07 MWh DE: 1.05E+08 MWh 2) sources
-             * http://www.cbs.nl/NR/rdonlyres
-             * /BED23760-23C0-47D0-8A2A-224402F055F 3/0/2012c90pub.pdf
-             * https://en.wikipedia.org/wiki/Renewable_energy_in_Germany#Sources
-             * 
-             * totalExpectedGeneration EMLab RES-E for 2020 1) NL: 2.51E+10 MWh
-             * 2) DE: 2.51E+10 MWh
-             * 
-             * Conclusions: 0) Although I compare 2010 with 2020, the numbers
-             * should be more or less in the same ball park, and they are not.
-             * 1) There is a factor 1000 too much in EMLab most likely,
-             * originating from totalExpectingGeneration 2) Also, NL and DE
-             * start with the same totalExpectedGeneration, which could not be
-             * right. Probably due to the initial portfolios.
-             */
-
-            renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
-
-            if (renewableTargetInMwh < 0) {
-                renewableTargetInMwh = 0;
-            }
-            scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
-
-            logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
+            totalExpectedGeneration += expectedGenerationPerTechnology;
         }
+
+        // logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
+        // logger.warn("totalExpectedGeneration is: " +
+        // totalExpectedGeneration);
+
+        /*
+         * To compare
+         * 
+         * Electricity consumption in 2011 was for 1) NL: 1.17E+08 MWh 2) DE:
+         * 5.79E+08 MWh 3) source http://www.indexmundi.com/facts/indicators
+         * /EG.USE.ELEC.KH/rankings
+         * 
+         * Total electricity production in 2011 for 1) NL: 1.09E+08 MWh 2) DE:
+         * 5.77+08 MWh 3) source
+         * http://ec.europa.eu/eurostat/statistics-explained/images
+         * /d/d9/Net_electricity_generation
+         * %2C_1990%E2%80%932013_%28thousand_GWh%29_YB15.png
+         * 
+         * Total RENEWABLE electricity production in 2010 for 1) NL: 1.04E+07
+         * MWh DE: 1.05E+08 MWh 2) sources http://www.cbs.nl/NR/rdonlyres
+         * /BED23760-23C0-47D0-8A2A-224402F055F 3/0/2012c90pub.pdf
+         * https://en.wikipedia.org/wiki/Renewable_energy_in_Germany#Sources
+         * 
+         * totalExpectedGeneration EMLab RES-E for 2020 1) NL: 2.51E+10 MWh 2)
+         * DE: 2.51E+10 MWh
+         * 
+         * Conclusions: 0) Although I compare 2010 with 2020, the numbers should
+         * be more or less in the same ball park, and they are not. 1) There is
+         * a factor 1000 too much in EMLab most likely, originating from
+         * totalExpectingGeneration 2) Also, NL and DE start with the same
+         * totalExpectedGeneration, which could not be right. Probably due to
+         * the initial portfolios.
+         */
+
+        renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
+
+        if (renewableTargetInMwh < 0) {
+            renewableTargetInMwh = 0;
+        }
+        scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
+
+        logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,
