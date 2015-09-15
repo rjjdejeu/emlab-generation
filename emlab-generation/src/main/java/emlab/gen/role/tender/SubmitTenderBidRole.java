@@ -343,7 +343,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     logger.warn("projectValue is: " + projectValue);
                     logger.warn("totalAnnualExpectedGenerationOfPlant is: " + totalAnnualExpectedGenerationOfPlant);
 
-                    if (projectValue >= 0 || totalAnnualExpectedGenerationOfPlant == 0) {
+                    if (projectValue >= 0) {
                         bidPricePerMWh = 0d;
 
                         // but should also be able to bid for zero right? They
@@ -359,7 +359,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                         logger.warn("discountedTenderReturnFactor is: " + discountedTenderReturnFactor);
 
-                        if (discountedTenderReturnFactor == 0) {
+                        if (discountedTenderReturnFactor == 0 || totalAnnualExpectedGenerationOfPlant == 0) {
                             bidPricePerMWh = 0d;
                             // logger.warn(" zero discountedTenderReturnFactor - bid price per mwh is "
                             // + bidPricePerMWh);
