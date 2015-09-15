@@ -59,5 +59,5 @@ public interface CapacityMarketRepository extends GraphRepository<CapacityMarket
 
     @Query(value = "g.v(zone).in('OF_ZONE')", type = QueryType.Gremlin)
     public Regulator findRegulatorForZone(@Param("zone") Zone zone);
-
+    // findCapacityMarketForZone
 }

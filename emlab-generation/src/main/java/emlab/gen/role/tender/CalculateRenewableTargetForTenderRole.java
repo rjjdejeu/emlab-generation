@@ -38,8 +38,8 @@ import emlab.gen.util.GeometricTrendRegression;
  */
 
 @RoleComponent
-public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender>
-        implements Role<RenewableSupportSchemeTender> {
+public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender> implements
+        Role<RenewableSupportSchemeTender> {
 
     @Autowired
     Reps reps;
@@ -58,14 +58,13 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(zone);
 
-        logger.warn("electricity spot market is: " + market);
+        // logger.warn("electricity spot market is: " + market);
 
         // get demand factor
-        demandFactor = predictDemandForElectricitySpotMarket(market,
-                scheme.getRegulator().getNumberOfYearsLookingBackToForecastDemand(),
-                scheme.getFutureTenderOperationStartTime());
+        demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
+                .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
 
-        logger.warn("demandFactor for this tick: " + demandFactor);
+        // logger.warn("demandFactor for this tick: " + demandFactor);
 
         /*
          * it aggregates segments from both countries, so the boolean should
@@ -77,14 +76,14 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         RenewableTargetForTender target = reps.renewableTargetForTenderRepository
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
-        targetFactor = target.getYearlyRenewableTargetTimeSeries()
-                .getValue(getCurrentTick() + scheme.getFutureTenderOperationStartTime());
+        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
+                getCurrentTick() + scheme.getFutureTenderOperationStartTime());
 
         // logger.warn("future tender operations start time is: "
         // + (getCurrentTick() +
         // scheme.getFutureTenderOperationStartTime()));
 
-        logger.warn("targetFactor for this tick: " + targetFactor);
+        // logger.warn("targetFactor for this tick: " + targetFactor);
 
         // get totalLoad in MWh
         double totalConsumption = 0;
@@ -114,13 +113,15 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
             double fullLoadHours = 0d;
 
-            logger.warn("eligble techs are: " + scheme.getPowerGeneratingTechnologiesEligible());
+            // logger.warn("eligble techs are: " +
+            // scheme.getPowerGeneratingTechnologiesEligible());
 
             double expectedTechnologyCapacity = reps.powerPlantRepository
                     .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
                             scheme.getFutureTenderOperationStartTime());
 
-            logger.warn("expectedTechnologyCapacity is: " + expectedTechnologyCapacity);
+            // logger.warn("expectedTechnologyCapacity is: " +
+            // expectedTechnologyCapacity);
 
             for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByTechnology(technology,
                     scheme.getFutureTenderOperationStartTime())) {
@@ -130,8 +131,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
                     if (technology.isIntermittent()) {
                         factor = plant.getIntermittentTechnologyNodeLoadFactor().getLoadFactorForSegment(segment);
-                        logger.warn("technology.isIntermittent? (this logger should not happen): "
-                                + technology.isIntermittent());
+                        // logger.warn("technology.isIntermittent? (this logger should not happen): "
+                        // + technology.isIntermittent());
 
                     } else {
                         double segmentID = segment.getSegmentID();
@@ -171,8 +172,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
 
         // logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
-        // logger.warn("totalExpectedGeneration is: " +
-        // totalExpectedGeneration);
+        logger.warn("totalExpectedGeneration is: " + totalExpectedGeneration);
 
         /*
          * To compare

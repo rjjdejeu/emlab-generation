@@ -20,7 +20,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import emlab.gen.domain.market.ClearingPoint;
 
 /**
- * @author rjjdejeu adapted from ClearingPoint.java
+ * @author rjjdejeu
  */
 @NodeEntity
 public class TenderClearingPoint extends ClearingPoint {

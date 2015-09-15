@@ -19,6 +19,7 @@ import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
 
+import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
 import emlab.gen.domain.technology.PowerGeneratingTechnology;
 import emlab.gen.domain.technology.PowerGridNode;
@@ -44,6 +45,9 @@ public class TenderBid extends Bid {
     @RelatedTo(type = "TENDERBID_SUPPORTSCHEME", elementClass = RenewableSupportSchemeTender.class, direction = Direction.OUTGOING)
     private RenewableSupportSchemeTender renewableSupportSchemeTender;
 
+    @RelatedTo(type = "ZONE", elementClass = Zone.class, direction = Direction.INCOMING)
+    private Zone zone;
+
     private long start;
 
     private long finish;
@@ -62,6 +66,14 @@ public class TenderBid extends Bid {
 
     public void setFinish(long finish) {
         this.finish = finish;
+    }
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
     }
 
     public PowerGridNode getPowerGridNode() {

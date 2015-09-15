@@ -69,7 +69,7 @@ import emlab.gen.role.tender.TenderMainRole;
  *
  */
 @ScriptComponent
-public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>implements Role<DecarbonizationModel> {
+public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel> implements Role<DecarbonizationModel> {
 
     @Autowired
     private PayCO2TaxRole payCO2TaxRole;
@@ -497,15 +497,15 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
             timerMarket.reset();
             timerMarket.start();
             logger.warn("  8. Delete old nodes in year {}.", (getCurrentTick() - model.getDeletionAge()));
-            reps.bidRepository
-                    .delete(reps.bidRepository.findAllBidsForForTime(getCurrentTick() - model.getDeletionAge()));
-            reps.cashFlowRepository.delete(
-                    reps.cashFlowRepository.findAllCashFlowsForForTime(getCurrentTick() - model.getDeletionAge()));
+            reps.bidRepository.delete(reps.bidRepository.findAllBidsForForTime(getCurrentTick()
+                    - model.getDeletionAge()));
+            reps.cashFlowRepository.delete(reps.cashFlowRepository.findAllCashFlowsForForTime(getCurrentTick()
+                    - model.getDeletionAge()));
             reps.powerPlantRepository.delete(reps.powerPlantRepository
                     .findAllPowerPlantsDismantledBeforeTick(getCurrentTick() - model.getDeletionAge()));
-            reps.powerPlantDispatchPlanRepository
-                    .delete(reps.powerPlantDispatchPlanRepository.findAllPowerPlantDispatchPlansForTime(
-                            getCurrentTick() + model.getCentralForecastingYear() - 1, true));
+            reps.powerPlantDispatchPlanRepository.delete(reps.powerPlantDispatchPlanRepository
+                    .findAllPowerPlantDispatchPlansForTime(getCurrentTick() + model.getCentralForecastingYear() - 1,
+                            true));
             reps.financialPowerPlantReportRepository.delete(reps.financialPowerPlantReportRepository
                     .findAllFinancialPowerPlantReportsForTime(getCurrentTick() - 5 - model.getDeletionAge()));
             timerMarket.stop();

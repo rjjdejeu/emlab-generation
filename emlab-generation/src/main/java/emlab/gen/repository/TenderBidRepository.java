@@ -20,6 +20,7 @@ import org.springframework.data.neo4j.annotation.QueryType;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
+import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
 
@@ -30,8 +31,8 @@ import emlab.gen.domain.policy.renewablesupport.TenderBid;
 public interface TenderBidRepository extends GraphRepository<TenderBid> {
 
     // This sorts the submitted tender bids by price
-    @Query(value = "g.idx('__types__')[[className:'emlab.gen.domain.policy.renewablesupport.TenderBid']].filter{it.time == tick}.sort{it.price}._()", type = QueryType.Gremlin)
-    public Iterable<TenderBid> findAllSortedTenderBidsbyTime(@Param("tick") long time);
+    @Query(value = "g.idx('__types__')[[className:'emlab.gen.domain.policy.renewablesupport.TenderBid']].filter{it.time == tick}.filter{it.zone == zone}.sort{it.price}._()", type = QueryType.Gremlin)
+    public Iterable<TenderBid> findAllSortedTenderBidsbyTime(@Param("tick") long time, @Param("zone") Zone zone);
 
     // this returns the accepted tender bids Scheme --with regulator-->
     // Regulator --of zone--> Zone

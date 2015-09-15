@@ -28,9 +28,10 @@ import emlab.gen.domain.agent.PowerPlantManufacturer;
 import emlab.gen.domain.agent.Regulator;
 import emlab.gen.domain.contract.CashFlow;
 import emlab.gen.domain.contract.Loan;
+import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
-import emlab.gen.domain.market.ClearingPoint;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
+import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 import emlab.gen.domain.technology.PowerPlant;
 import emlab.gen.repository.Reps;
 
@@ -50,16 +51,14 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
     @Transactional
     public void act(Regulator regulator) {
 
-        logger.warn("Clear Renewable Tender Role started");
+        logger.warn("Clear Renewable Tender Role started for regulator: " + regulator);
+
+        Zone zone = regulator.getZone();
 
         // Initialize a sorted list for tender bids
-        Iterable<TenderBid> sortedTenderBidsbyPrice = null;
-        sortedTenderBidsbyPrice = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick());
+        Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
+        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
 
-        // logger.warn("sortedTenderBidsbyPrice is: " +
-        // sortedTenderBidsbyPrice);
-
-        // for a certain year?
         double tenderQuota = regulator.getAnnualRenewableTargetInMwh();
         double sumOfTenderBidQuantityAccepted = 0d;
         double acceptedSubsidyPrice = 0d;
@@ -79,9 +78,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         // Goes through the list of the bids that are sorted on ascending order
         // by price
-        for (TenderBid currentTenderBid : sortedTenderBidsbyPrice) {
+        for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndZone) {
 
-            // logger.warn("bid is: " + currentTenderBid);
+            logger.warn("bid is: " + currentTenderBid);
             // logger.warn("bid is: " + sortedTenderBidsbyPrice);
 
             // if the tender is not cleared yet, it collects complete bids
@@ -98,10 +97,6 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                 else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
-
-                    // When I adapted this from ClearCapacityMarket, this line
-                    // was
-                    // reversed: sumOfTenderBidQuantityAccepted - tenderQuota
                     currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
                             + currentTenderBid.getAcceptedAmount();
@@ -153,23 +148,23 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         // database
 
         if (isTheTenderCleared == true) {
-            logger.warn("Tender CLEARED at price " + acceptedSubsidyPrice);
-            ClearingPoint tenderClearingPoint = new ClearingPoint();
+            TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
+            logger.warn("Tender CLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
-            logger.warn("Clearing point Price {} and volume " + tenderClearingPoint.getVolume(),
+            logger.warn("Clearing point Price is {} and volume is " + tenderClearingPoint.getVolume(),
                     tenderClearingPoint.getPrice());
 
         } else {
-            ClearingPoint tenderClearingPoint = new ClearingPoint();
+            TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
+            logger.warn("MARKET UNCLEARED at price: " + tenderClearingPoint.getPrice());
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
-            logger.warn("MARKET UNCLEARED at price" + tenderClearingPoint.getPrice());
-            logger.warn("Clearing point Price {} and volume " + tenderClearingPoint.getVolume(),
+            logger.warn("Clearing point Price is {} and volume is " + tenderClearingPoint.getVolume(),
                     tenderClearingPoint.getPrice());
 
         }

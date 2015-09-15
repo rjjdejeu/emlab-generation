@@ -43,6 +43,7 @@ public class Bid {
     private double price;
     @Indexed(indexName = "bidTime")
     private long time;
+
     private int status;
     private boolean supplyBid;
 
