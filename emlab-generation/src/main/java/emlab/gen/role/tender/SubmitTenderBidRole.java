@@ -192,7 +192,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 PowerGeneratingTechnologyNodeLimit pgtLimit = reps.powerGeneratingTechnologyNodeLimitRepository
                         .findOneByTechnologyAndNode(technology, plant.getLocation());
 
-                // logger.warn("technlogy for pgtNodeLimit is" + technology);
+                // logger.warn("technology for pgtNodeLimit is" + technology);
                 // logger.warn("plant location for pgtNodeLimit is" +
                 // plant.getLocation());
 
@@ -392,19 +392,24 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                             // long i = 0;
 
-                            // logger.warn("Number of plants is " +
-                            // numberOfPlants + "and iterator i is " + i);
+                            logger.warn("agent makes bid in the market  " + market + "and zone " + market.getZone()
+                                    + "and node " + node);
+                            Zone zone = market.getZone();
 
                             for (long i = 1; i <= numberOfPlants; i++) {
 
                                 TenderBid bid = new TenderBid();
-                                bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, market, node,
+                                bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, zone, node,
                                         getCurrentTick() + plant.getFinishedConstruction(),
                                         getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration,
                                         bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED);
-                                logger.warn(agent + " has bid amount " + totalAnnualExpectedGenerationOfPlant
-                                        + " with bid price " + bidPricePerMWh + " with technology " + technology
-                                        + " in node " + node + "for market " + market);
+                                        // logger.warn(agent + " has bid amount
+                                        // " +
+                                        // totalAnnualExpectedGenerationOfPlant
+                                        // + " with bid price " + bidPricePerMWh
+                                        // + " with technology " + technology
+                                        // + " in node " + node + "for market "
+                                        // + market);
 
                                 // bid.setBidder(agent);
                                 // bid.setPrice(bidPricePerMWh);
@@ -693,7 +698,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
      * @param futureTimePoint
      *            Year the prediction is made for
      * @param yearsLookingBackForRegression
-     *            How many years are used as input for the regression, incl. the
+     *            How many years are used as input for the regression, incl the
      *            current tick.
      * @return
      */

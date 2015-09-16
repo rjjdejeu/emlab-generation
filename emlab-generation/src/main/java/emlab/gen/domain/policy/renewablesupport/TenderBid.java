@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import emlab.gen.domain.agent.EnergyProducer;
 import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
-import emlab.gen.domain.market.electricity.ElectricitySpotMarket;
 import emlab.gen.domain.technology.PowerGeneratingTechnology;
 import emlab.gen.domain.technology.PowerGridNode;
 import emlab.gen.domain.technology.PowerPlant;
@@ -103,14 +102,13 @@ public class TenderBid extends Bid {
         this.technology = technology;
     }
 
-    public void specifyNotPersist(double amount, PowerPlant plant, EnergyProducer agent, ElectricitySpotMarket market,
-            PowerGridNode node, long startTime, long finishTime, double bidPricePerMWh,
-            PowerGeneratingTechnology technology, long currentTime, int status) {
+    public void specifyNotPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
+            long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
+            long currentTime, int status) {
         this.setAmount(amount);
         this.setBidder(agent);
         this.setPrice(bidPricePerMWh);
-        this.setBiddingMarket(market);
-        this.setZone(market.getZone());
+        this.setZone(zone);
         this.setPowerGridNode(node);
         this.setTechnology(technology);
         this.setStart(startTime);
@@ -125,11 +123,11 @@ public class TenderBid extends Bid {
 
     // All transactional methods below are signified by starting with update
     @Transactional
-    public void specifyAndPersist(double amount, PowerPlant plant, EnergyProducer agent, ElectricitySpotMarket market,
-            PowerGridNode node, long startTime, long finishTime, double bidPricePerMWh,
-            PowerGeneratingTechnology technology, long currentTime, int status) {
+    public void specifyAndPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
+            long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
+            long currentTime, int status) {
         this.persist();
-        this.specifyNotPersist(amount, plant, agent, market, node, startTime, finishTime, bidPricePerMWh, technology,
+        this.specifyNotPersist(amount, plant, agent, zone, node, startTime, finishTime, bidPricePerMWh, technology,
                 currentTime, status);
 
     }
