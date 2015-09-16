@@ -342,7 +342,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
                     double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
-                    double projectValue = discountedOpProfit + discountedCapitalCosts - 100000000;
+                    double projectValue = discountedOpProfit + discountedCapitalCosts;
 
                     // logger.warn("projectValue is: " + projectValue);
                     // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
@@ -406,14 +406,17 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                 bid.setZone(market.getZone());
                                 bid.setPowerGridNode(node);
                                 bid.setTechnology(technology);
-                                bid.setStart(getCurrentTick() + plant.getFinishedConstruction());
-                                bid.setFinish(getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration);
+                                bid.setStart((getCurrentTick() + plant.getFinishedConstruction()));
+                                bid.setFinish((getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration));
                                 bid.setTime(getCurrentTick());
                                 bid.persist();
 
                                 logger.warn(agent + " has bid amount " + totalAnnualExpectedGenerationOfPlant
                                         + " with bid price " + bidPricePerMWh + " with technology " + technology
-                                        + " in node " + node + "for market " + market);
+                                        + " in node " + node + " for market " + market + " in zone " + market.getZone()
+                                        + " start and finish are "
+                                        + (getCurrentTick() + plant.getFinishedConstruction()) + " and "
+                                        + (getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration));
 
                                 // bid.setBidder(agent);
                                 // bid.setPrice(bidPricePerMWh);

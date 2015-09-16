@@ -31,7 +31,13 @@ import emlab.gen.domain.policy.renewablesupport.TenderBid;
 public interface TenderBidRepository extends GraphRepository<TenderBid> {
 
     // This sorts the submitted tender bids by price
-    @Query(value = "g.idx('__types__')[[className:'emlab.gen.domain.policy.renewablesupport.TenderBid']].filter{it.time == tick}.filter{it.zone == zone}.sort{it.price}._()", type = QueryType.Gremlin)
+    // @Query(value =
+    // "g.idx('__types__')[[className:'emlab.gen.domain.policy.renewablesupport.TenderBid']].filter{it.time == tick}.sort{it.price}._()",
+    // type = QueryType.Gremlin)
+    // public Iterable<TenderBid> findAllSortedTenderBidsbyTime(@Param("tick")
+    // long time, @Param("zone") Zone zone);
+
+    @Query(value = "g.v(zone).out('TENDERBID_ZONE').filter{it.time == tick}.sort{it.price}._()", type = QueryType.Gremlin)
     public Iterable<TenderBid> findAllSortedTenderBidsbyTime(@Param("tick") long time, @Param("zone") Zone zone);
 
     // this returns the accepted tender bids Scheme --with regulator-->
