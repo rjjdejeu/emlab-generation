@@ -60,7 +60,7 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
             // Should this not be TenderclearingPoint object instead of
             // Clearingpoint?
             ClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
-                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(getCurrentTick(), scheme);
+                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderbid.getStartTime(), scheme);
 
             reps.nonTransactionalCreateRepository.createCashFlow(scheme, currentTenderBid.getBidder(),
                     currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,

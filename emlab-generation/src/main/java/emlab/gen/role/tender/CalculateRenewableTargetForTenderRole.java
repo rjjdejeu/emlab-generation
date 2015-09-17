@@ -48,8 +48,6 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        logger.warn("Calculate Renewable Target Role started");
-
         double demandFactor;
         double targetFactor;
         Zone zone = scheme.getRegulator().getZone();
@@ -93,12 +91,13 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         }
 
-        logger.warn("totalConsumption for this tick: " + totalConsumption);
+        // logger.warn("totalConsumption for this tick: " + totalConsumption);
 
         // renewable target for tender operation start year in MWh is
         double renewableTargetInMwh = targetFactor * totalConsumption;
 
-        logger.warn("renewableTargetInMwh for this tick: " + renewableTargetInMwh);
+        // logger.warn("renewableTargetInMwh for this tick: " +
+        // renewableTargetInMwh);
 
         // calculate expected generation, and subtract that from annual
         // target.
@@ -172,7 +171,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
 
         // logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
-        logger.warn("totalExpectedGeneration is: " + totalExpectedGeneration);
+        // logger.warn("totalExpectedGeneration is: " +
+        // totalExpectedGeneration);
 
         /*
          * To compare
@@ -206,14 +206,16 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
         // remove the next line during real simulations (tendertesting)
-        renewableTargetInMwh = renewableTargetInMwh + Math.pow(1, 10);
+        // renewableTargetInMwh = renewableTargetInMwh + Math.pow(1, 10);
 
         if (renewableTargetInMwh < 0) {
             renewableTargetInMwh = 0;
         }
+
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
         logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
+
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,

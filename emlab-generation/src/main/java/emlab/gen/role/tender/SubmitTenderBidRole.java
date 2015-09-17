@@ -346,7 +346,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     // remove Mat.pow(1.10) during real simulations
                     // (tendertesting)
-                    double projectValue = discountedOpProfit + discountedCapitalCosts - Math.pow(1, 10);
+                    double projectValue = discountedOpProfit + discountedCapitalCosts;
 
                     // logger.warn("projectValue is: " + projectValue);
                     // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
@@ -397,37 +397,18 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                             // long i = 0;
 
-                            logger.warn("agent makes bid in the market  " + market + "and zone " + market.getZone()
-                                    + "and node " + node);
+                            logger.warn("agent makes bid in the market: " + market + " and zone: " + market.getZone()
+                                    + " and node: " + node + " for technology: " + technology);
+
                             Zone zone = market.getZone();
 
                             for (long i = 1; i <= numberOfPlants; i++) {
 
                                 TenderBid bid = new TenderBid();
-                                bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, zone, node,
-                                        getCurrentTick() + plant.getFinishedConstruction(),
-                                        getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration,
+                                bid.specifyAndPersist(scheme, totalAnnualExpectedGenerationOfPlant, plant, agent, zone,
+                                        node, getCurrentTick() + plant.getFinishedConstruction(), getCurrentTick()
+                                                + plant.getFinishedConstruction() + tenderSchemeDuration,
                                         bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED);
-                                // logger.warn(agent + " has bid amount
-                                // " +
-                                // totalAnnualExpectedGenerationOfPlant
-                                // + " with bid price " + bidPricePerMWh
-                                // + " with technology " + technology
-                                // + " in node " + node + "for market "
-                                // + market);
-
-                                // bid.setBidder(agent);
-                                // bid.setPrice(bidPricePerMWh);
-                                // bid.setBiddingMarket(market);
-                                // bid.setPowerGridNode(node);
-                                // bid.setTechnology(technology);
-                                // bid.setStart(getCurrentTick() +
-                                // plant.getFinishedConstruction());
-                                // bid.setFinish(getCurrentTick() +
-                                // plant.getFinishedConstruction() +
-                                // tenderSchemeDuration);
-                                // bid.setTime(getCurrentTick());
-                                // bid.persist();)
 
                             } // end for loop for tender bids
 

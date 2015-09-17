@@ -54,6 +54,14 @@ public class TenderBid extends Bid {
 
     private long finish;
 
+    public RenewableSupportSchemeTender getRenewableSupportSchemeTender() {
+        return renewableSupportSchemeTender;
+    }
+
+    public void setRenewableSupportSchemeTender(RenewableSupportSchemeTender renewableSupportSchemeTender) {
+        this.renewableSupportSchemeTender = renewableSupportSchemeTender;
+    }
+
     public long getStart() {
         return start;
     }
@@ -102,9 +110,10 @@ public class TenderBid extends Bid {
         this.technology = technology;
     }
 
-    public void specifyNotPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
-            long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
-            long currentTime, int status) {
+    public void specifyNotPersist(RenewableSupportSchemeTender renewableSupportSchemeTender, double amount,
+            PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node, long startTime, long finishTime,
+            double bidPricePerMWh, PowerGeneratingTechnology technology, long currentTime, int status) {
+        this.setScheme(renewableSupportSchemeTender);
         this.setAmount(amount);
         this.setBidder(agent);
         this.setPrice(bidPricePerMWh);
@@ -123,12 +132,12 @@ public class TenderBid extends Bid {
 
     // All transactional methods below are signified by starting with update
     @Transactional
-    public void specifyAndPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
-            long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
-            long currentTime, int status) {
+    public void specifyAndPersist(RenewableSupportSchemeTender renewableSupportSchemeTender, double amount,
+            PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node, long startTime, long finishTime,
+            double bidPricePerMWh, PowerGeneratingTechnology technology, long currentTime, int status) {
         this.persist();
-        this.specifyNotPersist(amount, plant, agent, zone, node, startTime, finishTime, bidPricePerMWh, technology,
-                currentTime, status);
+        this.specifyNotPersist(renewableSupportSchemeTender, amount, plant, agent, zone, node, startTime, finishTime,
+                bidPricePerMWh, technology, currentTime, status);
 
     }
 

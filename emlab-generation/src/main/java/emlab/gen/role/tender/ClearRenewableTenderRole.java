@@ -51,9 +51,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
     @Transactional
     public void act(Regulator regulator) {
 
-        logger.warn("Clear Renewable Tender Role started for regulator: " + regulator);
-
         Zone zone = regulator.getZone();
+        logger.warn("Clear Renewable Tender Role started for regulator: " + regulator + " in zone: " + zone);
 
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
@@ -153,7 +152,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                         + " in power gride node " + currentTenderBid.getPowerGridNode() + " for technology "
                         + currentTenderBid.getTechnology());
 
-                logger.warn("Plant is: " + plant + " (with bidder) " + bidder);
+                logger.warn("Plant is: " + plant + " with bidder " + bidder);
 
                 PowerPlantManufacturer manufacturer = reps.genericRepository.findFirst(PowerPlantManufacturer.class);
                 BigBank bigbank = reps.genericRepository.findFirst(BigBank.class);
