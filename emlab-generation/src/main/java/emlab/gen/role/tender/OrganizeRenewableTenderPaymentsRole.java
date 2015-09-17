@@ -55,6 +55,8 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
         for (TenderBid currentTenderBid : reps.tenderBidRepository.findAllTenderBidsThatShouldBePaidInTimeStep(scheme,
                 getCurrentTick())) {
 
+            logger.warn("currentTenderBid is: " + currentTenderBid);
+
             // Should this not be TenderclearingPoint object instead of
             // Clearingpoint?
             ClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository

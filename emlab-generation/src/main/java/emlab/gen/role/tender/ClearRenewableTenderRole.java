@@ -193,7 +193,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         } else {
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
-            logger.warn("MARKET UNCLEARED at price: " + tenderClearingPoint.getPrice());
+            logger.warn("MARKET UNCLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
