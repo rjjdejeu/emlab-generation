@@ -62,6 +62,14 @@ public class TenderBid extends Bid {
         this.start = start;
     }
 
+    public RenewableSupportSchemeTender getRenewableSupportSchemeTender() {
+        return renewableSupportSchemeTender;
+    }
+
+    public void setRenewableSupportSchemeTender(RenewableSupportSchemeTender renewableSupportSchemeTender) {
+        this.renewableSupportSchemeTender = renewableSupportSchemeTender;
+    }
+
     public long getFinish() {
         return finish;
     }
@@ -104,7 +112,7 @@ public class TenderBid extends Bid {
 
     public void specifyNotPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
             long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
-            long currentTime, int status) {
+            long currentTime, int status, RenewableSupportSchemeTender scheme) {
         this.setAmount(amount);
         this.setBidder(agent);
         this.setPrice(bidPricePerMWh);
@@ -114,6 +122,7 @@ public class TenderBid extends Bid {
         this.setStart(startTime);
         this.setFinish(finishTime);
         this.setTime(currentTime);
+        this.setRenewableSupportSchemeTender(scheme);
 
     }
 
@@ -125,10 +134,10 @@ public class TenderBid extends Bid {
     @Transactional
     public void specifyAndPersist(double amount, PowerPlant plant, EnergyProducer agent, Zone zone, PowerGridNode node,
             long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
-            long currentTime, int status) {
+            long currentTime, int status, RenewableSupportSchemeTender scheme) {
         this.persist();
         this.specifyNotPersist(amount, plant, agent, zone, node, startTime, finishTime, bidPricePerMWh, technology,
-                currentTime, status);
+                currentTime, status, scheme);
 
     }
 

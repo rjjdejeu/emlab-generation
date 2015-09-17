@@ -20,7 +20,6 @@ import org.springframework.data.neo4j.annotation.QueryType;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
-import emlab.gen.domain.market.ClearingPoint;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 
@@ -32,7 +31,7 @@ import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 public interface TenderClearingPointRepository extends GraphRepository<TenderClearingPoint> {
 
     @Query(value = "g.v(scheme).in('RENEWABLE_SUPPORT_SCHEME_TENDER').propertyFilter('time', FilterPipe.Filter.EQUAL, time)", type = QueryType.Gremlin)
-    public ClearingPoint findOneClearingPointForTimeAndRenewableSupportSchemeTender(@Param("time") long time,
+    public TenderClearingPoint findOneClearingPointForTimeAndRenewableSupportSchemeTender(@Param("time") long time,
             @Param("scheme") RenewableSupportSchemeTender renewableSupportSchemeTender);
 
 }

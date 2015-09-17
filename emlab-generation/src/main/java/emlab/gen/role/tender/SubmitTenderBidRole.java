@@ -47,6 +47,7 @@ import emlab.gen.domain.market.electricity.ElectricitySpotMarket;
 import emlab.gen.domain.market.electricity.Segment;
 import emlab.gen.domain.market.electricity.SegmentLoad;
 import emlab.gen.domain.policy.PowerGeneratingTechnologyTarget;
+import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
 import emlab.gen.domain.technology.PowerGeneratingTechnology;
 import emlab.gen.domain.technology.PowerGeneratingTechnologyNodeLimit;
@@ -395,6 +396,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             logger.warn("agent makes bid in the market  " + market + "and zone " + market.getZone()
                                     + "and node " + node);
                             Zone zone = market.getZone();
+                            RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
+                                    .determineSupportSchemeForZone(zone);
 
                             for (long i = 1; i <= numberOfPlants; i++) {
 
@@ -402,7 +405,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                 bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, zone, node,
                                         getCurrentTick() + plant.getFinishedConstruction(),
                                         getCurrentTick() + plant.getFinishedConstruction() + tenderSchemeDuration,
-                                        bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED);
+                                        bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
                                         // logger.warn(agent + " has bid amount
                                         // " +
                                         // totalAnnualExpectedGenerationOfPlant

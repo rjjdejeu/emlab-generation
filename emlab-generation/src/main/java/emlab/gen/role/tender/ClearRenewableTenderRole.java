@@ -30,6 +30,7 @@ import emlab.gen.domain.contract.CashFlow;
 import emlab.gen.domain.contract.Loan;
 import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
+import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
 import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 import emlab.gen.domain.technology.PowerPlant;
@@ -39,7 +40,7 @@ import emlab.gen.repository.Reps;
  * @author rjjdejeu
  */
 @RoleComponent
-public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements Role<Regulator> {
+public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements Role<Regulator> {
 
     @Autowired
     Reps reps;
@@ -54,6 +55,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         logger.warn("Clear Renewable Tender Role started for regulator: " + regulator);
 
         Zone zone = regulator.getZone();
+        RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
+                .determineSupportSchemeForZone(zone);
 
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
@@ -94,7 +97,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
                 // it collects a bid partially if that bid fulfills the quota
                 // partially
-                else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
+                else if (tenderQuota
+                        - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
                     currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
@@ -131,11 +135,11 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                 double downPayment = investmentCostPayedByEquity;
                 createSpreadOutDownPayments(bidder, manufacturer, downPayment, plant);
 
-                double amount = determineLoanAnnuities(investmentCostPayedByDebt, plant.getTechnology()
-                        .getDepreciationTime(), bidder.getLoanInterestRate());
+                double amount = determineLoanAnnuities(investmentCostPayedByDebt,
+                        plant.getTechnology().getDepreciationTime(), bidder.getLoanInterestRate());
                 // logger.warn("Loan amount is: " + amount);
-                Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount, plant
-                        .getTechnology().getDepreciationTime(), getCurrentTick(), plant);
+                Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount,
+                        plant.getTechnology().getDepreciationTime(), getCurrentTick(), plant);
                 // Create the loan
                 plant.createOrUpdateLoan(loan);
 
@@ -151,6 +155,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
             logger.warn("Tender CLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
+            tenderClearingPoint.setRenewableSupportSchemeTender(scheme);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
@@ -162,6 +167,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
             logger.warn("MARKET UNCLEARED at price: " + tenderClearingPoint.getPrice());
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
+            tenderClearingPoint.setRenewableSupportSchemeTender(scheme);
             tenderClearingPoint.setTime(getCurrentTick());
             tenderClearingPoint.persist();
             logger.warn("Clearing point Price is {} and volume is " + tenderClearingPoint.getVolume(),

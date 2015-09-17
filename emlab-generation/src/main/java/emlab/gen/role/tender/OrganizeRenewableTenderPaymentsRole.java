@@ -33,8 +33,8 @@ import emlab.gen.repository.Reps;
  */
 
 @RoleComponent
-public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableSupportSchemeTender> implements
-        Role<RenewableSupportSchemeTender> {
+public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableSupportSchemeTender>
+        implements Role<RenewableSupportSchemeTender> {
 
     @Autowired
     Reps reps;
@@ -58,19 +58,20 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
             // Should this not be TenderclearingPoint object instead of
             // Clearingpoint?
             ClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
-                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(getCurrentTick(), scheme);
-
-            reps.nonTransactionalCreateRepository.createCashFlow(scheme, currentTenderBid.getBidder(),
-                    currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,
-                    getCurrentTick(), currentTenderBid.getPowerPlant());
+                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderBid.getStart(), scheme);
 
             logger.warn("Bidder of this tender bid is: " + currentTenderBid.getBidder());
 
-            logger.warn("Subsidy amount is: " + currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice());
+            logger.warn("Subsidy amount is: " + currentTenderBid.getAcceptedAmount());
+            logger.warn("Subsidy amount is: " + tenderClearingPoint.getPrice());
 
             logger.warn("Power plant of this bid is: " + currentTenderBid.getPowerPlant());
 
             logger.warn("tender subsidy is: " + CashFlow.TENDER_SUBSIDY);
+
+            reps.nonTransactionalCreateRepository.createCashFlow(scheme, currentTenderBid.getBidder(),
+                    currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,
+                    getCurrentTick(), currentTenderBid.getPowerPlant());
 
         }
 

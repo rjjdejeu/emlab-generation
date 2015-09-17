@@ -15,7 +15,9 @@
  ******************************************************************************/
 package emlab.gen.domain.policy.renewablesupport;
 
+import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.annotation.RelatedTo;
 
 import emlab.gen.domain.market.ClearingPoint;
 
@@ -24,5 +26,16 @@ import emlab.gen.domain.market.ClearingPoint;
  */
 @NodeEntity
 public class TenderClearingPoint extends ClearingPoint {
+
+    @RelatedTo(type = "RENEWABLE_SUPPORT_SCHEME_TENDER", elementClass = RenewableSupportSchemeTender.class, direction = Direction.OUTGOING)
+    private RenewableSupportSchemeTender renewableSupportSchemeTender;
+
+    public RenewableSupportSchemeTender getRenewableSupportSchemeTender() {
+        return renewableSupportSchemeTender;
+    }
+
+    public void setRenewableSupportSchemeTender(RenewableSupportSchemeTender renewableSupportSchemeTender) {
+        this.renewableSupportSchemeTender = renewableSupportSchemeTender;
+    }
 
 }

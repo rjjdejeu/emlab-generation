@@ -21,6 +21,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
 import emlab.gen.domain.agent.EnergyProducer;
+import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.technology.PowerGeneratingTechnology;
 
@@ -37,5 +38,8 @@ public interface RenewableSupportSchemeTenderRepository extends GraphRepository<
     // obtains the support scheme duration for the energy producer
     @Query(value = "g.v(agent).out('INVESTOR_MARKET').out('ZONE').in('OF_ZONE').in('WITH_REGULATOR').supportSchemeDuration", type = QueryType.Gremlin)
     public long determineSupportSchemeDurationForEnergyProducer(@Param("agent") EnergyProducer agent);
+
+    @Query(value = "g.v(zone).in('OF_ZONE').in('WITH_REGULATOR')", type = QueryType.Gremlin)
+    public RenewableSupportSchemeTender determineSupportSchemeForZone(@Param("zone") Zone zone);
 
 }
