@@ -45,18 +45,14 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
 
         logger.warn("Organize Renewable Tender Payments Role started");
 
-        // what about the other (earlier or later) bids that need to be paid
-        // out? - i have included them as well with my if statement. - and I put
-        // that later in the query
-
-        // the following query should return only all accepted or partially
-        // accepted bids - write a query that only returns accepted bids. Look
-        // up powerPlantDispatchPlanRepository for examples - there are two.
         for (TenderBid currentTenderBid : reps.tenderBidRepository.findAllTenderBidsThatShouldBePaidInTimeStep(scheme,
                 getCurrentTick())) {
 
+            logger.warn("currentTenderBid is: " + currentTenderBid);
+
             // Should this not be TenderclearingPoint object instead of
             // Clearingpoint?
+
             ClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
                     .findOneClearingPointForTimeAndRenewableSupportSchemeTender(getCurrentTick(), scheme);
 

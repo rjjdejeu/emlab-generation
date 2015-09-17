@@ -342,7 +342,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
                     double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
-                    double projectValue = discountedOpProfit + discountedCapitalCosts;
+                    double projectValue = discountedOpProfit + discountedCapitalCosts - 1000000000;
 
                     // logger.warn("projectValue is: " + projectValue);
                     // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +

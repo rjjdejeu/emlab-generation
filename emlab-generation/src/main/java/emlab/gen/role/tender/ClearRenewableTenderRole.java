@@ -69,7 +69,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
             acceptedSubsidyPrice = 0;
         }
 
-        logger.warn("tenderQuota is " + tenderQuota);
+        // logger.warn("tenderQuota is " + tenderQuota);
         // logger.warn("the tender is cleared " + isTheTenderCleared);
 
         // This epsilon is to account for rounding errors for java (only
@@ -80,40 +80,83 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         // by price
         for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndZone) {
 
-            logger.warn("bid is: " + currentTenderBid);
-            // logger.warn("bid is: " + sortedTenderBidsbyPrice);
+            // logger.warn("bid is: " + currentTenderBid);
 
             // if the tender is not cleared yet, it collects complete bids
+            // logger.warn("isTendercleared? " + isTheTenderCleared);
+
             if (isTheTenderCleared == false) {
+
                 if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) >= -clearingEpsilon) {
+
+                    // logger.warn("tenderQuota is " + tenderQuota);
+                    // logger.warn("Bid status should be fully accepted");
+                    // logger.warn("current sum Of Tender Bid Quantiy Accepted is: "
+                    // + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("Tender Quota >= 0 ? "
+                    // + (tenderQuota - (sumOfTenderBidQuantityAccepted +
+                    // currentTenderBid.getAmount())));
+                    // logger.warn("amount of currentTenderBid is: " +
+                    // currentTenderBid.getAmount());
+
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
+
+                    // logger.warn("new sum of Tender Bid Quantity accepted it"
+                    // + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("bid status is: " +
+                    // currentTenderBid.getStatus());
+
                 }
 
                 // it collects a bid partially if that bid fulfills the quota
                 // partially
                 else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
+
+                    // logger.warn("tenderQuota is: " + tenderQuota);
+                    // logger.warn("Bid status should be partly accepted");
+                    // logger.warn("current sum Of Tender Bid Quantiy Accepted is: "
+                    // + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("amount of currentTenderBid is: " +
+                    // currentTenderBid.getAmount());
+                    // logger.warn("Tender Quota < 0 ? "
+                    // + (tenderQuota - (sumOfTenderBidQuantityAccepted +
+                    // currentTenderBid.getAmount())));
+
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
                     currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
                             + currentTenderBid.getAcceptedAmount();
                     isTheTenderCleared = true;
+
+                    // logger.warn("new sum of Tender Bid Quantity accepted it: "
+                    // + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("and should be equal to tender quota: " +
+                    // tenderQuota);
+                    // logger.warn("bid status is: " +
+                    // currentTenderBid.getStatus());
+
                 }
                 // the tenderQuota is reached and the bids after that are not
                 // accepted
             } else {
+
+                // logger.warn("Bid status should be failed");
+
                 currentTenderBid.setStatus(Bid.FAILED);
                 currentTenderBid.setAcceptedAmount(0);
+
+                // logger.warn("bid status is: " +
+                // currentTenderBid.getStatus());
             }
 
             currentTenderBid.persist();
 
             // A power plant can be created if the bid is (partly) accepted
 
-            // there is a mistake in EnergyProdcer and DecarbonizationAgent.....
             if (currentTenderBid.getStatus() == Bid.ACCEPTED || currentTenderBid.getStatus() == Bid.PARTLY_ACCEPTED) {
 
                 PowerPlant plant = new PowerPlant();
@@ -121,6 +164,13 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
                 plant.specifyAndPersist(currentTenderBid.getStart(), bidder, currentTenderBid.getPowerGridNode(),
                         currentTenderBid.getTechnology());
+
+                logger.warn("Start is: " + currentTenderBid.getStart() + " with bidder " + bidder
+                        + " in power gride node " + currentTenderBid.getPowerGridNode() + " for technology "
+                        + currentTenderBid.getTechnology());
+
+                logger.warn("Plant is: " + plant + " (with bidder) " + bidder);
+
                 PowerPlantManufacturer manufacturer = reps.genericRepository.findFirst(PowerPlantManufacturer.class);
                 BigBank bigbank = reps.genericRepository.findFirst(BigBank.class);
 
@@ -140,7 +190,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                 plant.createOrUpdateLoan(loan);
 
             }
-        } // FOR Loop ends here
+        } // FOR Loop Current Tender Bids ends here
 
         // This creates a clearing point that contains general information about
         // the cleared tender
@@ -159,7 +209,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         } else {
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
-            logger.warn("MARKET UNCLEARED at price: " + tenderClearingPoint.getPrice());
+            logger.warn("MARKET UNCLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setTime(getCurrentTick());

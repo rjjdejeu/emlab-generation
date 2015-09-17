@@ -40,11 +40,10 @@ public interface TenderBidRepository extends GraphRepository<TenderBid> {
     @Query(value = "g.v(zone).out('TENDERBID_ZONE').filter{it.time == tick}.sort{it.price}._()", type = QueryType.Gremlin)
     public Iterable<TenderBid> findAllSortedTenderBidsbyTime(@Param("tick") long time, @Param("zone") Zone zone);
 
-    // this returns the accepted tender bids Scheme --with regulator-->
-    // Regulator --of zone--> Zone
+    // this returns the accepted tender bids that are eligible for cashflows
     @Query(value = "g.v(scheme).in('TENDERBID_SUPPORTSCHEME')"
-            + ".propertyFilter('start', FilterPipe.Filter.LESS_THAN_EQUAL,time)"
-            + ".propertyFilter('finish', FilterPipe.Filter.GREATER_THAN_EQUAL,time)"
+            + ".propertyFilter('start', FilterPipe.Filter.GREATER_THAN_EQUAL,time)"
+            + ".propertyFilter('finish', FilterPipe.Filter.LESS_THAN_EQUAL,time)"
             + ".propertyFilter('status', FilterPipe.Filter.GREATER_THAN_EQUAL,2)", type = QueryType.Gremlin)
     public Iterable<TenderBid> findAllTenderBidsThatShouldBePaidInTimeStep(
             @Param("scheme") RenewableSupportSchemeTender renewableSupportSchemeTender, @Param("time") long time);
