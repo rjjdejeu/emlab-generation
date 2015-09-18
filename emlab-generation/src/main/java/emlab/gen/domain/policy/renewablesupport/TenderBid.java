@@ -123,6 +123,7 @@ public class TenderBid extends Bid {
         this.setFinish(finishTime);
         this.setTime(currentTime);
         this.setRenewableSupportSchemeTender(scheme);
+        this.setPowerPlant(plant);
 
     }
 

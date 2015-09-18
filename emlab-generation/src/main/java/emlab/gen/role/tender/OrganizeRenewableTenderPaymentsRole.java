@@ -22,9 +22,9 @@ import agentspring.role.AbstractRole;
 import agentspring.role.Role;
 import agentspring.role.RoleComponent;
 import emlab.gen.domain.contract.CashFlow;
-import emlab.gen.domain.market.ClearingPoint;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
+import emlab.gen.domain.policy.renewablesupport.TenderClearingPoint;
 import emlab.gen.repository.Reps;
 
 /**
@@ -33,8 +33,8 @@ import emlab.gen.repository.Reps;
  */
 
 @RoleComponent
-public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableSupportSchemeTender>
-        implements Role<RenewableSupportSchemeTender> {
+public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableSupportSchemeTender> implements
+        Role<RenewableSupportSchemeTender> {
 
     @Autowired
     Reps reps;
@@ -45,33 +45,24 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
 
         logger.warn("Organize Renewable Tender Payments Role started");
 
-        // what about the other (earlier or later) bids that need to be paid
-        // out? - i have included them as well with my if statement. - and I put
-        // that later in the query
-
-        // the following query should return only all accepted or partially
-        // accepted bids - write a query that only returns accepted bids. Look
-        // up powerPlantDispatchPlanRepository for examples - there are two.
         for (TenderBid currentTenderBid : reps.tenderBidRepository.findAllTenderBidsThatShouldBePaidInTimeStep(scheme,
                 getCurrentTick())) {
 
-            // Should this not be TenderclearingPoint object instead of
-            // Clearingpoint?
-            ClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
-                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderBid.getStart(), scheme);
+            TenderClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
+                    .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderBid.getTime(), scheme);
 
             logger.warn("Bidder of this tender bid is: " + currentTenderBid.getBidder());
 
-            logger.warn("Subsidy amount is: " + currentTenderBid.getAcceptedAmount());
-            logger.warn("Subsidy amount is: " + tenderClearingPoint.getPrice());
-
-            logger.warn("Power plant of this bid is: " + currentTenderBid.getPowerPlant());
-
-            logger.warn("tender subsidy is: " + CashFlow.TENDER_SUBSIDY);
+            logger.warn("Start time of the bid is: " + currentTenderBid.getStart() + " and belongs to scheme: "
+                    + scheme);
+            logger.warn("Production amount is: " + currentTenderBid.getAcceptedAmount() + " subsidy amount is "
+                    + tenderClearingPoint.getPrice());
 
             reps.nonTransactionalCreateRepository.createCashFlow(scheme, currentTenderBid.getBidder(),
                     currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,
                     getCurrentTick(), currentTenderBid.getPowerPlant());
+
+            logger.warn("Power plant of this bid is: " + currentTenderBid.getPowerPlant());
 
         }
 

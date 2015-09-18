@@ -40,7 +40,7 @@ import emlab.gen.repository.Reps;
  * @author rjjdejeu
  */
 @RoleComponent
-public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements Role<Regulator> {
+public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements Role<Regulator> {
 
     @Autowired
     Reps reps;
@@ -58,6 +58,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
                 .determineSupportSchemeForZone(zone);
 
+        logger.warn("scheme is: " + scheme);
+
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
         sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
@@ -72,7 +74,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
             acceptedSubsidyPrice = 0;
         }
 
-        logger.warn("tenderQuota is " + tenderQuota);
+        // logger.warn("tenderQuota is " + tenderQuota);
         // logger.warn("the tender is cleared " + isTheTenderCleared);
 
         // This epsilon is to account for rounding errors for java (only
@@ -83,7 +85,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
         // by price
         for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndZone) {
 
-            logger.warn("bid is: " + currentTenderBid);
+            // logger.warn("bid is: " + currentTenderBid);
             // logger.warn("bid is: " + sortedTenderBidsbyPrice);
 
             // if the tender is not cleared yet, it collects complete bids
@@ -92,22 +94,60 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
+
+                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
+                            + " is currentTenderBid.getAmount(): " + currentTenderBid.getAmount());
+                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
+                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
+
+                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
+                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder() + " is acceptedSubsidyPrice: "
+                            + acceptedSubsidyPrice);
+
+                    logger.warn("" + currentTenderBid.getAmount());
+                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+
                 }
 
                 // it collects a bid partially if that bid fulfills the quota
                 // partially
-                else if (tenderQuota
-                        - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
+                else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
                     acceptedSubsidyPrice = currentTenderBid.getPrice();
                     currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
                     currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
+
+                    logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
+                            + (tenderQuota - sumOfTenderBidQuantityAccepted));
+
+                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder() + " is currentTenderBid.getAmount(): "
+                            + currentTenderBid.getAmount());
+                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder()
+                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
                             + currentTenderBid.getAcceptedAmount();
+
+                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder()
+                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder() + " is acceptedSubsidyPrice: "
+                            + acceptedSubsidyPrice);
+
+                    logger.warn("" + currentTenderBid.getAmount());
+                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+
                     isTheTenderCleared = true;
                 }
                 // the tenderQuota is reached and the bids after that are not
                 // accepted
+
+                //
+                // }
+
             } else {
                 currentTenderBid.setStatus(Bid.FAILED);
                 currentTenderBid.setAcceptedAmount(0);
@@ -117,7 +157,6 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
 
             // A power plant can be created if the bid is (partly) accepted
 
-            // there is a mistake in EnergyProdcer and DecarbonizationAgent.....
             if (currentTenderBid.getStatus() == Bid.ACCEPTED || currentTenderBid.getStatus() == Bid.PARTLY_ACCEPTED) {
 
                 PowerPlant plant = new PowerPlant();
@@ -135,11 +174,11 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
                 double downPayment = investmentCostPayedByEquity;
                 createSpreadOutDownPayments(bidder, manufacturer, downPayment, plant);
 
-                double amount = determineLoanAnnuities(investmentCostPayedByDebt,
-                        plant.getTechnology().getDepreciationTime(), bidder.getLoanInterestRate());
+                double amount = determineLoanAnnuities(investmentCostPayedByDebt, plant.getTechnology()
+                        .getDepreciationTime(), bidder.getLoanInterestRate());
                 // logger.warn("Loan amount is: " + amount);
-                Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount,
-                        plant.getTechnology().getDepreciationTime(), getCurrentTick(), plant);
+                Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount, plant
+                        .getTechnology().getDepreciationTime(), getCurrentTick(), plant);
                 // Create the loan
                 plant.createOrUpdateLoan(loan);
 
@@ -164,7 +203,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator>implements 
 
         } else {
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
-            logger.warn("MARKET UNCLEARED at price: " + tenderClearingPoint.getPrice());
+            logger.warn("MARKET UNCLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setRenewableSupportSchemeTender(scheme);

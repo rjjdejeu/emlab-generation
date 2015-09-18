@@ -38,8 +38,8 @@ import emlab.gen.util.GeometricTrendRegression;
  */
 
 @RoleComponent
-public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender>
-        implements Role<RenewableSupportSchemeTender> {
+public class CalculateRenewableTargetForTenderRole extends AbstractRole<RenewableSupportSchemeTender> implements
+        Role<RenewableSupportSchemeTender> {
 
     @Autowired
     Reps reps;
@@ -47,8 +47,6 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
     @Override
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
-
-        logger.warn("Calculate Renewable Target Role started");
 
         double demandFactor;
         double targetFactor;
@@ -61,9 +59,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         // logger.warn("electricity spot market is: " + market);
 
         // get demand factor
-        demandFactor = predictDemandForElectricitySpotMarket(market,
-                scheme.getRegulator().getNumberOfYearsLookingBackToForecastDemand(),
-                scheme.getFutureTenderOperationStartTime());
+        demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
+                .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
 
         // logger.warn("demandFactor for this tick: " + demandFactor);
 
@@ -77,8 +74,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         RenewableTargetForTender target = reps.renewableTargetForTenderRepository
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
-        targetFactor = target.getYearlyRenewableTargetTimeSeries()
-                .getValue(getCurrentTick() + scheme.getFutureTenderOperationStartTime());
+        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
+                getCurrentTick() + scheme.getFutureTenderOperationStartTime());
 
         // logger.warn("future tender operations start time is: "
         // + (getCurrentTick() +
@@ -94,12 +91,14 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         }
 
-        logger.warn("totalConsumption for this tick: " + totalConsumption);
+        logger.warn("totalConsumption in: " + scheme.getFutureTenderOperationStartTime() + " years is "
+                + totalConsumption);
 
         // renewable target for tender operation start year in MWh is
         double renewableTargetInMwh = targetFactor * totalConsumption;
 
-        logger.warn("renewableTargetInMwh for this tick: " + renewableTargetInMwh);
+        // logger.warn("renewableTargetInMwh for this tick: " +
+        // renewableTargetInMwh);
 
         // calculate expected generation, and subtract that from annual
         // target.
@@ -173,7 +172,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
 
         // logger.warn("renwabletargetInMwh is: " + renewableTargetInMwh);
-        logger.warn("totalExpectedGeneration is: " + totalExpectedGeneration);
+        logger.warn("totalExpectedGeneration in: " + scheme.getFutureTenderOperationStartTime() + " years is "
+                + totalExpectedGeneration);
 
         /*
          * To compare
@@ -204,18 +204,24 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * the initial portfolios.
          */
 
-        renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
+        renewableTargetInMwh = renewableTargetInMwh; // tendertesting -
+                                                     // totalExpectedGeneration;
 
         if (renewableTargetInMwh < 0) {
             renewableTargetInMwh = 0;
         }
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        logger.warn("actual renewableTargetInMwh for this tick: " + renewableTargetInMwh);
+        logger.warn("actual renewableTargetInMwh for this tick: " + scheme.getFutureTenderOperationStartTime()
+                + " years is " + renewableTargetInMwh);
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,
             long numberOfYearsBacklookingForForecasting, long futureTimePoint) {
+
+        logger.warn("future time point is: " + futureTimePoint);
+        logger.warn("number of years looking back is: " + numberOfYearsBacklookingForForecasting);
+
         GeometricTrendRegression gtr = new GeometricTrendRegression();
         for (long time = getCurrentTick(); time > getCurrentTick() - numberOfYearsBacklookingForForecasting
                 && time >= 0; time = time - 1) {
