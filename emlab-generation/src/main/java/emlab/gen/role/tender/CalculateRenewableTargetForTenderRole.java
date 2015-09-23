@@ -211,8 +211,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * the initial portfolios.
          */
 
-        renewableTargetInMwh = renewableTargetInMwh; // tendertesting
-                                                     // totalExpectedGeneration;
+        // tendertesting comment out totalExpectedGeneration
+        renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
         if (renewableTargetInMwh < 0) {
             renewableTargetInMwh = 0;

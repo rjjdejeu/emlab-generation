@@ -343,7 +343,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
                 double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
 
-                double projectValue = discountedOpProfit + discountedCapitalCosts - Math.pow(1, 10);
+                double projectValue = discountedOpProfit + discountedCapitalCosts; // tendertesting
+                                                                                   // -
+                                                                                   // Math.pow(1,
+                                                                                   // 10);
 
                 // logger.warn("projectValue is: " + projectValue);
                 // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
