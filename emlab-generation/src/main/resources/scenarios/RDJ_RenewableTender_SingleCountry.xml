@@ -65,7 +65,7 @@
 	<bean id="renewableSupportScheme"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
-		p:supportSchemeDuration="15">
+		p:supportSchemeDuration="10">
 
 		<property name="regulator" ref="regulator" />
 		<property name="powerGeneratingTechnologiesEligible">

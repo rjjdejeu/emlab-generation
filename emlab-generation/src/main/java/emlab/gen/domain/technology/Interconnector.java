@@ -34,6 +34,8 @@ public class Interconnector {
     @RelatedTo(type = "INTERCONNECTOR_CAPACITY_TREND", elementClass = TimeSeriesImpl.class, direction = Direction.OUTGOING)
     private TimeSeriesImpl interconnectorCapacityTrend;
 
+    private double capacity;
+
     public Set<PowerGridNode> getConnections() {
         return connections;
     }
@@ -53,7 +55,6 @@ public class Interconnector {
     public double getCapacity(long time) {
         return getInterconnectorCapacityTrend().getValue(time);
     }
-
 
     public void setCapacity(long time, double capacity) {
         interconnectorCapacityTrend.setValue(time, capacity);

@@ -43,7 +43,7 @@
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
-		p:supportSchemeDuration="15">
+		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
@@ -60,7 +60,7 @@
 	<bean id="renewableSupportSchemeDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
-		p:supportSchemeDuration="15">
+		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
@@ -137,7 +137,7 @@
 	<!-- https://www.rvo.nl/sites/default/files/2015/05/IP01_Inpassingsplan%20DW380%20Toelichting%20en%20regels%2020150415%20-%20EXCL%20BIJLAGEN_vKT.pdf 
 		says 2450 MW in (2014) with an expected increase to 3950 MW in 2017 -->
 	<bean id="interconnectorNetherlandsGermany" class="emlab.gen.domain.technology.Interconnector"
-		p:capacity="0">
+		p:capacity="3950">
 		<property name="connections">
 			<set>
 				<ref bean="nlNode" />
@@ -656,29 +656,29 @@
 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
 		p:investorMarket-ref="NetherlandsElectricitySpotMarket" />
 
-<!-- 	<bean id="energyProducerC" class="emlab.gen.domain.agent.EnergyProducer" -->
-<!-- 		p:name="Energy Producer C" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole" -->
-<!-- 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3" -->
-<!-- 		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}" -->
-<!-- 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09" -->
-<!-- 		p:debtRatioOfInvestments="0.7" -->
-<!-- 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0" -->
-<!-- 		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5" -->
-<!-- 		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}" -->
-<!-- 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}" -->
-<!-- 		p:investorMarket-ref="NetherlandsElectricitySpotMarket" /> -->
+	<bean id="energyProducerC" class="emlab.gen.domain.agent.EnergyProducer"
+		p:name="Energy Producer C" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
+		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
+		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
+		p:debtRatioOfInvestments="0.7"
+		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
+		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5"
+		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}"
+		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
+		p:investorMarket-ref="NetherlandsElectricitySpotMarket" />
 
-<!-- 	<bean id="energyProducerD" class="emlab.gen.domain.agent.EnergyProducer" -->
-<!-- 		p:name="Energy Producer D" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole" -->
-<!-- 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3" -->
-<!-- 		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}" -->
-<!-- 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09" -->
-<!-- 		p:debtRatioOfInvestments="0.7" -->
-<!-- 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0" -->
-<!-- 		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5" -->
-<!-- 		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}" -->
-<!-- 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}" -->
-<!-- 		p:investorMarket-ref="NetherlandsElectricitySpotMarket" /> -->
+	<bean id="energyProducerD" class="emlab.gen.domain.agent.EnergyProducer"
+		p:name="Energy Producer D" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
+		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
+		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
+		p:debtRatioOfInvestments="0.7"
+		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
+		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5"
+		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}"
+		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
+		p:investorMarket-ref="NetherlandsElectricitySpotMarket" />
 
 	<bean id="energyProducerE" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer E" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
@@ -704,29 +704,29 @@
 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
 		p:investorMarket-ref="GermanyElectricitySpotMarket" />
 
-<!-- 	<bean id="energyProducerG" class="emlab.gen.domain.agent.EnergyProducer" -->
-<!-- 		p:name="Energy Producer G" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole" -->
-<!-- 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3" -->
-<!-- 		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}" -->
-<!-- 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09" -->
-<!-- 		p:debtRatioOfInvestments="0.7" -->
-<!-- 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0" -->
-<!-- 		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5" -->
-<!-- 		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}" -->
-<!-- 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}" -->
-<!-- 		p:investorMarket-ref="GermanyElectricitySpotMarket" /> -->
+	<bean id="energyProducerG" class="emlab.gen.domain.agent.EnergyProducer"
+		p:name="Energy Producer G" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
+		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
+		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
+		p:debtRatioOfInvestments="0.7"
+		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
+		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5"
+		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}"
+		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
+		p:investorMarket-ref="GermanyElectricitySpotMarket" />
 		
-<!-- 	<bean id="energyProducerH" class="emlab.gen.domain.agent.EnergyProducer" -->
-<!-- 		p:name="Energy Producer H" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole" -->
-<!-- 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3" -->
-<!-- 		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}" -->
-<!-- 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09" -->
-<!-- 		p:debtRatioOfInvestments="0.7" -->
-<!-- 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0" -->
-<!-- 		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5" -->
-<!-- 		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}" -->
-<!-- 		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}" -->
-<!-- 		p:investorMarket-ref="GermanyElectricitySpotMarket" /> -->
+	<bean id="energyProducerH" class="emlab.gen.domain.agent.EnergyProducer"
+		p:name="Energy Producer H" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
+		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
+		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
+		p:debtRatioOfInvestments="0.7"
+		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
+		p:dismantlingRequiredOperatingProfit="0" p:downpaymentFractionOfCash="0.5"
+		p:willingToInvest="true" p:priceMarkUp="${priceMarkUp}"
+		p:numberOfYearsBacklookingForForecasting="${numberOfYearsBacklookingForForecasting}"
+		p:investorMarket-ref="GermanyElectricitySpotMarket" />
 
 
 	<bean id="standardInvestmentRole"
@@ -812,8 +812,8 @@
 			<list>
 				<ref bean="energyProducerA" />
 				<ref bean="energyProducerB" />
-<!-- 				<ref bean="energyProducerC" /> -->
-<!-- 				<ref bean="energyProducerD" /> -->
+				<ref bean="energyProducerC" />
+				<ref bean="energyProducerD" />
 			</list>
 		</property>
 	</bean>
@@ -888,8 +888,8 @@
 			<list>
 				<ref bean="energyProducerE" />
 				<ref bean="energyProducerF" />
-<!-- 				<ref bean="energyProducerG" /> -->
-<!-- 				<ref bean="energyProducerH" /> -->
+				<ref bean="energyProducerG" />
+				<ref bean="energyProducerH" />
 			</list>
 		</property>
 	</bean>

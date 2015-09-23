@@ -95,21 +95,29 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
 
-                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
-                            + " is currentTenderBid.getAmount(): " + currentTenderBid.getAmount());
-                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
-                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("ACCEPTED bid of " +
+                    // currentTenderBid.getBidder()
+                    // + " is currentTenderBid.getAmount(): " +
+                    // currentTenderBid.getAmount());
+                    // logger.warn("ACCEPTED bid of " +
+                    // currentTenderBid.getBidder()
+                    // + " is sumOfTenderBidQuantityAccepted: " +
+                    // sumOfTenderBidQuantityAccepted);
 
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
 
-                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder()
-                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
-                    logger.warn("ACCEPTED bid of " + currentTenderBid.getBidder() + " is acceptedSubsidyPrice: "
-                            + acceptedSubsidyPrice);
-
-                    logger.warn("" + currentTenderBid.getAmount());
-                    logger.warn("" + sumOfTenderBidQuantityAccepted);
-                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("ACCEPTED bid of " +
+                    // currentTenderBid.getBidder()
+                    // + " is sumOfTenderBidQuantityAccepted: " +
+                    // sumOfTenderBidQuantityAccepted);
+                    // logger.warn("ACCEPTED bid of " +
+                    // currentTenderBid.getBidder() +
+                    // " is acceptedSubsidyPrice: "
+                    // + acceptedSubsidyPrice);
+                    //
+                    // logger.warn("" + currentTenderBid.getAmount());
+                    // logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("" + sumOfTenderBidQuantityAccepted);
 
                 }
 
@@ -120,25 +128,33 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                     currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
                     currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
 
-                    logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
-                            + (tenderQuota - sumOfTenderBidQuantityAccepted));
-
-                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder() + " is currentTenderBid.getAmount(): "
-                            + currentTenderBid.getAmount());
-                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder()
-                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
+                    // + (tenderQuota - sumOfTenderBidQuantityAccepted));
+                    //
+                    // logger.warn("PARTLY bid of " +
+                    // currentTenderBid.getBidder() +
+                    // " is currentTenderBid.getAmount(): "
+                    // + currentTenderBid.getAmount());
+                    // logger.warn("PARTLY bid of " +
+                    // currentTenderBid.getBidder()
+                    // + " is sumOfTenderBidQuantityAccepted: " +
+                    // sumOfTenderBidQuantityAccepted);
 
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
                             + currentTenderBid.getAcceptedAmount();
 
-                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder()
-                            + " is sumOfTenderBidQuantityAccepted: " + sumOfTenderBidQuantityAccepted);
-                    logger.warn("PARTLY bid of " + currentTenderBid.getBidder() + " is acceptedSubsidyPrice: "
-                            + acceptedSubsidyPrice);
-
-                    logger.warn("" + currentTenderBid.getAmount());
-                    logger.warn("" + sumOfTenderBidQuantityAccepted);
-                    logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("PARTLY bid of " +
+                    // currentTenderBid.getBidder()
+                    // + " is sumOfTenderBidQuantityAccepted: " +
+                    // sumOfTenderBidQuantityAccepted);
+                    // logger.warn("PARTLY bid of " +
+                    // currentTenderBid.getBidder() +
+                    // " is acceptedSubsidyPrice: "
+                    // + acceptedSubsidyPrice);
+                    //
+                    // logger.warn("" + currentTenderBid.getAmount());
+                    // logger.warn("" + sumOfTenderBidQuantityAccepted);
+                    // logger.warn("" + sumOfTenderBidQuantityAccepted);
 
                     isTheTenderCleared = true;
                 }

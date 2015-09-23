@@ -55,6 +55,10 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
 
     private double yearlyTenderDemandTarget;
 
+    // private long time;
+    //
+    // private double totalExpectedConsumption;
+
     public double getYearlyTenderDemandTarget() {
         return yearlyTenderDemandTarget;
     }
@@ -128,12 +132,41 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
         this.supportSchemeDuration = supportSchemeDuration;
     }
 
-    /**
-     * @param scheme
-     */
-    public void act(RenewableSupportSchemeTender scheme) {
-        // TODO Auto-generated method stub
+    // public double getTotalExpectedConsumption() {
+    // return totalExpectedConsumption;
+    // }
+    //
+    // public void setTotalExpectedConsumption(double totalExpectedConsumption)
+    // {
+    // this.totalExpectedConsumption = totalExpectedConsumption;
+    // }
+    //
+    // public long getTime() {
+    // return time;
+    // }
+    //
+    // public void setTime(long time) {
+    // this.time = time;
+    // }
 
-    }
+    // public void specifyNotPersist(double totalExpectedConsumption, long
+    // currentTime) {
+    // this.setTotalExpectedConsumption(totalExpectedConsumption);
+    // this.setTime(currentTime);
+    //
+    // }
+
+    // /**
+    // * @param plant
+    // */
+    //
+    // // All transactional methods below are signified by starting with update
+    // @Transactional
+    // public void specifyAndPersist(double totalExpectedConsumption, long
+    // currentTime) {
+    // this.persist();
+    // this.specifyNotPersist(totalExpectedConsumption, currentTime);
+    //
+    // } Consumer
 
 }

@@ -324,128 +324,115 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     }
                 }
 
-                // logger.warn(agent +
-                // "expects technology {} to have {} running", technology,
-                // runningHours);
-                // expect to meet minimum running hours?
-                if (runningHours < plant.getTechnology().getMinimumRunningHours()) {
-                    // logger.warn(
-                    // agent
-                    // +
-                    // " will not bid in {} technology as he expect to have {}
-                    // running, which is lower then required",
-                    // technology, runningHours);
+                double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());// /
+                double operatingProfit = expectedGrossProfit - fixedOMCost;
+                double wacc = (1 - agent.getDebtRatioOfInvestments()) * agent.getEquityInterestRate()
+                        + agent.getDebtRatioOfInvestments() * agent.getLoanInterestRate();
+
+                // Creation of out cash-flow during power plant building
+                // phase (note that the cash-flow is negative!)
+                TreeMap<Integer, Double> discountedProjectCapitalOutflow = calculateSimplePowerPlantInvestmentCashFlow(
+                        technology.getDepreciationTime(),
+                        (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()),
+                        plant.getActualInvestedCapital(), 0);
+                // Creation of in cashflow during operation
+                TreeMap<Integer, Double> discountedProjectCashInflow = calculateSimplePowerPlantInvestmentCashFlow(
+                        technology.getDepreciationTime(),
+                        (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, operatingProfit);
+
+                double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
+                double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
+
+                double projectValue = discountedOpProfit + discountedCapitalCosts - Math.pow(1, 10);
+
+                // logger.warn("projectValue is: " + projectValue);
+                // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
+                // totalAnnualExpectedGenerationOfPlant);
+
+                if (projectValue >= 0 || totalAnnualExpectedGenerationOfPlant == 0) {
+                    bidPricePerMWh = 0d;
+
+                    // but should also be able to bid for zero right? They
+                    // might get some wind fall profits then
+
                 } else {
 
-                    double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());// /
-                    double operatingProfit = expectedGrossProfit - fixedOMCost;
-                    double wacc = (1 - agent.getDebtRatioOfInvestments()) * agent.getEquityInterestRate()
-                            + agent.getDebtRatioOfInvestments() * agent.getLoanInterestRate();
+                    // calculate discounted tender return factor term
 
-                    // Creation of out cash-flow during power plant building
-                    // phase (note that the cash-flow is negative!)
-                    TreeMap<Integer, Double> discountedProjectCapitalOutflow = calculateSimplePowerPlantInvestmentCashFlow(
-                            technology.getDepreciationTime(),
-                            (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()),
-                            plant.getActualInvestedCapital(), 0);
-                    // Creation of in cashflow during operation
-                    TreeMap<Integer, Double> discountedProjectCashInflow = calculateSimplePowerPlantInvestmentCashFlow(
-                            technology.getDepreciationTime(),
-                            (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0,
-                            operatingProfit);
+                    TreeMap<Integer, Double> discountedTenderReturnFactorSummingTerm = calculateSimplePowerPlantInvestmentCashFlow(
+                            (int) tenderSchemeDuration,
+                            (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, 1);
+                    double discountedTenderReturnFactor = npv(discountedTenderReturnFactorSummingTerm, wacc);
 
-                    double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
-                    double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
+                    // long x = plant.calculateActualLeadtime() +
+                    // plant.calculateActualPermittime() ;
 
-                    // tendertesting
-                    double projectValue = discountedOpProfit + discountedCapitalCosts - Math.pow(1, 9);
+                    // logger.warn("discountedTenderReturnFactor is: " +
+                    // discountedTenderReturnFactor);
 
-                    // logger.warn("projectValue is: " + projectValue);
-                    // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
-                    // totalAnnualExpectedGenerationOfPlant);
-
-                    if (projectValue >= 0 || totalAnnualExpectedGenerationOfPlant == 0) {
+                    if (discountedTenderReturnFactor == 0) {
                         bidPricePerMWh = 0d;
-
-                        // but should also be able to bid for zero right? They
-                        // might get some wind fall profits then
+                        // logger.warn(" zero discountedTenderReturnFactor -
+                        // bid price per mwh is "
+                        // + bidPricePerMWh);
 
                     } else {
 
-                        // calculate discounted tender return factor term
+                        // calculate generation in MWh per year
+                        bidPricePerMWh = -projectValue
+                                / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
-                        TreeMap<Integer, Double> discountedTenderReturnFactorSummingTerm = calculateSimplePowerPlantInvestmentCashFlow(
-                                (int) tenderSchemeDuration,
-                                (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, 1);
-                        double discountedTenderReturnFactor = npv(discountedTenderReturnFactorSummingTerm, wacc);
+                        Zone zone = market.getZone();
+                        RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
+                                .determineSupportSchemeForZone(zone);
 
-                        // long x = plant.calculateActualLeadtime() +
-                        // plant.calculateActualPermittime() ;
+                        // logger.warn("scheme is: " + scheme);
 
-                        // logger.warn("discountedTenderReturnFactor is: " +
-                        // discountedTenderReturnFactor);
+                        for (long i = 1; i <= numberOfPlants; i++) {
 
-                        if (discountedTenderReturnFactor == 0) {
-                            bidPricePerMWh = 0d;
-                            // logger.warn(" zero discountedTenderReturnFactor -
-                            // bid price per mwh is "
-                            // + bidPricePerMWh);
+                            TenderBid bid = new TenderBid();
+                            bid.specifyAndPersist(
+                                    totalAnnualExpectedGenerationOfPlant,
+                                    plant,
+                                    agent,
+                                    zone,
+                                    node,
+                                    (getCurrentTick() + (plant.calculateActualLeadtime() + plant
+                                            .calculateActualPermittime())),
+                                    (getCurrentTick()
+                                            + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration),
+                                    bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
 
-                        } else {
+                            // logger.warn("totalAnnualExpectedGenerationOfPlant is: "
+                            // + totalAnnualExpectedGenerationOfPlant
+                            // + " and plant: "
+                            // + plant
+                            // + " and agent is: "
+                            // + agent
+                            // // + " in zone: "
+                            // // + zone
+                            // // + " node is: "
+                            // // + node
+                            // + " start time is: "
+                            // + (getCurrentTick() +
+                            // (plant.calculateActualLeadtime() + plant
+                            // .calculateActualPermittime()))
+                            // + " end time is "
+                            // + (getCurrentTick()
+                            // + (plant.calculateActualLeadtime() +
+                            // plant.calculateActualPermittime()) +
+                            // tenderSchemeDuration)
+                            // + " and bid price: " + bidPricePerMWh +
+                            // " is technology: " + technology
+                            // + " current time: " + getCurrentTick()
+                            // // + " status is: " + Bid.SUBMITTED
+                            // + " Scheme is: " + scheme);
 
-                            // calculate generation in MWh per year
-                            bidPricePerMWh = -projectValue
-                                    / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
+                        } // end for loop for tender bids
 
-                            Zone zone = market.getZone();
-                            RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
-                                    .determineSupportSchemeForZone(zone);
+                    } // end else calculate generation in MWh per year
 
-                            // logger.warn("scheme is: " + scheme);
-
-                            for (long i = 1; i <= numberOfPlants; i++) {
-
-                                TenderBid bid = new TenderBid();
-                                bid.specifyAndPersist(
-                                        totalAnnualExpectedGenerationOfPlant,
-                                        plant,
-                                        agent,
-                                        zone,
-                                        node,
-                                        (getCurrentTick() + (plant.calculateActualLeadtime() + plant
-                                                .calculateActualPermittime())),
-                                        (getCurrentTick()
-                                                + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration),
-                                        bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
-
-                                logger.warn("totalAnnualExpectedGenerationOfPlant is: "
-                                        + totalAnnualExpectedGenerationOfPlant
-                                        + " and plant: "
-                                        + plant
-                                        + " and agent is: "
-                                        + agent
-                                        // + " in zone: "
-                                        // + zone
-                                        // + " node is: "
-                                        // + node
-                                        + " start time is: "
-                                        + (getCurrentTick() + (plant.calculateActualLeadtime() + plant
-                                                .calculateActualPermittime()))
-                                        + " end time is "
-                                        + (getCurrentTick()
-                                                + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration)
-                                        + " and bid price: " + bidPricePerMWh + " is technology: " + technology
-                                        + " current time: " + getCurrentTick()
-                                        // + " status is: " + Bid.SUBMITTED
-                                        + " Scheme is: " + scheme);
-
-                            } // end for loop for tender bids
-
-                        } // end else calculate generation in MWh per year
-
-                    } // end else calculate discounted tender return factor term
-
-                } // end if else for running hours
+                } // end else calculate discounted tender return factor term
 
             } // end for loop possible installation nodes
 
