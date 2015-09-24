@@ -32,7 +32,7 @@ library(TeachingDemos)
 
 #Average Price
 avgPricePlotinB_CI<-plotTimeSeriesWithConfidenceIntervalByFacettedGroup(bigDF, "Avg_El_PricesinEURpMWh_Country.A", "Avg. Electricity Price in Country B [EUR/MW]")
-avgPricePlotinB_CI
+#avgPricePlotinB_CI
 ggsave(filename="AveragePricePlotinGermany.pdf",plot=avgPricePlotinB_CI, width=10, height=20, units="cm")
 
 #SupplyRatio
