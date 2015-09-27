@@ -569,8 +569,8 @@
 			<list>
 				<ref bean="energyProducerA" />
 				<ref bean="energyProducerB" />
-<!-- 				<ref bean="energyProducerC" /> -->
-<!-- 				<ref bean="energyProducerD" /> -->
+				<ref bean="energyProducerC" />
+				<ref bean="energyProducerD" />
 			</list>
 		</property>
 	</bean>
