@@ -745,54 +745,54 @@
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
 		<property name="capacityMargin" value="0.25" />
 		<property name="portfolioShares">
-			<map>
+						<map>
 				<entry>
 					<key>
 						<ref bean="coalPulverizedSuperCritical" />
 					</key>
-					<value>0.33</value>
+					<value>0.219</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="CCGT" />
 					</key>
-					<value>0.40</value>
+					<value>0.421</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="OCGT" />
 					</key>
-					<value>0.16</value>
+					<value>0.169</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.365</value>
+					<value>0.012</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="nuclearPGT" />
 					</key>
-					<value>0.03</value>
+					<value>0.015</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windPGT" />
 					</key>
-					<value>0.2606</value>
+					<value>0.08</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windOffshorePGT" />
 					</key>
-					<value>0.0024</value>
+					<value>0.007</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="photovoltaicPGT" />
 					</key>
-					<value>0.001</value>
+					<value>0.03</value>
 				</entry>
 				<entry>
 					<key>
@@ -826,49 +826,55 @@
 					<key>
 						<ref bean="coalPulverizedSuperCritical" />
 					</key>
-					<value>0.33</value>
+					<value>0.151</value>
+				</entry>
+				<entry>
+					<key>
+						<ref bean="lignitePGT" />
+					</key>
+					<value>0.118</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="CCGT" />
 					</key>
-					<value>0.40</value>
+					<value>0.087</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="OCGT" />
 					</key>
-					<value>0.16</value>
+					<value>0.069</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.00</value>
+					<value>0.049</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="nuclearPGT" />
 					</key>
-					<value>0.03</value>
+					<value>0.06</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windPGT" />
 					</key>
-					<value>0.5744</value>
+					<value>0.208</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windOffshorePGT" />
 					</key>
-					<value>0.00</value>
+					<value>0.009</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="photovoltaicPGT" />
 					</key>
-					<value>0.0166</value>
+					<value>0.218</value>
 				</entry>
 				<entry>
 					<key>

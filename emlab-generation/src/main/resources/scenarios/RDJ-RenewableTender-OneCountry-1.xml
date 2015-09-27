@@ -33,6 +33,7 @@
 		<property name="zone" ref="nl" />
 	</bean>
 
+	
 
 	<!-- Renewable Tender Scheme NL -->
 	<bean id="renewableSupportSchemeNL"
@@ -51,6 +52,7 @@
 		</property>
 	</bean>
 
+	
 
 
 	<!-- Renewable Energy Target NL -->
@@ -65,6 +67,7 @@
 		p:delimiter="," p:variableName="nl_target" />
 
 
+	
 
 
 	<!-- Demand growth -->
@@ -97,10 +100,24 @@
 
 	<!-- Zones -->
 	<bean id="nl" class="emlab.gen.domain.gis.Zone" p:name="Country A" />
-	
+
+
+
+	<!-- Interconnector -->
+	<!-- https://www.rvo.nl/sites/default/files/2015/05/IP01_Inpassingsplan%20DW380%20Toelichting%20en%20regels%2020150415%20-%20EXCL%20BIJLAGEN_vKT.pdf 
+		says 2450 MW in (2014) with an expected increase to 3950 MW in 2017 -->
+	<bean id="interconnectorNetherlandsGermany" class="emlab.gen.domain.technology.Interconnector"
+		p:capacity="0">
+		<property name="connections">
+			<set>
+				<ref bean="nlNode" />
+			</set>
+		</property>
+	</bean>
 
 
 	<!-- PowerGrid NL -->
+
 	<bean id="nlNode" class="emlab.gen.domain.technology.PowerGridNode"
 		p:capacityMultiplicationFactor="1.0" p:name="nlNode">
 		<property name="zone" ref="nl" />
@@ -108,6 +125,16 @@
 	</bean>
 
 
+	
+
+	<!-- Demand in MWh -->
+<!-- 	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
+<!-- 		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
+
+<!-- 	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
+<!-- 		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
 
 
 	<!-- PowerGenerationTechnology Node Limits in MW NL -->
@@ -154,6 +181,9 @@
 		<property name="powerGeneratingTechnology" ref="windOffshorePGT" />
 		<property name="powerGridNode" ref="nlNode" />
 	</bean>
+
+
+	
 
 
 
@@ -322,6 +352,7 @@
 	
 
 
+
 	<!-- Commodity Markets -->
 	<bean id="coalMarket" class="emlab.gen.domain.market.CommodityMarket"
 		p:auction="false" p:name="Coal market">
@@ -471,54 +502,54 @@
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
 		<property name="capacityMargin" value="0.25" />
 		<property name="portfolioShares">
-			<map>
+						<map>
 				<entry>
 					<key>
 						<ref bean="coalPulverizedSuperCritical" />
 					</key>
-					<value>0.33</value>
+					<value>0.219</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="CCGT" />
 					</key>
-					<value>0.40</value>
+					<value>0.421</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="OCGT" />
 					</key>
-					<value>0.16</value>
+					<value>0.169</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.365</value>
+					<value>0.012</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="nuclearPGT" />
 					</key>
-					<value>0.03</value>
+					<value>0.015</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windPGT" />
 					</key>
-					<value>0.2606</value>
+					<value>0.08</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windOffshorePGT" />
 					</key>
-					<value>0.0024</value>
+					<value>0.007</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="photovoltaicPGT" />
 					</key>
-					<value>0.001</value>
+					<value>0.03</value>
 				</entry>
 				<entry>
 					<key>
@@ -544,8 +575,7 @@
 		</property>
 	</bean>
 
-
-
+	
 
 	<!-- CO2 Tax -->
 	<bean id="co2TaxTrend" class="emlab.gen.trend.StepTrend" p:start="${co2TaxStart}"
@@ -581,6 +611,7 @@
 	</bean>
 
 	
+
 
 	<!-- Power Generation Technologies -->
 	<bean id="coalPulverizedSuperCritical" class="emlab.gen.domain.technology.PowerGeneratingTechnology"

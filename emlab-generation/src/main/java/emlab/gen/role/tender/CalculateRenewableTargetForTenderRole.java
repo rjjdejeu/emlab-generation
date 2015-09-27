@@ -171,9 +171,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
             }
             expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
-            // logger.warn("fullLoadHours is: " + fullLoadHours);
-            // logger.warn("expectedTechnologyCapacity is: " +
-            // expectedTechnologyCapacity);
+            logger.warn("fullLoadHours is: " + fullLoadHours);
+            logger.warn("expectedTechnologyCapacity is: " + expectedTechnologyCapacity);
 
             totalExpectedGeneration += expectedGenerationPerTechnology;
         }
@@ -212,6 +211,10 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          */
 
         // tendertesting comment out totalExpectedGeneration
+
+        logger.warn("renewableTargetInMwh for this tick: " + scheme.getFutureTenderOperationStartTime() + " years is "
+                + renewableTargetInMwh);
+
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
         if (renewableTargetInMwh < 0) {
