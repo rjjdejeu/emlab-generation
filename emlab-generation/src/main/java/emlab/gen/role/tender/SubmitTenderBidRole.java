@@ -126,7 +126,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
         ElectricitySpotMarket market = agent.getInvestorMarket();
 
-        logger.warn("market is: " + market);
+        // logger.warn("market is: " + market);
 
         MarketInformation marketInformation = new MarketInformation(market, expectedDemand, expectedFuelPrices,
                 expectedCO2Price.get(market).doubleValue(), futureTimePoint);
@@ -344,9 +344,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
 
                 double projectValue = discountedOpProfit + discountedCapitalCosts; // tendertesting
-                                                                                   // -
-                                                                                   // Math.pow(1,
-                                                                                   // 10);
+
+                // logger.warn("project value: " + projectValue +
+                // ", discountedOpProfit: " + discountedOpProfit
+                // + ", discountedCapitalCosts: " + discountedCapitalCosts);
 
                 // logger.warn("projectValue is: " + projectValue);
                 // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
