@@ -84,6 +84,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             // logger.warn("totalExpectedConsumption: " +
             // totalExpectedConsumption);
 
+            logger.warn("demand factor is: " + demandFactor);
+
         }
 
         // renewable target for tender operation start year in MWh is
@@ -95,7 +97,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         double expectedGenerationPerTechnology = 0d;
         double totalExpectedGeneration = 0d;
         long numberOfSegments = reps.segmentRepository.count();
-        logger.warn("numberOfsegments: " + numberOfSegments);
+        // logger.warn("numberOfsegments: " + numberOfSegments);
         double factor = 0d;
 
         // double expectedTechnologyCapacity = reps.powerPlantRepository
@@ -112,16 +114,19 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         //
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
-            logger.warn("technology is: " + technology);
+            // logger.warn("technology is: " + technology);
             double fullLoadHours = 0d;
+
+            // calculate the expected technology capacity based on existing
+            // capacity and capacity being installed between now and the
+            // futureTenderOperationsStarttime
             double expectedTechnologyCapacity = reps.powerPlantRepository
                     .calculateCapacityOfExpectedOperationalPowerPlantsInMarketAndTechnology(market, technology,
                             scheme.getFutureTenderOperationStartTime());
-            logger.warn("expectedTechnologyCapacity: " + expectedTechnologyCapacity);
 
-            for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalRenewablePowerPlantsInMarket(
-                    market, scheme.getFutureTenderOperationStartTime())) {
-                logger.warn("plant is " + plant);
+            for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
+                    market, technology, scheme.getFutureTenderOperationStartTime())) {
+                // logger.warn("plant is " + plant);
                 fullLoadHours = 0d;
                 for (Segment segment : reps.segmentRepository.findAll()) {
                     // logger.warn("Segment " + segment);
@@ -160,17 +165,12 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             }
 
             expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
-            logger.warn("expectedGenerationPerTechnology: " + expectedGenerationPerTechnology);
+            // logger.warn("expectedGenerationPerTechnology: " +
+            // expectedGenerationPerTechnology);
 
             totalExpectedGeneration += expectedGenerationPerTechnology;
-            logger.warn("totalExpectedGeneration: " + totalExpectedGeneration);
-
-            scheme.getRegulator().setAnnualTotalExpectedGeneration(totalExpectedGeneration);
 
         }
-
-        double expectedGen = scheme.getRegulator().getAnnualTotalExpectedGeneration();
-        logger.warn("totalExpectedGeneration: " + expectedGen);
 
         /*
          * To compare
@@ -199,9 +199,15 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * totalExpectingGeneration 2) Also, NL and DE start with the same
          * totalExpectedGeneration, which could not be right. Probably due to
          * the initial portfolios.
+         * 
+         * --> solved, the queries in line 118 and 122 were not market/zone
+         * specific and summed all the totalExpectedGeneration instead of doing
+         * it per market/zone
          */
 
-        logger.warn("renewabeTargetInMWh" + renewableTargetInMwh);
+        logger.warn("renewabeTargetInMWh: " + renewableTargetInMwh);
+        logger.warn("totalExpectedGeneration: " + totalExpectedGeneration);
+
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
         if (renewableTargetInMwh < 0) {

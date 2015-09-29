@@ -70,15 +70,17 @@ public class Regulator extends DecarbonizationAgent implements Agent {
         this.annualRenewableTargetInMwh = annualRenewableTargetInMwh;
     }
 
-    private double annualTotalExpectedGeneration;
-
-    public double getAnnualTotalExpectedGeneration() {
-        return annualTotalExpectedGeneration;
-    }
-
-    public void setAnnualTotalExpectedGeneration(double annualTotalExpectedGeneration) {
-        this.annualTotalExpectedGeneration = annualTotalExpectedGeneration;
-    }
+    // private double annualTotalExpectedRenewableGeneration;
+    //
+    // public double getAnnualTotalExpectedRenewableGeneration() {
+    // return annualTotalExpectedRenewableGeneration;
+    // }
+    //
+    // public void setAnnualTotalExpectedRenewableGeneration(double
+    // annualTotalExpectedGeneration) {
+    // this.annualTotalExpectedRenewableGeneration =
+    // annualTotalExpectedGeneration;
+    // }
 
     public double getDemandTarget() {
         return demandTarget;
