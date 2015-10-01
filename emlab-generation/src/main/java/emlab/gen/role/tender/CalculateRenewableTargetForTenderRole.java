@@ -81,8 +81,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             // logger.warn("segmentLoad: " + segmentLoad);
             totalExpectedConsumption += segmentLoad.getBaseLoad() * demandFactor
                     * segmentLoad.getSegment().getLengthInHours();
-            // logger.warn("totalExpectedConsumption: " +
-            // totalExpectedConsumption);
+            logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
 
             logger.warn("demand factor is: " + demandFactor);
 
@@ -165,6 +164,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             }
 
             expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
+
             // logger.warn("expectedGenerationPerTechnology: " +
             // expectedGenerationPerTechnology);
 
@@ -205,8 +205,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * it per market/zone
          */
 
-        logger.warn("renewabeTargetInMWh: " + renewableTargetInMwh);
-        logger.warn("totalExpectedGeneration: " + totalExpectedGeneration);
+        logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
+        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
 
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
@@ -215,7 +215,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        logger.warn("actual renewableTargetInMwh for this tick: " + scheme.getFutureTenderOperationStartTime()
+        logger.warn("actual renewableTargetInMwh for this tick; " + scheme.getFutureTenderOperationStartTime()
                 + " years is " + renewableTargetInMwh);
     }
 
