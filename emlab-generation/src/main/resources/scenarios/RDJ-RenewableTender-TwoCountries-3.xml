@@ -29,7 +29,7 @@
 	<!-- https://www.rvo.nl/sites/default/files/2015/05/IP01_Inpassingsplan%20DW380%20Toelichting%20en%20regels%2020150415%20-%20EXCL%20BIJLAGEN_vKT.pdf 
 		says 2450 MW in (2014) with an expected increase to 3950 MW in 2017 -->
 	<bean id="interconnectorNetherlandsGermany" class="emlab.gen.domain.technology.Interconnector"
-		p:capacity="90000000000">
+		p:capacity="3950">
 		<property name="connections">
 			<set>
 				<ref bean="nlNode" />
@@ -113,11 +113,11 @@
 
 	<!-- Demand growth -->
 	<bean class="emlab.gen.trend.TriangularTrend" id="demandGrowthTrendNL"
-		p:start="${demandGrowthNLStart}" p:min="${demandGrowthNLMin}" p:max="${demandGrowthNLMax}"
-		p:top="${demandGrowthNLTop}" />
+		p:start="1" p:min="1" p:max="1"
+		p:top="1" />
 	<bean class="emlab.gen.trend.TriangularTrend" id="demandGrowthTrendDE"
-		p:start="${demandGrowthDEStart}" p:min="${demandGrowthDEMin}" p:max="${demandGrowthDEMax}"
-		p:top="${demandGrowthDETop}" />
+		p:start="1" p:min="1" p:max="1"
+		p:top="1" />
 
 	<!-- Substances -->
 	<bean id="coal" class="emlab.gen.domain.technology.Substance"
@@ -151,25 +151,25 @@
 	<bean id="nlNode" class="emlab.gen.domain.technology.PowerGridNode"
 		p:capacityMultiplicationFactor="1.0" p:name="nlNode">
 		<property name="zone" ref="nl" />
-<!-- 		<property name="hourlyDemand" ref="demandNL" /> -->
+		<property name="hourlyDemand" ref="demandNL" />
 	</bean>
 
 	<bean id="deNode" class="emlab.gen.domain.technology.PowerGridNode"
 		p:capacityMultiplicationFactor="1.0" p:name="deNode">
 		<property name="zone" ref="de" />
-<!-- 		<property name="hourlyDemand" ref="demandDE" /> -->
+		<property name="hourlyDemand" ref="demandDE" />
 	</bean>
 	
 
-	<!-- Demand in MWh -->
-	
-<!-- 	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
-<!-- 		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand" -->
-<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
+	<!-- Demand in MWh-->
+		
+	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries"
+		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
 
-<!-- 	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
-<!-- 		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand" -->
-<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
+	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries"
+		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
 
 
 	<!-- PowerGenerationTechnology Node Limits in MW NL -->
