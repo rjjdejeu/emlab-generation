@@ -81,9 +81,10 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             // logger.warn("segmentLoad: " + segmentLoad);
             totalExpectedConsumption += segmentLoad.getBaseLoad() * demandFactor
                     * segmentLoad.getSegment().getLengthInHours();
-            logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
+            // logger.warn("totalExpectedConsumption; " +
+            // totalExpectedConsumption);
 
-            logger.warn("demand factor is: " + demandFactor);
+            // logger.warn("demand factor is: " + demandFactor);
 
         }
 

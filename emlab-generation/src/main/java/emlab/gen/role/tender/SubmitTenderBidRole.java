@@ -169,9 +169,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
 
-                // logger.warn(" agent is " + agent + " with technology " +
-                // technology + " and plant " + plant
-                // + " in node " + node);
+                logger.warn(" agent is " + agent + " with technology " + technology + " and plant " + plant
+                        + " in node " + node);
 
                 // if too much capacity of this technology in the pipeline (not
                 // limited to the 5 years)
@@ -226,8 +225,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // which is translated to the number of plants
                 // available.
 
+                // If cash needed is larger than current cash of agent
                 if (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent.getDebtRatioOfInvestments()) > agent
                         .getDownpaymentFractionOfCash() * agent.getCash()) {
+
+                    // logger.warn("Cash fraction method needed to compute number of plants");
 
                     double cashAvailableFraction = (agent.getDownpaymentFractionOfCash() * agent.getCash())
                             / (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent
@@ -239,7 +241,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     numberOfPlants = cashAvailableFraction * numberOfPlants;
 
-                    // logger.warn("cash availabe fraction is: " +
+                    // logger.warn("cash available fraction is: " +
                     // cashAvailableFraction);
                     // logger.warn("number of plants are: " + numberOfPlants);
 
@@ -248,12 +250,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                                             // lower
                                                             // integer
 
-                    // logger.warn("number of plants are: " + numberOfPlants);
+                    // logger.warn("number of plants are after Cash Fraction: "
+                    // + numberOfPlants);
                 }
 
                 // computing tender bid price
-
-                double bidPricePerMWh = 0d;
 
                 Map<Substance, Double> myFuelPrices = new HashMap<Substance, Double>();
                 for (Substance fuel : technology.getFuels()) {
@@ -286,9 +287,22 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     double expectedElectricityPrice = marketInformation.expectedElectricityPricesPerSegment
                             .get(segmentLoad.getSegment());
                     double hours = segmentLoad.getSegment().getLengthInHours();
+
                     if (expectedMarginalCost <= expectedElectricityPrice) {
-                        runningHours += hours;
+                        // logger.warn("expectedMarginalCost: " +
+                        // expectedMarginalCost +
+                        // " and expectedElectricityPrice"
+                        // + expectedElectricityPrice);
+
+                        runningHours = runningHours + hours;
+
+                        // logger.warn("hours is: " + hours);
+
+                        // logger.warn("runningHours: " + runningHours);
+
                         if (technology.isIntermittent()) {
+
+                            // logger.warn("This logger should not showing up: technology is intermittent");
                             expectedGrossProfit += (expectedElectricityPrice - expectedMarginalCost)
                                     * hours
                                     * plant.getActualNominalCapacity()
@@ -312,9 +326,19 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                     * plant.getAvailableCapacity(futureTimePoint, segmentLoad.getSegment(),
                                             numberOfSegments);
 
+                            // logger.warn("expectedGrossProfit: " +
+                            // expectedGrossProfit);
+
                             totalAnnualExpectedGenerationOfPlant += hours
                                     * plant.getAvailableCapacity(futureTimePoint, segmentLoad.getSegment(),
                                             numberOfSegments);
+
+                            // logger.warn("hours: " + hours);
+
+                            // logger.warn("getAvailableCapacity: "
+                            // + plant.getAvailableCapacity(futureTimePoint,
+                            // segmentLoad.getSegment(),
+                            // numberOfSegments));
 
                             // logger.warn("DISPATCH totalAnnualExpectedGenerationOfPlant "
                             // + totalAnnualExpectedGenerationOfPlant +
@@ -324,8 +348,12 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     }
                 }
 
-                double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());// /
+                double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());
+                // logger.warn("fixedOMCost is: " + fixedOMCost);
+
                 double operatingProfit = expectedGrossProfit - fixedOMCost;
+                // logger.warn("operatingProfit is: " + operatingProfit);
+
                 double wacc = (1 - agent.getDebtRatioOfInvestments()) * agent.getEquityInterestRate()
                         + agent.getDebtRatioOfInvestments() * agent.getLoanInterestRate();
 
@@ -341,7 +369,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, operatingProfit);
 
                 double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
+                // logger.warn("discountedCapitalCosts is: " +
+                // discountedCapitalCosts);
                 double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
+                // logger.warn("discountedOpProfit is: " + discountedOpProfit);
 
                 double projectValue = discountedOpProfit + discountedCapitalCosts; // tendertesting
 
@@ -349,15 +380,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // ", discountedOpProfit: " + discountedOpProfit
                 // + ", discountedCapitalCosts: " + discountedCapitalCosts);
 
-                // logger.warn("projectValue is: " + projectValue);
+                logger.warn("projectValue is: " + projectValue);
                 // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
                 // totalAnnualExpectedGenerationOfPlant);
 
+                double bidPricePerMWh = 0d;
+
                 if (projectValue >= 0 || totalAnnualExpectedGenerationOfPlant == 0) {
                     bidPricePerMWh = 0d;
-
-                    // but should also be able to bid for zero right? They
-                    // might get some wind fall profits then
 
                 } else {
 
@@ -367,9 +397,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             (int) tenderSchemeDuration,
                             (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, 1);
                     double discountedTenderReturnFactor = npv(discountedTenderReturnFactorSummingTerm, wacc);
-
-                    // long x = plant.calculateActualLeadtime() +
-                    // plant.calculateActualPermittime() ;
 
                     // logger.warn("discountedTenderReturnFactor is: " +
                     // discountedTenderReturnFactor);
@@ -407,30 +434,26 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                             + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration),
                                     bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
 
-                            // logger.warn("totalAnnualExpectedGenerationOfPlant is: "
-                            // + totalAnnualExpectedGenerationOfPlant
-                            // + " and plant: "
-                            // + plant
-                            // + " and agent is: "
-                            // + agent
-                            // // + " in zone: "
-                            // // + zone
-                            // // + " node is: "
-                            // // + node
-                            // + " start time is: "
-                            // + (getCurrentTick() +
-                            // (plant.calculateActualLeadtime() + plant
-                            // .calculateActualPermittime()))
-                            // + " end time is "
-                            // + (getCurrentTick()
-                            // + (plant.calculateActualLeadtime() +
-                            // plant.calculateActualPermittime()) +
-                            // tenderSchemeDuration)
-                            // + " and bid price: " + bidPricePerMWh +
-                            // " is technology: " + technology
-                            // + " current time: " + getCurrentTick()
-                            // // + " status is: " + Bid.SUBMITTED
-                            // + " Scheme is: " + scheme);
+                            logger.warn("totalAnnualExpectedGenerationOfPlant is: "
+                                    + totalAnnualExpectedGenerationOfPlant
+                                    + " and plant: "
+                                    + plant
+                                    + " and agent is: "
+                                    + agent
+                                    // + " in zone: "
+                                    // + zone
+                                    // + " node is: "
+                                    // + node
+                                    + " start time is: "
+                                    + (getCurrentTick() + (plant.calculateActualLeadtime() + plant
+                                            .calculateActualPermittime()))
+                                    + " end time is "
+                                    + (getCurrentTick()
+                                            + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration)
+                                    + " and bid price: " + bidPricePerMWh + " is technology: " + technology
+                                    + " current time: " + getCurrentTick()
+                                    // + " status is: " + Bid.SUBMITTED
+                                    + " Scheme is: " + scheme);
 
                         } // end for loop for tender bids
 

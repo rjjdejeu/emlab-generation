@@ -113,11 +113,11 @@
 
 	<!-- Demand growth -->
 	<bean class="emlab.gen.trend.TriangularTrend" id="demandGrowthTrendNL"
-		p:start="1" p:min="0.99" p:max="1.03"
-		p:top="1.01" />
+		p:start="1" p:min="1" p:max="1"
+		p:top="1" />
 	<bean class="emlab.gen.trend.TriangularTrend" id="demandGrowthTrendDE"
-		p:start="1" p:min="0.99" p:max="1.02"
-		p:top="1.01" />
+		p:start="1" p:min="1" p:max="1"
+		p:top="1" />
 
 	<!-- Substances -->
 	<bean id="coal" class="emlab.gen.domain.technology.Substance"
@@ -172,13 +172,17 @@
 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
 
 <!-- 	Intermittent Production Profiles  -->
+<!-- p:variableName="nl_node_3">, where 1,2 and 3 are adjustable for: 
+	1 = high FLH, 2 = med FLH, 3 = low FLH -->
+
+
 		
 
 <!--  	Photovoltaic nodes Netherlands  -->
 	<bean id="photovoltaicNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
 		p:filename="/data/multiNodeProduction_NL_solarPV.csv"
 		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_1">
+		p:variableName="nl_node_3">
 		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
 		<property name="intermittentProductionNode" ref="nlNode"></property>
 	</bean>
@@ -198,7 +202,7 @@
 	<bean id="windOffSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
 		p:filename="/data/multiNodeProduction_NL_windOff.csv"
 		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_1">
+		p:variableName="nl_node_2">
 		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
 		<property name="intermittentProductionNode" ref="nlNode"></property>
 	</bean>
@@ -208,7 +212,7 @@
 	<bean id="photovoltaicNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
 		p:filename="/data/multiNodeProduction_DE_solarPV.csv"
 		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="de_node_1">
+		p:variableName="de_node_2">
 		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
 		<property name="intermittentProductionNode" ref="deNode"></property>
 	</bean>
@@ -218,7 +222,7 @@
 	<bean id="windOnSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
 		p:filename="/data/multiNodeProduction_DE_windOn.csv"
 		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="de_node_1">
+		p:variableName="de_node_3">
 		<property name="intermittentTechnology" ref="windPGT"></property>
 		<property name="intermittentProductionNode" ref="deNode"></property>
 	</bean>
@@ -821,7 +825,7 @@
 
 	<!-- Power plant Factory -->
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.25" />
+		<property name="capacityMargin" value="0.65" />
 		<property name="portfolioShares">
 						<map>
 				<entry>
@@ -897,7 +901,7 @@
 	</bean>
 
 	<bean id="DEPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.25" />
+		<property name="capacityMargin" value="0.65" />
 		<property name="portfolioShares">
 			<map>
 				<entry>

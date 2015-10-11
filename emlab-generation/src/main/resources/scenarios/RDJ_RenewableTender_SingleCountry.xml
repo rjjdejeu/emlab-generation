@@ -504,7 +504,75 @@
 		<property name="minNationalCo2PriceTrend" ref="minCo2PriceTrendNL" />
 		<property name="governedZone" ref="nl" />
 	</bean>
+	
+	
+	<!-- Intermittent Production Profiles -->
+		
 
+	<!-- Photovoltaic nodes Netherlands -->
+	<bean id="photovoltaicNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_NL_solarPV.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="nl_node_1">
+		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
+		<property name="intermittentProductionNode" ref="nlNode1"></property>
+	</bean>
+	
+				
+	<!-- Wind onshore nodes Netherlands -->
+	<bean id="windOnSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_NL_windOn.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="nl_node_1">
+		<property name="intermittentTechnology" ref="windPGT"></property>
+		<property name="intermittentProductionNode" ref="nlNode1"></property>
+	</bean>
+	
+		
+	<!-- Wind offshore nodes Netherlands -->
+	<bean id="windOffSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_NL_windOff.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="nl_node_1">
+		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
+		<property name="intermittentProductionNode" ref="nlNode1"></property>
+	</bean>
+
+	
+
+<!-- 	Photovoltaic nodes Germany (1-3 nodes) -->
+	<bean id="photovoltaicNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_DE_solarPV.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="de_node_1">
+		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
+		<property name="intermittentProductionNode" ref="deNode1"></property>
+	</bean>
+	
+	
+<!-- 	Wind onshore nodes Germany (1-3 nodes) -->
+	
+	<bean id="windOnSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_DE_windOn.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="de_node_1">
+		<property name="intermittentTechnology" ref="windPGT"></property>
+		<property name="intermittentProductionNode" ref="deNode1"></property>
+	</bean>
+	
+	
+
+<!-- 	Wind offshore nodes Germany  -->
+
+	<bean id="windOffSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
+		p:filename="/data/multiNodeProduction_DE_windOff.csv"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
+		p:variableName="de_node_1">
+		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
+		<property name="intermittentProductionNode" ref="deNode1"></property>
+	</bean>
+	
+	
 	<!-- Power Generation Technology Node limits -->
 
 	<bean id="ligniteNodeLimitNL"
