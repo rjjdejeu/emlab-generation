@@ -206,8 +206,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          * it per market/zone
          */
 
-        logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
-        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
+        // logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
+        // logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
 
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 
@@ -216,8 +216,9 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        logger.warn("actual renewableTargetInMwh for this tick; " + scheme.getFutureTenderOperationStartTime()
-                + " years is " + renewableTargetInMwh);
+        // logger.warn("actual renewableTargetInMwh for this tick; " +
+        // scheme.getFutureTenderOperationStartTime()
+        // + " years is " + renewableTargetInMwh);
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,

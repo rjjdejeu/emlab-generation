@@ -65,7 +65,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
 
         double tenderQuota = regulator.getAnnualRenewableTargetInMwh();
-        logger.warn("TenderQuota is: " + tenderQuota);
+        // logger.warn("TenderQuota is: " + tenderQuota);
         double sumOfTenderBidQuantityAccepted = 0d;
         double acceptedSubsidyPrice = 0d;
         boolean isTheTenderCleared = false;

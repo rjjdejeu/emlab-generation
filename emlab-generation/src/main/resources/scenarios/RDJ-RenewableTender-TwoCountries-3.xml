@@ -17,7 +17,7 @@
 	<!-- Decarbonization Model -->
 	<bean id="decarbonizationModel" class="emlab.gen.domain.agent.DecarbonizationModel"
 		p:name="Decarbonization Model" p:simulationLength="15"
-		p:co2TradingImplemented="false" p:realRenewableDataImplemented="true"
+		p:co2TradingImplemented="false" p:realRenewableDataImplemented="false"
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
@@ -144,94 +144,92 @@
 	<bean id="de" class="emlab.gen.domain.gis.Zone" p:name="Country B" />
 
 
-
-
 	<!-- PowerGrid -->
 	
 	<bean id="nlNode" class="emlab.gen.domain.technology.PowerGridNode"
 		p:capacityMultiplicationFactor="1.0" p:name="nlNode">
 		<property name="zone" ref="nl" />
-		<property name="hourlyDemand" ref="demandNL" />
+<!-- 		<property name="hourlyDemand" ref="demandNL" /> -->
 	</bean>
 
 	<bean id="deNode" class="emlab.gen.domain.technology.PowerGridNode"
 		p:capacityMultiplicationFactor="4.0" p:name="deNode">
 		<property name="zone" ref="de" />
-		<property name="hourlyDemand" ref="demandDE" />
+<!-- 		<property name="hourlyDemand" ref="demandDE" /> -->
 	</bean>
 	
 
-<!-- 	Demand in MWh -->
+<!--  	Demand in MWh --> 
 		
-	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries"
-		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
+<!-- 	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
+<!-- 		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
 
-	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries"
-		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
+<!-- 	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries" -->
+<!-- 		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," /> -->
 
-<!-- 	Intermittent Production Profiles  -->
+<!--  	Intermittent Production Profiles  --> 
 		
 
-<!--  	Photovoltaic nodes Netherlands  -->
-	<bean id="photovoltaicNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_NL_solarPV.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_1">
-		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
-		<property name="intermittentProductionNode" ref="nlNode"></property>
-	</bean>
+<!--   	Photovoltaic nodes Netherlands  --> 
+<!-- 	<bean id="photovoltaicNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_NL_solarPV.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="nl_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="photovoltaicPGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="nlNode"></property> -->
+<!-- 	</bean> -->
 	
 				
-<!--  	Wind onshore nodes Netherlands  -->
-	<bean id="windOnSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_NL_windOn.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_1">
-		<property name="intermittentTechnology" ref="windPGT"></property>
-		<property name="intermittentProductionNode" ref="nlNode"></property>
-	</bean>
+<!--   	Wind onshore nodes Netherlands  --> 
+<!-- 	<bean id="windOnSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_NL_windOn.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="nl_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="windPGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="nlNode"></property> -->
+<!-- 	</bean> -->
 	
 		
-<!--  	Wind offshore nodes Netherlands  -->
-	<bean id="windOffSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_NL_windOff.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="nl_node_1">
-		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
-		<property name="intermittentProductionNode" ref="nlNode"></property>
-	</bean>
+<!--   	Wind offshore nodes Netherlands  --> 
+<!-- 	<bean id="windOffSpeedNodeNL1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_NL_windOff.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="nl_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="windOffshorePGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="nlNode"></property> -->
+<!-- 	</bean> -->
 
 	
-<!--  		Photovoltaic nodes Germany   -->
-	<bean id="photovoltaicNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_DE_solarPV.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="de_node_1">
-		<property name="intermittentTechnology" ref="photovoltaicPGT"></property>
-		<property name="intermittentProductionNode" ref="deNode"></property>
-	</bean>
+<!--  		Photovoltaic nodes Germany   --> 
+<!-- 	<bean id="photovoltaicNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_DE_solarPV.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="de_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="photovoltaicPGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="deNode"></property> -->
+<!-- 	</bean> -->
 	
 	
-<!-- 		Wind onshore nodes Germany  -->
-	<bean id="windOnSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_DE_windOn.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="de_node_1">
-		<property name="intermittentTechnology" ref="windPGT"></property>
-		<property name="intermittentProductionNode" ref="deNode"></property>
-	</bean>
+<!-- 		Wind onshore nodes Germany  --> 
+<!-- 	<bean id="windOnSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_DE_windOn.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="de_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="windPGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="deNode"></property> -->
+<!-- 	</bean> -->
 	
 	
-<!-- 		Wind offshore nodes Germany  -->
-	<bean id="windOffSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile"
-		p:filename="/data/multiNodeProduction_DE_windOff.csv"
-		p:timeSeriesAreInDifferentColumns="true" p:delimiter=","
-		p:variableName="de_node_1">
-		<property name="intermittentTechnology" ref="windOffshorePGT"></property>
-		<property name="intermittentProductionNode" ref="deNode"></property>
-	</bean>
+<!--  		Wind offshore nodes Germany  --> 
+<!-- 	<bean id="windOffSpeedNodeDE1" class="emlab.gen.domain.technology.IntermittentResourceProfile" -->
+<!-- 		p:filename="/data/multiNodeProduction_DE_windOff.csv" -->
+<!-- 		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," -->
+<!-- 		p:variableName="de_node_1"> -->
+<!-- 		<property name="intermittentTechnology" ref="windOffshorePGT"></property> -->
+<!-- 		<property name="intermittentProductionNode" ref="deNode"></property> -->
+<!-- 	</bean> -->
 
 
 
@@ -821,7 +819,7 @@
 
 	<!-- Power plant Factory -->
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.25" />
+		<property name="capacityMargin" value="0.95" />
 		<property name="portfolioShares">
 						<map>
 				<entry>
@@ -897,7 +895,7 @@
 	</bean>
 
 	<bean id="DEPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.25" />
+		<property name="capacityMargin" value="0.95" />
 		<property name="portfolioShares">
 			<map>
 				<entry>
@@ -1318,7 +1316,7 @@
 		p:minimumFuelQuality="1" p:maximumInstalledCapacityFractionInCountry="1"
 		p:maximumInstalledCapacityFractionPerAgent="1"
 		p:baseSegmentDependentAvailability="0.40"
-		p:peakSegmentDependentAvailability="0.05" p:intermittent="true"
+		p:peakSegmentDependentAvailability="0.05" p:intermittent="false"
 		p:applicableForLongTermContract="true">
 	</bean>
 
@@ -1344,7 +1342,7 @@
 		p:minimumFuelQuality="1" p:maximumInstalledCapacityFractionInCountry="1"
 		p:maximumInstalledCapacityFractionPerAgent="1"
 		p:baseSegmentDependentAvailability="0.60"
-		p:peakSegmentDependentAvailability="0.07" p:intermittent="true"
+		p:peakSegmentDependentAvailability="0.07" p:intermittent="false"
 		p:applicableForLongTermContract="true">
 	</bean>
 
@@ -1391,7 +1389,7 @@
 		p:maximumInstalledCapacityFractionPerAgent="1"
 		p:baseSegmentDependentAvailability="0.20"
 		p:peakSegmentDependentAvailability="0.04"
-		p:applicableForLongTermContract="true" p:intermittent="true">
+		p:applicableForLongTermContract="true" p:intermittent="false">
 	</bean>
 
 
