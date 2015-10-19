@@ -13,3 +13,13 @@ for(runID in seq(1:noOfRepetitions))
   writeLines(xmlFileContent, paste("~/Desktop/emlabGen/scenarios/RDJ-RT-TC-ThreeMultiNodes/", filestump, runID, ".xml", sep=""))
   }
 
+xmlFilePath<-"~/Desktop/emlabGen/scenarios/RDJ-RT-TC-OneMultiNodes.xml"
+filestump<-'RDJ-RT-TC-OneMultiNodes-'
+# Step 2 building the scenarios: make separate data vectors
+noOfRepetitions = 120 
+for(runID in seq(1:noOfRepetitions))
+{
+  xmlFileContent<-readLines(xmlFilePath, encoding = "UTF-8")
+  xmlFileContent<-gsub("#repetitionNumber", runID, xmlFileContent)
+  writeLines(xmlFileContent, paste("~/Desktop/emlabGen/scenarios/RDJ-RT-TC-OneMultiNodes/", filestump, runID, ".xml", sep=""))
+}
