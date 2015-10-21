@@ -23,6 +23,7 @@ import agentspring.role.Role;
 import agentspring.role.RoleComponent;
 import emlab.gen.domain.agent.EnergyProducer;
 import emlab.gen.domain.agent.Regulator;
+import emlab.gen.domain.market.electricity.ElectricitySpotMarket;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.repository.Reps;
 
@@ -58,11 +59,12 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        Regulator regulator = scheme.getRegulator();
-
         calculateRenewableTargetForTenderRole.act(scheme);
 
-        for (EnergyProducer producer : reps.genericRepository.findAllAtRandom(EnergyProducer.class)) {
+        Regulator regulator = scheme.getRegulator();
+        ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(regulator.getZone());
+
+        for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
             submitTenderBidRole.act(producer);
         }
 

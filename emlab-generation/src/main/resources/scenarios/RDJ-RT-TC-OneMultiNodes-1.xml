@@ -55,9 +55,9 @@
 	<!-- Renewable Tender Scheme NL -->
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderNL" p:futureTenderOperationStartTime="5"
 		p:supportSchemeDuration="10">
-		<property name="regulatorNetherlands" ref="regulatorNL" />
+		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
@@ -72,9 +72,9 @@
 	<!-- Renewable Tender Scheme DE -->
 	<bean id="renewableSupportSchemeDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTender" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderDE" p:futureTenderOperationStartTime="5"
 		p:supportSchemeDuration="10">
-		<property name="regulatorGermany" ref="regulatorDE" />
+		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
@@ -91,7 +91,7 @@
 	<bean id="renewableTenderTargetNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap">
-		<property name="regulatorNetherlands" ref="regulatorNL" />
+		<property name="regulator" ref="regulatorNL" />
 	</bean>
 
 	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
@@ -103,7 +103,7 @@
 	<bean id="renewableTenderTargetDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
 		p:yearlyRenewableTargetTimeSeries-ref="de_nreap">
-		<property name="regulatorGermany" ref="regulatorDE" />
+		<property name="regulator" ref="regulatorDE" />
 	</bean>
 
 	<bean id="de_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"

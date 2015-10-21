@@ -60,11 +60,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
                 .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
 
-        /*
-         * it aggregates segments from both countries, so the boolean should
-         * actually be true here and the code adjusted to FALSE case. Or a query
-         * should be adjusted what probably will take less time.
-         */
+        logger.warn("demandGrowth; " + demandFactor);
 
         // get renewable energy target in factor (percent)
         RenewableTargetForTender target = reps.renewableTargetForTenderRepository
@@ -72,7 +68,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
                 getCurrentTick() + scheme.getFutureTenderOperationStartTime());
-        // logger.warn("targetFactor is " + targetFactor);
+        logger.warn("targetFactor; " + targetFactor);
 
         // get totalLoad in MWh
         double totalExpectedConsumption = 0d;
@@ -82,12 +78,12 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             totalExpectedConsumption += segmentLoad.getBaseLoad() * demandFactor
                     * segmentLoad.getSegment().getLengthInHours();
 
-            // logger.warn("demand factor is: " + demandFactor);
-
         }
         logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
         // renewable target for tender operation start year in MWh is
+
         double renewableTargetInMwh = targetFactor * totalExpectedConsumption;
+        logger.warn("renewableTargetInMwh; " + renewableTargetInMwh);
 
         // calculate expected generation, and subtract that from annual
         // target.
