@@ -16,7 +16,7 @@
 
 	<!-- Decarbonization Model -->
 	<bean id="decarbonizationModel" class="emlab.gen.domain.agent.DecarbonizationModel"
-		p:name="Decarbonization Model" p:simulationLength="15"
+		p:name="Decarbonization Model" p:simulationLength="8"
 		p:co2TradingImplemented="false" p:realRenewableDataImplemented="true"
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
@@ -55,16 +55,16 @@
 	<!-- Renewable Tender Scheme NL -->
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTenderNL" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderNL" p:futureTenderOperationStartTime="1"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
-				<ref bean="windOffshorePGT" />
-				<ref bean="windPGT" />
-				<ref bean="biomassPGT" />
-				<ref bean="biogasPGT" />
+<!-- 				<ref bean="windOffshorePGT" /> -->
+<!-- 				<ref bean="windPGT" /> -->
+<!-- 				<ref bean="biomassPGT" /> -->
+<!-- 				<ref bean="biogasPGT" /> -->
 			</set>
 		</property>
 	</bean>
@@ -72,16 +72,16 @@
 	<!-- Renewable Tender Scheme DE -->
 	<bean id="renewableSupportSchemeDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTenderDE" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderDE" p:futureTenderOperationStartTime="1"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
-				<ref bean="windOffshorePGT" />
-				<ref bean="windPGT" />
-				<ref bean="biomassPGT" />
-				<ref bean="biogasPGT" />
+<!-- 				<ref bean="windOffshorePGT" /> -->
+<!-- 				<ref bean="windPGT" /> -->
+<!-- 				<ref bean="biomassPGT" /> -->
+<!-- 				<ref bean="biogasPGT" /> -->
 			</set>
 		</property>
 	</bean>
@@ -119,6 +119,7 @@
 	<bean id="demandGrowthTrendDE" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticDemandNLandDE/demandGrowthDE.csv"
 		p:startingYear="0" p:delimiter="," p:variableName="demandDE-1" />
+
 
 
 
@@ -710,7 +711,7 @@
 	<bean id="energyProducerA" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer A" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -722,7 +723,7 @@
 	<bean id="energyProducerB" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer B" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -734,7 +735,7 @@
 	<bean id="energyProducerC" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer C" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -746,7 +747,7 @@
 	<bean id="energyProducerD" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer D" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -758,7 +759,7 @@
 	<bean id="energyProducerE" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer E" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -770,7 +771,7 @@
 	<bean id="energyProducerF" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer F" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -782,7 +783,7 @@
 	<bean id="energyProducerG" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer G" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -794,7 +795,7 @@
 	<bean id="energyProducerH" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer H" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"
@@ -806,7 +807,7 @@
 	<bean id="energyProducerI" class="emlab.gen.domain.agent.EnergyProducer"
 		p:name="Energy Producer I" p:cash="${startCash}" p:investmentRole-ref="standardInvestmentRole"
 		p:longTermContractMargin="0.1" p:longTermContractPastTimeHorizon="3"
-		p:investmentFutureTimeHorizon="${investmentFutureTimeHorizon}"
+		p:investmentFutureTimeHorizon="7"
 		p:pastTimeHorizon="5" p:equityInterestRate="0.12" p:loanInterestRate="0.09"
 		p:debtRatioOfInvestments="0.7"
 		p:dismantlingProlongingYearsAfterTechnicalLifetime="0"

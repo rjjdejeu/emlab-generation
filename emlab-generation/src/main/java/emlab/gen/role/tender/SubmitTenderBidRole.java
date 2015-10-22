@@ -207,11 +207,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // Calculate bid quantity. Number of plants to be bid - as many
                 // as
                 // the node permits
+
                 double ratioNodeCapacity = pgtNodeLimit / plant.getActualNominalCapacity();
+
+                // capacityTesting
                 double numberOfPlants = (long) ratioNodeCapacity; // truncates
-                                                                  // towards
-                                                                  // lower
-                                                                  // integer
+                // towards
+                // lower
+                // integer
 
                 // logger.warn("pgtNodeLimit 3 is: " + pgtNodeLimit);
 
@@ -246,10 +249,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     // cashAvailableFraction);
                     // logger.warn("number of plants are: " + numberOfPlants);
 
+                    // capacityTesting
                     numberOfPlants = (long) numberOfPlants; // truncates
-                                                            // towards
-                                                            // lower
-                                                            // integer
+                    // towards
+                    // lower
+                    // integer
 
                     // logger.warn("number of plants are after Cash Fraction: "
                     // + numberOfPlants);
@@ -415,8 +419,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                 / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
                         Zone zone = market.getZone();
+
                         logger.warn("get zone via market: " + market.getZone());
                         logger.warn("zone: " + zone);
+
                         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
                                 .determineSupportSchemeForZone(zone);
 

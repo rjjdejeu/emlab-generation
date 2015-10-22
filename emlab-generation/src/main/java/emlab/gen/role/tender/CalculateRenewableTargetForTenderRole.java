@@ -108,7 +108,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         //
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
-            // logger.warn("technology is: " + technology);
+            logger.warn("technology is: " + technology);
             double fullLoadHours = 0d;
 
             // calculate the expected technology capacity based on existing
@@ -117,10 +117,11 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             double expectedTechnologyCapacity = reps.powerPlantRepository
                     .calculateCapacityOfExpectedOperationalPowerPlantsInMarketAndTechnology(market, technology,
                             scheme.getFutureTenderOperationStartTime());
+            logger.warn("ExpectedTechnologyCapacity is; " + expectedTechnologyCapacity);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, scheme.getFutureTenderOperationStartTime())) {
-                // logger.warn("plant is " + plant);
+                logger.warn("expected plant is; " + plant);
                 fullLoadHours = 0d;
                 for (Segment segment : reps.segmentRepository.findAll()) {
                     // logger.warn("Segment " + segment);
