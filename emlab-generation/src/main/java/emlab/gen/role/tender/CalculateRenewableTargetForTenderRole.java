@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2013 the original author or authors.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
 package emlab.gen.role.tender;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +63,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             totalExpectedConsumption += segmentLoad.getBaseLoad() * demandFactor
                     * segmentLoad.getSegment().getLengthInHours();
 
+            // logger.warn("demand factor is: " + demandFactor);
+
         }
         logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
         // renewable target for tender operation start year in MWh is
@@ -88,85 +75,30 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         // calculate expected generation, and subtract that from annual
         // target.
         // will be ActualTarget
-        double expectedGenerationPerTechnology = 0d;
         double totalExpectedGeneration = 0d;
+        double expectedGenerationPerTechnology = 0d;
+        double expectedGenerationPerPlant = 0d;
         long numberOfSegments = reps.segmentRepository.count();
-        // logger.warn("numberOfsegments: " + numberOfSegments);
-        double factor = 0d;
-
-        // double expectedTechnologyCapacity = reps.powerPlantRepository
-        // .calculateCapacityOfOperationalPowerPlantsByTechnology(technology,
-        // scheme.getFutureTenderOperationStartTime());
-        //
-        // // logger.warn("expectedTechnologyCapacity is: " +
-        // // expectedTechnologyCapacity);
-        //
-        // for (PowerPlant plant :
-        // reps.powerPlantRepository.findOperationalPowerPlantsByTechnology(technology,
-        // scheme.getFutureTenderOperationStartTime())) {
-        //
-        //
+        int noOfPlants = 0;
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
-            logger.warn("technology is: " + technology);
-            double fullLoadHours = 0d;
-
-            // calculate the expected technology capacity based on existing
-            // capacity and capacity being installed between now and the
-            // futureTenderOperationsStarttime
-            double expectedTechnologyCapacity = reps.powerPlantRepository
-                    .calculateCapacityOfExpectedOperationalPowerPlantsInMarketAndTechnology(market, technology,
-                            scheme.getFutureTenderOperationStartTime());
-            logger.warn("ExpectedTechnologyCapacity is; " + expectedTechnologyCapacity);
-
-            for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
-                    market, technology, scheme.getFutureTenderOperationStartTime())) {
-                logger.warn("expected plant is; " + plant);
-                fullLoadHours = 0d;
+            expectedGenerationPerTechnology = 0d;
+            for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByMarketAndTechnology(market,
+                    technology, scheme.getFutureTenderOperationStartTime())) {
+                expectedGenerationPerPlant = 0d;
+                noOfPlants++;
                 for (Segment segment : reps.segmentRepository.findAll()) {
-                    // logger.warn("Segment " + segment);
-                    double fullLoadHoursPerSegment = 0d;
-
-                    if (technology.isIntermittent()) {
-                        factor = plant.getIntermittentTechnologyNodeLoadFactor().getLoadFactorForSegment(segment);
-
-                    } else {
-                        double segmentID = segment.getSegmentID();
-                        // logger.warn("segmentID: " + segmentID);
-                        double min = technology.getPeakSegmentDependentAvailability();
-                        // logger.warn("min: " + min);
-                        double max = technology.getBaseSegmentDependentAvailability();
-                        // logger.warn("max: " + max);
-                        double segmentPortion = (numberOfSegments - segmentID) / (numberOfSegments - 1);
-                        // logger.warn("segmentPortion: " + segmentPortion);
-
-                        // start counting at 1
-
-                        double range = max - min;
-                        // logger.warn("range: " + range);
-                        factor = max - segmentPortion * range;
-                        // logger.warn("factor: " + factor);
-
-                    }
-
-                    fullLoadHoursPerSegment = factor * segment.getLengthInHours();
-                    // logger.warn("fullLoadHoursPerSegment: " +
-                    // fullLoadHoursPerSegment);
-                    fullLoadHours += fullLoadHoursPerSegment;
-                    // logger.warn("fullLoadHours: " + fullLoadHours);
-
+                    double availablePlantCapacity = plant.getAvailableCapacity(
+                            scheme.getFutureTenderOperationStartTime(), segment, numberOfSegments);
+                    double lengthOfSegmentInHours = segment.getLengthInHours();
+                    expectedGenerationPerPlant += availablePlantCapacity * lengthOfSegmentInHours;
                 }
-
+                expectedGenerationPerTechnology += expectedGenerationPerPlant;
             }
-
-            expectedGenerationPerTechnology = fullLoadHours * expectedTechnologyCapacity;
-
-            // logger.warn("expectedGenerationPerTechnology: " +
-            // expectedGenerationPerTechnology);
-
             totalExpectedGeneration += expectedGenerationPerTechnology;
 
         }
+        logger.warn("No of Expected Plants; " + noOfPlants);
 
         /*
          * To compare

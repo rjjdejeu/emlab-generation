@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "PlantNumberTest"
+nameFile <- "TargetRoleVerification-FinancialReports"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -44,11 +44,12 @@ library(reshape2)
 # the circle of consumers, producers and the government, or equivalently as the sum of
 # fixed and variable costs over the entire simulation period and over all power plants
 
-# Sum consumer costs (expenditures)
-ConsumerExpenditure_Country_A_electricity_spot_market
+# consumer costs (expenditures)
+#bigDF$ConsumerExpenditure_Country_A_electricity_spot_market)
 
-# Sum Producers costs (fixed om, loan, downpayment, commodities)
-# Sum government expenses (tender subsidy)
+
+# Producers costs (fixed om, loan, downpayment, commodities)
+# government expenses (tender subsidy)
 
 
 
@@ -90,18 +91,18 @@ ggsave(filename = paste(filePrefix, "tender_clearing_price_B.png", sep=""))
 tenderClearingVolumeCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_A, group=runNumber)) + 
   geom_line() +  (aes(colour = runNumber)) + 
   xlab("Year") +  
-  ylab("Eur/MWh") + 
+  ylab("MWh") + 
   ggtitle("Tender Clearing Volumes \n Netherlands") #give the plot a title
 plot(tenderClearingVolumeCountryAplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_price_A.png", sep=""))
+ggsave(filename = paste(filePrefix, "tender_clearing_volume_A.png", sep=""))
 
 tenderClearingVolumeCountryBplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_B, group=runNumber)) + 
   geom_line() +  (aes(colour = runNumber)) + 
   xlab("Year") +  
-  ylab("Eur/MWh") + 
+  ylab("MWh") + 
   ggtitle("Tender Clearing Volumes \n Germany") #give the plot a title
 plot(tenderClearingVolumeCountryBplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_price_B.png", sep=""))
+ggsave(filename = paste(filePrefix, "tender_clearing_volume_B.png", sep=""))
 
 #Tender Clearing price*volume
 tenderClearingMoneyA <- bigDF$tenderClearingPrice_Country_A * bigDF$tenderClearingVolume_Country_A
@@ -154,8 +155,17 @@ renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
 GenerationShareTableA <- renewableGenerationShareCountryA
 GenerationShareTableB <- renewableGenerationShareCountryB
 
+GenerationShareTableA
+GenerationShareTableB
+
 write.table(GenerationShareTableA, file = "GenerationShareTableA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 write.table(GenerationShareTableB, file = "GenerationShareTableB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+write.table(totalGenerationA, file = "totalGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(totalGenerationB, file = "totalGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
 
 #Relative Capacity Share of Renewables
@@ -199,7 +209,8 @@ SupplyRatioB <- bigDF$TotalOperationalCapacityPerZoneInMW_Country_B/bigDF$PeakDe
 
 write.table(SupplyRatioA, file = "SupplyRatioA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 write.table(SupplyRatioB, file = "SupplyRatioB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-
+SupplyRatioA
+SupplyRatioB
 
 
 
