@@ -148,6 +148,10 @@ public class InvestInPowerGenerationTechnologiesRole<T extends EnergyProducer> e
 
             PowerPlant plant = new PowerPlant();
             plant.specifyNotPersist(getCurrentTick(), agent, getNodeForZone(market.getZone()), technology);
+
+            logger.warn("Role 149 - Agent " + agent + " invested in technology at tick " + getCurrentTick()
+                    + " in tech " + bestTechnology);
+
             // if too much capacity of this technology in the pipeline (not
             // limited to the 5 years)
             double expectedInstalledCapacityOfTechnology = reps.powerPlantRepository
@@ -409,10 +413,13 @@ public class InvestInPowerGenerationTechnologiesRole<T extends EnergyProducer> e
         }
 
         if (bestTechnology != null) {
-            logger.warn("Role - Agent {} invested in technology {} at tick " + getCurrentTick(), agent, bestTechnology);
 
             PowerPlant plant = new PowerPlant();
             plant.specifyAndPersist(getCurrentTick(), agent, getNodeForZone(market.getZone()), bestTechnology);
+
+            logger.warn("Role 413 - Agent " + agent + " invested in technology at tick " + getCurrentTick()
+                    + " in tech " + bestTechnology);
+
             PowerPlantManufacturer manufacturer = reps.genericRepository.findFirst(PowerPlantManufacturer.class);
             BigBank bigbank = reps.genericRepository.findFirst(BigBank.class);
 
@@ -586,6 +593,10 @@ public class InvestInPowerGenerationTechnologiesRole<T extends EnergyProducer> e
                     double plantMarginalCost = determineExpectedMarginalCost(plant, fuelPrices, co2price);
                     marginalCostMap.put(plant, plantMarginalCost);
                     capacitySum += targetDifference;
+
+                    logger.warn("Role 588 - Agent " + " WHO " + " invested in technology at tick " + getCurrentTick()
+                            + " in tech " + pggt.getPowerGeneratingTechnology());
+
                 }
             }
 

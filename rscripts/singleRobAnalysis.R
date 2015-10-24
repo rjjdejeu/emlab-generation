@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "Verification"
+nameFile <- "InvestmentCheck5"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -164,14 +164,14 @@ totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC +
 renewableGenerationShareCountryA <-renewableGenerationA/totalGenerationA
 renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
 
-GenerationShareTableA <- renewableGenerationShareCountryA
-GenerationShareTableB <- renewableGenerationShareCountryB
+RESEGenerationShareTableA <- renewableGenerationShareCountryA
+RESEGenerationShareTableB <- renewableGenerationShareCountryB
 
 GenerationShareTableA
 GenerationShareTableB
 
-write.table(GenerationShareTableA, file = "GenerationShareTableA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-write.table(GenerationShareTableB, file = "GenerationShareTableB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(RESEGenerationShareTableA, file = "RESEgenerationShareTableA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(RESEGenerationShareTableB, file = "RESEgenerationShareTableB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
 write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")

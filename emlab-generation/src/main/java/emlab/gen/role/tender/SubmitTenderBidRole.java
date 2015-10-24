@@ -165,12 +165,13 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
             for (PowerGridNode node : possibleInstallationNodes) {
 
-                logger.warn("SubmitBid 168 - Agent {} invested in technology {} at tick " + getCurrentTick(), agent,
-                        technology);
-
                 PowerPlant plant = new PowerPlant();
 
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
+
+                // logger.warn("SubmitBid 168 - Agent " + agent +
+                // " looking at technology at tick " + getCurrentTick()
+                // + " in tech " + technology);
 
                 // logger.warn(" agent is " + agent + " with technology " +
                 // technology + " and plant " + plant
@@ -449,22 +450,27 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                             + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration),
                                     bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
 
-                            logger.warn("totalAnnualExpectedGenerationOfPlant; "
-                                    + totalAnnualExpectedGenerationOfPlant
-                                    + " ; of plant; "
-                                    + plant
-                                    + " ;from producer; "
-                                    + agent
-                                    + " ;in zone; "
-                                    + zone
-                                    + " ;start time; "
-                                    + (getCurrentTick() + (plant.calculateActualLeadtime() + plant
-                                            .calculateActualPermittime()))
-                                    + " ;end time; "
-                                    + (getCurrentTick()
-                                            + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration)
-                                    + " ;and bid price; " + bidPricePerMWh + " ;with technology; " + technology
-                                    + " ;current time; " + getCurrentTick() + " ;of Scheme; " + scheme);
+                            // logger.warn("totalAnnualExpectedGenerationOfPlant; "
+                            // + totalAnnualExpectedGenerationOfPlant
+                            // + " ; of plant; "
+                            // + plant
+                            // + " ;from producer; "
+                            // + agent
+                            // + " ;in zone; "
+                            // + zone
+                            // + " ;start time; "
+                            // + (getCurrentTick() +
+                            // (plant.calculateActualLeadtime() + plant
+                            // .calculateActualPermittime()))
+                            // + " ;end time; "
+                            // + (getCurrentTick()
+                            // + (plant.calculateActualLeadtime() +
+                            // plant.calculateActualPermittime()) +
+                            // tenderSchemeDuration)
+                            // + " ;and bid price; " + bidPricePerMWh +
+                            // " ;with technology; " + technology
+                            // + " ;current time; " + getCurrentTick() +
+                            // " ;of Scheme; " + scheme);
 
                         } // end for loop for tender bids
 
@@ -615,9 +621,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         double targetDifference = pggt.getTrend().getValue(time) - expectedTechnologyCapacity;
                         if (targetDifference > 0) {
 
-                            logger.warn("SubmitBid 618 - Agent {} invested in technology {} at tick "
-                                    + getCurrentTick(), targetInvestor, pggt.getPowerGeneratingTechnology());
-
                             PowerPlant plant = new PowerPlant();
 
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
@@ -627,6 +630,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             double plantMarginalCost = determineExpectedMarginalCost(plant, fuelPrices, co2price);
                             marginalCostMap.put(plant, plantMarginalCost);
                             capacitySum += targetDifference;
+
+                            logger.warn("SubmitBid 618 - Agent " + targetInvestor + " invested in technology at tick "
+                                    + getCurrentTick() + " in tech " + pggt.getPowerGeneratingTechnology());
+
                         }
                     }
 
@@ -645,9 +652,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         }
                         if (expectedTechnologyAddition > 0) {
                             PowerPlant plant = new PowerPlant();
-                            logger.warn("SubmitBid 651 - Agent {} invested in technology {} at tick "
-                                    + getCurrentTick(), targetInvestor, pggt.getPowerGeneratingTechnology());
-
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
                                     reps.powerGridNodeRepository.findFirstPowerGridNodeByElectricitySpotMarket(market),
                                     pggt.getPowerGeneratingTechnology());
@@ -655,6 +659,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             double plantMarginalCost = determineExpectedMarginalCost(plant, fuelPrices, co2price);
                             marginalCostMap.put(plant, plantMarginalCost);
                             capacitySum += expectedTechnologyAddition;
+
+                            logger.warn("SubmitBid 648 - Agent " + targetInvestor + " invested in technology at tick "
+                                    + getCurrentTick() + " in tech " + pggt.getPowerGeneratingTechnology());
+
                         }
                     }
                 }
