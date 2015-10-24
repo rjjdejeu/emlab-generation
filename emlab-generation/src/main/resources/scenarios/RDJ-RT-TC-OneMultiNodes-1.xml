@@ -831,56 +831,56 @@
 
 	<!-- Power plant Factory -->
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.55" />
+	<property name="capacityMargin" value="0.40" />
 		<property name="portfolioShares">
 			<map>
 				<entry>
 					<key>
 						<ref bean="coalPulverizedSuperCritical" />
 					</key>
-					<value>0.244</value>
+					<value>0.240</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="CCGT" />
 					</key>
-					<value>0.427</value>
+					<value>0.425</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="OCGT" />
 					</key>
-					<value>0.174</value>
+					<value>0.172</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.018</value>
+					<value>0.016</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="nuclearPGT" />
 					</key>
-					<value>0.021</value>
+					<value>0.019</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windPGT" />
 					</key>
-					<value>0.086</value>
+					<value>0.084</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windOffshorePGT" />
 					</key>
-					<value>0.013</value>
+					<value>0.011</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="photovoltaicPGT" />
 					</key>
-					<value>0.036</value>
+					<value>0.033</value>
 				</entry>
 				<entry>
 					<key>
@@ -907,7 +907,7 @@
 	</bean>
 
 	<bean id="DEPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.90" />
+							<property name="capacityMargin" value="0.80" />
 		<property name="portfolioShares">
 			<map>
 				<entry>

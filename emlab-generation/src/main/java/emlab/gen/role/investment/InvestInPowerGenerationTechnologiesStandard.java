@@ -402,8 +402,8 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
         }
 
         if (bestTechnology != null) {
-            // logger.warn("Agent {} invested in technology {} at tick " +
-            // getCurrentTick(), agent, bestTechnology);
+            logger.warn("Standard - Agent {} invested in technology {} at tick " + getCurrentTick(), agent,
+                    bestTechnology);
 
             PowerPlant plant = new PowerPlant();
             plant.specifyAndPersist(getCurrentTick(), agent, bestNode, bestTechnology);
@@ -579,6 +579,10 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
                         double targetDifference = pggt.getTrend().getValue(time) - expectedTechnologyCapacity;
                         if (targetDifference > 0) {
                             PowerPlant plant = new PowerPlant();
+                            logger.warn(
+                                    "Standard 582 - Agent {} invested in technology {} at tick " + getCurrentTick(),
+                                    targetInvestor, pggt.getPowerGeneratingTechnology());
+
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
                                     reps.powerGridNodeRepository.findFirstPowerGridNodeByElectricitySpotMarket(market),
                                     pggt.getPowerGeneratingTechnology());
@@ -602,6 +606,9 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
                                     .getTrend().getValue(investmentTimeStep - 1));
                         }
                         if (expectedTechnologyAddition > 0) {
+                            logger.warn(
+                                    "Standard 609 - Agent {} invested in technology {} at tick " + getCurrentTick(),
+                                    targetInvestor, pggt.getPowerGeneratingTechnology());
                             PowerPlant plant = new PowerPlant();
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
                                     reps.powerGridNodeRepository.findFirstPowerGridNodeByElectricitySpotMarket(market),

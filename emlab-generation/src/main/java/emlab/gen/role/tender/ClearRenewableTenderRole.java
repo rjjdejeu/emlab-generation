@@ -138,6 +138,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
             if (currentTenderBid.getStatus() == Bid.ACCEPTED || currentTenderBid.getStatus() == Bid.PARTLY_ACCEPTED) {
 
+                logger.warn("ClearingTender - Agent {} invested in technology {} at tick " + getCurrentTick(),
+                        currentTenderBid.getBidder(), currentTenderBid.getTechnology());
+
                 PowerPlant plant = new PowerPlant();
                 EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();
 

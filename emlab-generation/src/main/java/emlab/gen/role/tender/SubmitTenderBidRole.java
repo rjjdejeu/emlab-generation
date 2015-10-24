@@ -165,6 +165,9 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
             for (PowerGridNode node : possibleInstallationNodes) {
 
+                logger.warn("SubmitBid 168 - Agent {} invested in technology {} at tick " + getCurrentTick(), agent,
+                        technology);
+
                 PowerPlant plant = new PowerPlant();
 
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
@@ -611,7 +614,12 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                         pggt.getPowerGeneratingTechnology(), time);
                         double targetDifference = pggt.getTrend().getValue(time) - expectedTechnologyCapacity;
                         if (targetDifference > 0) {
+
+                            logger.warn("SubmitBid 618 - Agent {} invested in technology {} at tick "
+                                    + getCurrentTick(), targetInvestor, pggt.getPowerGeneratingTechnology());
+
                             PowerPlant plant = new PowerPlant();
+
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
                                     reps.powerGridNodeRepository.findFirstPowerGridNodeByElectricitySpotMarket(market),
                                     pggt.getPowerGeneratingTechnology());
@@ -637,6 +645,9 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         }
                         if (expectedTechnologyAddition > 0) {
                             PowerPlant plant = new PowerPlant();
+                            logger.warn("SubmitBid 651 - Agent {} invested in technology {} at tick "
+                                    + getCurrentTick(), targetInvestor, pggt.getPowerGeneratingTechnology());
+
                             plant.specifyNotPersist(getCurrentTick(), new EnergyProducer(),
                                     reps.powerGridNodeRepository.findFirstPowerGridNodeByElectricitySpotMarket(market),
                                     pggt.getPowerGeneratingTechnology());

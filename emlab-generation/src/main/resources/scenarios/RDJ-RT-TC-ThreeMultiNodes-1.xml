@@ -16,7 +16,7 @@
 
 	<!-- Decarbonization Model -->
 	<bean id="decarbonizationModel" class="emlab.gen.domain.agent.DecarbonizationModel"
-		p:name="Decarbonization Model" p:simulationLength="15"
+		p:name="Decarbonization Model" p:simulationLength="20"
 		p:co2TradingImplemented="false" p:realRenewableDataImplemented="true"
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
@@ -55,7 +55,7 @@
 	<!-- Renewable Tender Scheme NL -->
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTenderNL" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderNL" p:futureTenderOperationStartTime="1"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
@@ -72,7 +72,7 @@
 	<!-- Renewable Tender Scheme DE -->
 	<bean id="renewableSupportSchemeDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:name="RenewableTenderDE" p:futureTenderOperationStartTime="5"
+		p:name="RenewableTenderDE" p:futureTenderOperationStartTime="1"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
@@ -91,7 +91,7 @@
 	<bean id="renewableTenderTargetNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap">
-		<property name="regulatorNetherlands" ref="regulatorNL" />
+		<property name="regulator" ref="regulatorNL" />
 	</bean>
 
 	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
@@ -103,7 +103,7 @@
 	<bean id="renewableTenderTargetDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
 		p:yearlyRenewableTargetTimeSeries-ref="de_nreap">
-		<property name="regulatorGermany" ref="regulatorDE" />
+		<property name="regulator" ref="regulatorDE" />
 	</bean>
 
 	<bean id="de_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
@@ -1151,56 +1151,56 @@
 
 	<!-- Power plant Factory -->
 	<bean id="NLPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.60" />
+	<property name="capacityMargin" value="0.55" />
 		<property name="portfolioShares">
 			<map>
 				<entry>
 					<key>
 						<ref bean="coalPulverizedSuperCritical" />
 					</key>
-					<value>0.244</value>
+					<value>0.240</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="CCGT" />
 					</key>
-					<value>0.427</value>
+					<value>0.425</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="OCGT" />
 					</key>
-					<value>0.174</value>
+					<value>0.172</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="biomassPGT" />
 					</key>
-					<value>0.018</value>
+					<value>0.016</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="nuclearPGT" />
 					</key>
-					<value>0.021</value>
+					<value>0.019</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windPGT" />
 					</key>
-					<value>0.086</value>
+					<value>0.084</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="windOffshorePGT" />
 					</key>
-					<value>0.013</value>
+					<value>0.011</value>
 				</entry>
 				<entry>
 					<key>
 						<ref bean="photovoltaicPGT" />
 					</key>
-					<value>0.036</value>
+					<value>0.033</value>
 				</entry>
 				<entry>
 					<key>
@@ -1212,7 +1212,7 @@
 		</property>
 		<property name="nodes">
 			<set>
-				<ref bean="nlNode1" />
+				<ref bean="nlNode" />
 			</set>
 		</property>
 		<property name="market" ref="NetherlandsElectricitySpotMarket" />
@@ -1227,7 +1227,7 @@
 	</bean>
 
 	<bean id="DEPortfolio" class="emlab.gen.domain.factory.ElectricityProducerFactory">
-		<property name="capacityMargin" value="0.90" />
+							<property name="capacityMargin" value="0.90" />
 		<property name="portfolioShares">
 			<map>
 				<entry>
@@ -1294,7 +1294,7 @@
 		</property>
 		<property name="nodes">
 			<set>
-				<ref bean="deNode1" />
+				<ref bean="deNode" />
 			</set>
 		</property>
 		<property name="market" ref="GermanyElectricitySpotMarket" />
@@ -1308,6 +1308,7 @@
 			</list>
 		</property>
 	</bean>
+
 
 
 	<!-- CO2 Tax -->

@@ -43,7 +43,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         // get demand factor
         demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
-                .getNumberOfYearsLookingBackToForecastDemand(), scheme.getFutureTenderOperationStartTime());
+                .getNumberOfYearsLookingBackToForecastDemand(),
+                (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
 
         logger.warn("demandGrowth; " + demandFactor);
 
@@ -52,7 +53,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
         targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
-                getCurrentTick() + scheme.getFutureTenderOperationStartTime());
+                (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
         logger.warn("targetFactor; " + targetFactor);
 
         // get totalLoad in MWh
@@ -84,12 +85,12 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnology = 0d;
             for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByMarketAndTechnology(market,
-                    technology, scheme.getFutureTenderOperationStartTime())) {
+                    technology, (getCurrentTick() + scheme.getFutureTenderOperationStartTime()))) {
                 expectedGenerationPerPlant = 0d;
                 noOfPlants++;
                 for (Segment segment : reps.segmentRepository.findAll()) {
                     double availablePlantCapacity = plant.getAvailableCapacity(
-                            scheme.getFutureTenderOperationStartTime(), segment, numberOfSegments);
+                            (getCurrentTick() + scheme.getFutureTenderOperationStartTime()), segment, numberOfSegments);
                     double lengthOfSegmentInHours = segment.getLengthInHours();
                     expectedGenerationPerPlant += availablePlantCapacity * lengthOfSegmentInHours;
                 }

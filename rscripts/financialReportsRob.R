@@ -11,9 +11,6 @@ filePrefix <- nameFile
 
 #Read csv-file
 bigDF <- read.csv(analysisFile)
-drops <- c("CapacityinMWinA_CcgtCCS", "CapacityinMWinA_CoalPscCSS","CapacityinMWinA_HydroPower","CapacityinMWinA_IgccCCS","CapacityinMWinA_Igcc")
-drops <- c("CapacityinMWinB_CcgtCCS", "CapacityinMWinB_CoalPscCSS","CapacityinMWinB_HydroPower","CapacityinMWinB_IgccCCS","CapacityinMWinA_Igcc")
-
 
 #Clean csv-file
 library(stringr)
@@ -26,7 +23,7 @@ colnames(bigDF) = gsub("^\\.|\\.$", "", colnames(bigDF))
 # Convert all periods into underscores
 colnames(bigDF) = gsub("\\.", "_", colnames(bigDF))
 summary(bigDF)
-bigDF$tick
+
 
 
 library(gridExtra)

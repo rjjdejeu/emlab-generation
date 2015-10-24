@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "TargetRoleVerification-FinancialReports"
+nameFile <- "Verification"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -45,17 +45,29 @@ library(reshape2)
 # fixed and variable costs over the entire simulation period and over all power plants
 
 # consumer costs (expenditures)
-#bigDF$ConsumerExpenditure_Country_A_electricity_spot_market)
+ConsumerCostsA <- bigDF$ConsumerExpenditure_Country_A_electricity_spot_market 
+ProducerCostsA <- bigDF$CountryAProdCosts_Fixed_O_M + 
+  bigDF$CountryAProdCosts_Loan + 
+  bigDF$CountryAProdCosts_Commodity + 
+  bigDF$CountryAProdCosts_Downpayment
+GovernmentCostsA <- bigDF$CountryAProdFinances_Tender_Subsidy
 
+SystemCostsA <- ConsumerCostsA + ProducerCostsA + GovernmentCostsA
 
-# Producers costs (fixed om, loan, downpayment, commodities)
-# government expenses (tender subsidy)
+ConsumerCostsB <- bigDF$ConsumerExpenditure_Country_B_electricity_spot_market 
+ProducerCostsB <- bigDF$CountryBProdCosts_Fixed_O_M + 
+  bigDF$CountryBProdCosts_Loan + 
+  bigDF$CountryBProdCosts_Commodity + 
+  bigDF$CountryBProdCosts_Downpayment
+GovernmentCostsB <- bigDF$CountryBProdFinances_Tender_Subsidy
+
+SystemCostsB <- ConsumerCostsB + ProducerCostsB + GovernmentCostsB
 
 
 
 # Average electricity wholesale price in country
 AverageElectricityPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_A, group=runNumber)) + 
-  geom_line() + (aes(colour = runNumber)) +
+  geom_smooth() + (aes(colour = runNumber)) +
   xlab("Year") +  
   ylab("Eur/MWh") + 
   ggtitle("Average Electricity Prices \n The Netherlands") #give the plot a title
@@ -63,7 +75,7 @@ plot(AverageElectricityPriceCountryAplot)
 ggsave(filename = paste(filePrefix, "Avg_el_price_A.png", sep=""))
 
 AverageElectricityPriceCountryBplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_B, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
+  geom_smooth() +  (aes(colour = runNumber)) + 
   xlab("Year") +  
   ylab("Eur/MWh") + 
   ggtitle("Average Electricity Prices \n Germany") #give the plot a title
@@ -72,7 +84,7 @@ ggsave(filename = paste(filePrefix, "Avg_el_price_B.png", sep=""))
 
 #Tender Clearing Prices
 tenderClearingPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingPrice_Country_A, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
+  geom_smooth() +  (aes(colour = runNumber)) + 
   xlab("Year") +  
   ylab("Eur/MWh") + 
   ggtitle("Tender Clearing Prices \n Netherlands") #give the plot a title
@@ -207,12 +219,46 @@ write.table(renewableCapacityShareCountryB, file = "renewableCapacityShareCountr
 SupplyRatioA <- bigDF$TotalOperationalCapacityPerZoneInMW_Country_A/bigDF$PeakDemandPerZoneInMW_Country_A
 SupplyRatioB <- bigDF$TotalOperationalCapacityPerZoneInMW_Country_B/bigDF$PeakDemandPerZoneInMW_Country_B
 
+bigDF$TotalOperationalCapacityPerZoneInMW_Country_A
+bigDF$PeakDemandPerZoneInMW_Country_A
+
 write.table(SupplyRatioA, file = "SupplyRatioA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 write.table(SupplyRatioB, file = "SupplyRatioB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 SupplyRatioA
 SupplyRatioB
 
+SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_A/bigDF$NationalTotalProductioninMWh_Country_A
+SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_B/bigDF$NationalTotalProductioninMWh_Country_B
 
+SupplyRatioGenerationA
+SupplyRatioGenerationB
+
+write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+# #CapacityMargin Check
+totalCapacityA <- bigDF$CapacityinMWinA_IGCC + 
+  bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_CcgtCCS + 
+  bigDF$CapacityinMWinA_CoalPscCSS + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_Biomass + 
+  bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_IgccCCS + bigDF$CapacityinMWinA_CoalPSC + 
+  bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_WindOffshore + 
+  bigDF$CapacityinMWinA_Nuclear + bigDF$CapacityinMWinA_OCGT
+totalCapacityA
+
+totalCapacityB <- bigDF$CapacityinMWinB_IGCC + 
+  bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_CcgtCCS + 
+  bigDF$CapacityinMWinB_CoalPscCSS + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_Biomass + 
+  bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_IgccCCS + bigDF$CapacityinMWinB_CoalPSC + 
+  bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_WindOffshore + 
+  bigDF$CapacityinMWinB_Nuclear + bigDF$CapacityinMWinB_OCGT
+totalCapacityB
+
+
+capacityMargingA <- (totalCapacityA/bigDF$PeakDemandPerZoneInMW_Country_A) - 1
+capacityMargingA 
+
+capacityMargingB <- (totalCapacityB/bigDF$PeakDemandPerZoneInMW_Country_B) - 1
+capacityMargingB
 
 # #TEST Writing Results onto a Data Table
 # DataTable <- c(capacityFractionPeakDemandA)
@@ -451,7 +497,17 @@ plotProfitIncludingTenderSubsidy <- function(df){
 }
 plotProfitIncludingTenderSubsidy(bigDF)
 
+
 #Producer welfare = Producers costs - revenues = profit per producer over time, excluding Tender subsidy
+producerWelfareExcTenderA <- bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD
+producerWelfareExcTenderB <- bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD
+
+producerWelfareIncTenderA <- bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD
+producerWelfareIncTenderB <- bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD
+
+#Income Distribution
+# check different profits of producer whether the tender makes them really skewed or not
+# profits with and without subsidy
 plotProfitExcludingTenderSubsidy <- function(df){
   localEnv <- environment()
   profitA <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA
@@ -591,23 +647,6 @@ plotTenderSubsidy(bigDF)
 # system base price = Average electricity price in tick
 # value factor = market value / system base price
 
-#Income Distribution
-# check different profits of producer whether the tender makes them really skewed or not
-# profits with and without subsidy
-
-
-
-#Congestion: does it take place?
-# maybe not really important, but could help in the analysis
-
-
-
-
-
-
-
-
-
 # #TEST mean of GenerationinMWh_Biomass
 # GenerationinMWhBiomassMean = 0
 # CapacityinMWhOCGTMean = 0
@@ -653,3 +692,369 @@ plotTenderSubsidy(bigDF)
 # rownames(DataTable) <- c("GenerationinMWh_Biomass","CapacityinMWh_OCGT","NationalTotalProductioninMWh_Country A Mean")
 # write.csv(DataTable, "DataTableBaseCase.csv")
 # save()
+
+# #Multiplot function
+# multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+#   require(grid)
+#   
+#   # Make a list from the ... arguments and plotlist
+#   plots <- c(list(...), plotlist)
+#   
+#   numPlots = length(plots)
+#   
+#   # If layout is NULL, then use 'cols' to determine layout
+#   if (is.null(layout)) {
+#     # Make the panel
+#     # ncol: Number of columns of plots
+#     # nrow: Number of rows needed, calculated from # of cols
+#     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+#                      ncol = cols, nrow = ceiling(numPlots/cols))
+#   }
+#   
+#   if (numPlots==1) {
+#     print(plots[[1]])
+#     
+#   } else {
+#     # Set up the page
+#     grid.newpage()
+#     pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+#     
+#     # Make each plot, in the correct location
+#     for (i in 1:numPlots) {
+#       # Get the i,j matrix positions of the regions that contain this subplot
+#       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+#       
+#       print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+#                                       layout.pos.col = matchidx$col))
+#     }
+#   }
+# }
+# 
+# pSA_1 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_1, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 1") #give the plot a title
+# plot(pSA_1)
+# 
+# pSA_2 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_2, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 2") #give the plot a title
+# plot(pSA_2)
+# 
+# pSA_3 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_3, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 3") #give the plot a title
+# plot(pSA_3)
+# 
+# pSA_4 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_4, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 4") #give the plot a title
+# plot(pSA_4)
+# 
+# pSA_5 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_5, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 5") #give the plot a title
+# plot(pSA_5)
+# 
+# pSA_6 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_6, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 6") #give the plot a title
+# plot(pSA_6)
+# 
+# pSA_7 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_7, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 7") #give the plot a title
+# plot(pSA_7)
+# 
+# pSA_8 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_8, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 8") #give the plot a title
+# plot(pSA_8)
+# 
+# pSA_9 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_9, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 9") #give the plot a title
+# plot(pSA_9)
+# 
+# pSA_10 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_10, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 10") #give the plot a title
+# plot(pSA_10)
+# 
+# pSA_11 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_11, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 11") #give the plot a title
+# plot(pSA_11)
+# 
+# pSA_12 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_12, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 12") #give the plot a title
+# plot(pSA_12)
+# 
+# pSA_13 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_13, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 13") #give the plot a title
+# plot(pSA_13)
+# 
+# pSA_14 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_14, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 14") #give the plot a title
+# plot(pSA_14)
+# 
+# pSA_15 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_15, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 15") #give the plot a title
+# plot(pSA_15)
+# 
+# pSA_16 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_16, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 16") #give the plot a title
+# plot(pSA_16)
+# 
+# pSA_17 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_17, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 17") #give the plot a title
+# plot(pSA_17)
+# 
+# pSA_18 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_18, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 18") #give the plot a title
+# plot(pSA_18)
+# 
+# pSA_19 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_19, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 19") #give the plot a title
+# plot(pSA_19)
+# 
+# pSA_20 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_20, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 20") #give the plot a title
+# plot(pSA_20)
+# 
+# pSB_1 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_1, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 1") #give the plot a title
+# plot(pSB_1)
+# 
+# pSB_2 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_2, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 2") #give the plot a title
+# plot(pSB_2)
+# 
+# pSB_3 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_3, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 3") #give the plot a title
+# plot(pSB_3)
+# 
+# pSB_4 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_4, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 4") #give the plot a title
+# plot(pSB_4)
+# 
+# pSB_5 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_5, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 5") #give the plot a title
+# plot(pSB_5)
+# 
+# pSB_6 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_6, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 6") #give the plot a title
+# plot(pSB_6)
+# 
+# pSB_7 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_7, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 7") #give the plot a title
+# plot(pSB_7)
+# 
+# pSB_8 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_8, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 8") #give the plot a title
+# plot(pSB_8)
+# 
+# pSB_9 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_9, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 9") #give the plot a title
+# plot(pSB_9)
+# 
+# pSB_10 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_10, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 10") #give the plot a title
+# plot(pSB_10)
+# 
+# pSB_11 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_11, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 11") #give the plot a title
+# plot(pSB_11)
+# 
+# pSB_12 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_12, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 12") #give the plot a title
+# plot(pSB_12)
+# 
+# pSB_13 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_13, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 13") #give the plot a title
+# plot(pSB_13)
+# 
+# pSB_14 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_14, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 14") #give the plot a title
+# plot(pSB_14)
+# 
+# pSB_15 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_15, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 15") #give the plot a title
+# plot(pSB_15)
+# 
+# pSB_16 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_16, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 16") #give the plot a title
+# plot(pSB_16)
+# 
+# pSB_17 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_17, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 17") #give the plot a title
+# plot(pSB_17)
+# 
+# pSB_18 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_18, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 18") #give the plot a title
+# plot(pSB_18)
+# 
+# pSB_19 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_19, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 19") #give the plot a title
+# plot(pSB_19)
+# 
+# pSB_20 = 
+#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_20, group=runNumber)) + 
+#   geom_line() + (aes(colour = runNumber)) +
+#   xlab("Tick") +  
+#   ylab("Price (EUR/MWh)") + 
+#   ggtitle("Segment 20") #give the plot a title
+# plot(pSB_20)
+# 
+# 
+# 
+# segmentPricesA <-multiplot(pSA_1, pSA_2, pSA_3, pSA_4, pSA_5, pSA_6, pSA_7, pSA_8, pSA_9, pSA_10, pSA_11, pSA_12, pSA_13, pSA_14, pSA_15, pSA_16, pSA_17, pSA_18, pSA_19, pSA_20, cols=5)
+# #ggsave(filename = paste(filePrefix, "segmentPricesA.png", sep=""), plot=segmentPricesA,width=30, height=16.51, units="cm", scale=1)
+# 
+# segmentPricesB <-multiplot(pSB_1, pSB_2, pSB_3, pSB_4, pSB_5, pSB_6, pSB_7, pSB_8, pSB_9, pSB_10, pSB_11, pSB_12, pSB_13, pSB_14, pSB_15, pSB_16, pSB_17, pSB_18, pSB_19, pSB_20, cols=5)
+# #ggsave(filename = paste(filePrefix, "segmentPricesB.png", sep=""), plot=segmentPricesA,width=30, height=16.51, units="cm", scale=1)
+
