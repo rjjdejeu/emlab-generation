@@ -53,6 +53,9 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     ClearRenewableTenderRole clearRenewableTenderRole;
 
     @Autowired
+    CreatePowerPlantsOfAcceptedTenderBidsRole createPowerPlantsOfAcceptedTenderBidsRole;
+
+    @Autowired
     OrganizeRenewableTenderPaymentsRole organizeRenewableTenderPaymentsRole;
 
     @Override
@@ -74,7 +77,8 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
 
         clearRenewableTenderRole.act(regulator);
 
+        createPowerPlantsOfAcceptedTenderBidsRole.act(regulator);
+
         organizeRenewableTenderPaymentsRole.act(scheme);
     }
-
 }
