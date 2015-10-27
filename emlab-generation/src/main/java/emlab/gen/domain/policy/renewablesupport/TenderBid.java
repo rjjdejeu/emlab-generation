@@ -40,7 +40,6 @@ public class TenderBid extends Bid {
     @RelatedTo(type = "FOR_TECHNOLOGY", elementClass = PowerGeneratingTechnology.class, direction = Direction.OUTGOING)
     private PowerGeneratingTechnology technology;
 
-    // why connected to powerplant dispatchplan?
     @RelatedTo(type = "POWERPLANT_DISPATCHPLAN", elementClass = PowerPlant.class, direction = Direction.OUTGOING)
     private PowerPlant powerPlant;
 
@@ -114,16 +113,17 @@ public class TenderBid extends Bid {
             long startTime, long finishTime, double bidPricePerMWh, PowerGeneratingTechnology technology,
             long currentTime, int status, RenewableSupportSchemeTender scheme) {
         this.setAmount(amount);
+        this.setPowerPlant(plant);
         this.setBidder(agent);
-        this.setPrice(bidPricePerMWh);
         this.setZone(zone);
         this.setPowerGridNode(node);
-        this.setTechnology(technology);
         this.setStart(startTime);
         this.setFinish(finishTime);
+        this.setPrice(bidPricePerMWh);
+        this.setTechnology(technology);
         this.setTime(currentTime);
+        this.setStatus(status);
         this.setRenewableSupportSchemeTender(scheme);
-        this.setPowerPlant(plant);
 
     }
 
@@ -142,4 +142,8 @@ public class TenderBid extends Bid {
 
     }
 
+    @Override
+    public String toString() {
+        return "for " + getZone() + " price: " + getPrice() + " amount: " + getAmount();
+    }
 }

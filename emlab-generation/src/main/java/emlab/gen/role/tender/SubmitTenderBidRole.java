@@ -91,19 +91,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         logger.warn("Submit Tender Bid Role started for " + agent);
 
         long futureTimePoint = getCurrentTick() + agent.getInvestmentFutureTimeHorizon();
-        // logger.warn(agent + " looking at timepoint " + futureTimePoint);
 
         // ==== Expectations ===
-
         Map<Substance, Double> expectedFuelPrices = predictFuelPrices(agent, futureTimePoint);
-
         // CO2
         Map<ElectricitySpotMarket, Double> expectedCO2Price = determineExpectedCO2PriceInclTaxAndFundamentalForecast(
                 futureTimePoint, agent.getNumberOfYearsBacklookingForForecasting(), 0, getCurrentTick());
-
         // logger.warn("{} expects CO2 prices {}", agent.getName(),
         // expectedCO2Price);
-
         Map<ElectricitySpotMarket, Double> expectedCO2PriceOld = determineExpectedCO2PriceInclTax(futureTimePoint,
                 agent.getNumberOfYearsBacklookingForForecasting(), getCurrentTick());
 
@@ -166,7 +161,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
             for (PowerGridNode node : possibleInstallationNodes) {
 
                 PowerPlant plant = new PowerPlant();
-
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
 
                 // logger.warn("SubmitBid 168 - Agent " + agent +
@@ -198,12 +192,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 PowerGeneratingTechnologyNodeLimit pgtLimit = reps.powerGeneratingTechnologyNodeLimitRepository
                         .findOneByTechnologyAndNode(technology, plant.getLocation());
 
-                // logger.warn("technology for pgtNodeLimit is" + technology);
-                // logger.warn("plant location for pgtNodeLimit is" +
-                // plant.getLocation());
-
-                // logger.warn("pgtNodeLimit 2 is: " + pgtNodeLimit);
-
                 if (pgtLimit != null) {
                     pgtNodeLimit = pgtLimit.getUpperCapacityLimit(futureTimePoint);
                 }
@@ -220,15 +208,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // lower
                 // integer
 
-                // logger.warn("pgtNodeLimit 3 is: " + pgtNodeLimit);
-
-                // logger.warn("actual nominal capacity is: " +
-                // plant.getActualNominalCapacity());
-
-                // logger.warn("ratioNodeCapacity: " + ratioNodeCapacity);
-
-                // logger.warn("numberOfPlants is: " + numberOfPlants);
-
                 // if cash strapped, bid quantity according to fraction of cash,
                 // which is translated to the number of plants
                 // available.
@@ -236,8 +215,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // If cash needed is larger than current cash of agent
                 if (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent.getDebtRatioOfInvestments()) > agent
                         .getDownpaymentFractionOfCash() * agent.getCash()) {
-
-                    // logger.warn("Cash fraction method needed to compute number of plants");
 
                     double cashAvailableFraction = (agent.getDownpaymentFractionOfCash() * agent.getCash())
                             / (numberOfPlants * plant.getActualInvestedCapital() * (1 - agent
@@ -249,18 +226,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     numberOfPlants = cashAvailableFraction * numberOfPlants;
 
-                    // logger.warn("cash available fraction is: " +
-                    // cashAvailableFraction);
-                    // logger.warn("number of plants are: " + numberOfPlants);
-
-                    // capacityTesting
                     numberOfPlants = (long) numberOfPlants; // truncates
                     // towards
                     // lower
                     // integer
 
-                    // logger.warn("number of plants are after Cash Fraction: "
-                    // + numberOfPlants);
                 }
 
                 // computing tender bid price
@@ -285,8 +255,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository
                         .determineSupportSchemeDurationForEnergyProducer(agent);
 
-                // logger.warn("tender duration is" + tenderSchemeDuration);
-
                 // should be
                 // modified when
                 // location
@@ -298,20 +266,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     double hours = segmentLoad.getSegment().getLengthInHours();
 
                     if (expectedMarginalCost <= expectedElectricityPrice) {
-                        // logger.warn("expectedMarginalCost: " +
-                        // expectedMarginalCost +
-                        // " and expectedElectricityPrice"
-                        // + expectedElectricityPrice);
 
                         runningHours = runningHours + hours;
-
-                        // logger.warn("hours is: " + hours);
-
-                        // logger.warn("runningHours: " + runningHours);
-
                         if (technology.isIntermittent()) {
 
-                            // logger.warn("This logger should not showing up: technology is intermittent");
                             expectedGrossProfit += (expectedElectricityPrice - expectedMarginalCost)
                                     * hours
                                     * plant.getActualNominalCapacity()
@@ -324,10 +282,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                     * reps.intermittentTechnologyNodeLoadFactorRepository
                                             .findIntermittentTechnologyNodeLoadFactorForNodeAndTechnology(node,
                                                     technology).getLoadFactorForSegment(segmentLoad.getSegment());
-
-                            // logger.warn("INTERMITTENT totalAnnualExpectedGenerationOfPlant "
-                            // + totalAnnualExpectedGenerationOfPlant +
-                            // " of tech " + technology);
 
                         } else {
                             expectedGrossProfit += (expectedElectricityPrice - expectedMarginalCost)
@@ -335,63 +289,34 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                     * plant.getAvailableCapacity(futureTimePoint, segmentLoad.getSegment(),
                                             numberOfSegments);
 
-                            // logger.warn("expectedGrossProfit: " +
-                            // expectedGrossProfit);
-
                             totalAnnualExpectedGenerationOfPlant += hours
                                     * plant.getAvailableCapacity(futureTimePoint, segmentLoad.getSegment(),
                                             numberOfSegments);
-
-                            // logger.warn("hours: " + hours);
-
-                            // logger.warn("getAvailableCapacity: "
-                            // + plant.getAvailableCapacity(futureTimePoint,
-                            // segmentLoad.getSegment(),
-                            // numberOfSegments));
-
-                            // logger.warn("DISPATCH totalAnnualExpectedGenerationOfPlant "
-                            // + totalAnnualExpectedGenerationOfPlant +
-                            // " of tech " + technology);
 
                         }
                     }
                 }
 
                 double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());
-                // logger.warn("fixedOMCost is: " + fixedOMCost);
 
                 double operatingProfit = expectedGrossProfit - fixedOMCost;
-                // logger.warn("operatingProfit is: " + operatingProfit);
 
                 double wacc = (1 - agent.getDebtRatioOfInvestments()) * agent.getEquityInterestRate()
                         + agent.getDebtRatioOfInvestments() * agent.getLoanInterestRate();
 
-                // Creation of out cash-flow during power plant building
-                // phase (note that the cash-flow is negative!)
                 TreeMap<Integer, Double> discountedProjectCapitalOutflow = calculateSimplePowerPlantInvestmentCashFlow(
                         technology.getDepreciationTime(),
                         (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()),
                         plant.getActualInvestedCapital(), 0);
+
                 // Creation of in cashflow during operation
                 TreeMap<Integer, Double> discountedProjectCashInflow = calculateSimplePowerPlantInvestmentCashFlow(
                         technology.getDepreciationTime(),
                         (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, operatingProfit);
 
                 double discountedCapitalCosts = npv(discountedProjectCapitalOutflow, wacc);
-                // logger.warn("discountedCapitalCosts is: " +
-                // discountedCapitalCosts);
                 double discountedOpProfit = npv(discountedProjectCashInflow, wacc);
-                // logger.warn("discountedOpProfit is: " + discountedOpProfit);
-
-                double projectValue = discountedOpProfit + discountedCapitalCosts; // tendertesting
-
-                // logger.warn("project value: " + projectValue +
-                // ", discountedOpProfit: " + discountedOpProfit
-                // + ", discountedCapitalCosts: " + discountedCapitalCosts);
-
-                // logger.warn("projectValue is: " + projectValue);
-                // logger.warn("totalAnnualExpectedGenerationOfPlant is: " +
-                // totalAnnualExpectedGenerationOfPlant);
+                double projectValue = discountedOpProfit + discountedCapitalCosts;
 
                 double bidPricePerMWh = 0d;
 
@@ -401,20 +326,13 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 } else {
 
                     // calculate discounted tender return factor term
-
                     TreeMap<Integer, Double> discountedTenderReturnFactorSummingTerm = calculateSimplePowerPlantInvestmentCashFlow(
                             (int) tenderSchemeDuration,
                             (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime()), 0, 1);
                     double discountedTenderReturnFactor = npv(discountedTenderReturnFactorSummingTerm, wacc);
 
-                    // logger.warn("discountedTenderReturnFactor is: " +
-                    // discountedTenderReturnFactor);
-
                     if (discountedTenderReturnFactor == 0) {
                         bidPricePerMWh = 0d;
-                        // logger.warn(" zero discountedTenderReturnFactor -
-                        // bid price per mwh is "
-                        // + bidPricePerMWh);
 
                     } else {
 
@@ -422,18 +340,9 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         bidPricePerMWh = -projectValue
                                 / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
-                        Zone zone = market.getZone();
-
-                        logger.warn("get zone via market: " + market.getZone());
-                        logger.warn("zone: " + zone);
-
+                        Zone zone = agent.getInvestorMarket().getZone();
                         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
                                 .determineSupportSchemeForZone(zone);
-
-                        logger.warn("reps Scheme: "
-                                + reps.renewableSupportSchemeTenderRepository.determineSupportSchemeForZone(zone));
-
-                        logger.warn("scheme is: " + scheme);
 
                         for (long i = 1; i <= numberOfPlants; i++) {
 

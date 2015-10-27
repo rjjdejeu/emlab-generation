@@ -28,7 +28,7 @@ import emlab.gen.domain.market.ClearingPoint;
 public class TenderClearingPoint extends ClearingPoint {
 
     @RelatedTo(type = "RENEWABLE_SUPPORT_SCHEME_TENDER", elementClass = RenewableSupportSchemeTender.class, direction = Direction.OUTGOING)
-    private RenewableSupportSchemeTender renewableSupportSchemeTender;
+    RenewableSupportSchemeTender renewableSupportSchemeTender;
 
     public RenewableSupportSchemeTender getRenewableSupportSchemeTender() {
         return renewableSupportSchemeTender;

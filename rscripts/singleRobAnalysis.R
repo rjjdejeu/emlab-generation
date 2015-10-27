@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "ThreeMNs"
+nameFile <- "InvestingCheck"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder

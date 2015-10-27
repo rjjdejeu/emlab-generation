@@ -78,11 +78,11 @@
 		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
-				<ref bean="photovoltaicPGT" />
+<!-- 				<ref bean="photovoltaicPGT" /> -->
 				<ref bean="windOffshorePGT" />
-				<ref bean="windPGT" />
-				<ref bean="biomassPGT" />
-				<ref bean="biogasPGT" />
+<!-- 				<ref bean="windPGT" /> -->
+<!-- 				<ref bean="biomassPGT" /> -->
+<!-- 				<ref bean="biogasPGT" /> -->
 			</set>
 		</property>
 	</bean>

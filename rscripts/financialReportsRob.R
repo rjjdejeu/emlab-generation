@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "TargetRoleVerification-FinancialReports"
+nameFile <- "NewRoleCheck-FinancialReports"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -24,10 +24,9 @@ colnames(bigDF) = gsub("^\\.|\\.$", "", colnames(bigDF))
 colnames(bigDF) = gsub("\\.", "_", colnames(bigDF))
 summary(bigDF)
 
-
-
 library(gridExtra)
 library(TeachingDemos)
 library(grid)
 library(ggplot2)
 library(reshape2)
+
