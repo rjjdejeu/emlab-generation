@@ -362,7 +362,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             logger.warn("SubmitBid 454 - Agent " + agent + " at tick " + getCurrentTick() + " in tech "
                                     + technology + " with plant name " + plant.getName() + " with bidprice "
                                     + bidPricePerMWh + " with generation " + totalAnnualExpectedGenerationOfPlant
-                                    + "in zone " + zone);
+                                    + "in zone " + zone + " of scheme " + scheme);
 
                         } // end for loop for tender bids
 

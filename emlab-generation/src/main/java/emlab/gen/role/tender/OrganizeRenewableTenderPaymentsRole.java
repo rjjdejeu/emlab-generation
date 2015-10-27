@@ -43,7 +43,7 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        logger.warn("Organize Renewable Tender Payments Role started");
+        logger.warn("Organize Renewable Tender Payments Role started for; " + scheme);
 
         for (TenderBid currentTenderBid : reps.tenderBidRepository.findAllTenderBidsThatShouldBePaidInTimeStep(scheme,
                 getCurrentTick())) {
@@ -51,25 +51,21 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
             TenderClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
                     .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderBid.getTime(), scheme);
 
-            // logger.warn("Bidder of this tender bid is: " +
-            // currentTenderBid.getBidder());
+            logger.warn("scheme; " + scheme);
+            logger.warn("Bidder of this tender bid is: " + currentTenderBid.getBidder());
 
-            // logger.warn("Start time of the bid is: " +
-            // currentTenderBid.getStart() + " and belongs to scheme: "
-            // + scheme);
-            // logger.warn("Production amount is: " +
-            // currentTenderBid.getAcceptedAmount() + " subsidy amount is "
-            // + tenderClearingPoint.getPrice());
+            logger.warn("Start time of the bid is: " + currentTenderBid.getStart() + " and belongs to scheme: "
+                    + scheme);
+            logger.warn("Production amount is: " + currentTenderBid.getAcceptedAmount() + " subsidy amount is "
+                    + tenderClearingPoint.getPrice());
 
             reps.nonTransactionalCreateRepository.createCashFlow(scheme, currentTenderBid.getBidder(),
                     currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,
                     getCurrentTick(), currentTenderBid.getPowerPlant());
 
-            // logger.warn("" + (currentTenderBid.getAcceptedAmount() *
-            // tenderClearingPoint.getPrice()));
+            logger.warn("" + (currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice()));
 
-            // logger.warn("Power plant of this bid is: " +
-            // currentTenderBid.getPowerPlant());
+            logger.warn("Power plant of this bid is: " + currentTenderBid.getPowerPlant());
 
         }
 

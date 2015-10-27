@@ -52,7 +52,7 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
                 .determineSupportSchemeForZone(zone);
 
-        // logger.warn("scheme is: " + scheme);
+        logger.warn("scheme is: " + scheme);
 
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;

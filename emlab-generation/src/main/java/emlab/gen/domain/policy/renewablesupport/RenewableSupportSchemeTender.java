@@ -49,7 +49,7 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
     @SimulationParameter(label = "Support Scheme Duration", from = 0, to = 50)
     private long supportSchemeDuration;
 
-    private String name;
+    private String scheme;
 
     private long futureTenderOperationStartTime;
 
@@ -75,12 +75,16 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
         this.futureTenderOperationStartTime = futureTimePointTender;
     }
 
-    public String getName() {
-        return name;
+    public String getScheme() {
+        return scheme;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public String toString() {
+        return "Scheme " + scheme;
     }
 
     public Set<PowerGeneratingTechnology> getPowerGeneratingTechnologiesEligible() {

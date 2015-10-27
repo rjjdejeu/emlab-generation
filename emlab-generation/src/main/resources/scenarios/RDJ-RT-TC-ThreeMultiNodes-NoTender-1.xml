@@ -21,7 +21,7 @@
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="false">
+		p:renewableTenderSchemeImplemented="true">
 	</bean>
 
 
