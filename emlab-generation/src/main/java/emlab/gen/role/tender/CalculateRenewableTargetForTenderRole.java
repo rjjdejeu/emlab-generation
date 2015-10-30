@@ -74,21 +74,22 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         double expectedGenerationPerTechnology = 0d;
         double expectedGenerationPerPlant = 0d;
         long numberOfSegments = reps.segmentRepository.count();
-        logger.warn("number of segments; " + numberOfSegments);
+        // logger.warn("number of segments; " + numberOfSegments);
 
         int noOfPlants = 0;
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnology = 0d;
 
-            logger.warn("For PGT - technology; " + technology);
+            // logger.warn("For PGT - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {
 
-                logger.warn("For PP - plant; " + plant);
-                logger.warn("For PP - market; " + market + " technology; " + technology + " future time tick; "
-                        + futureStartingTenderTimePoint);
+                // logger.warn("For PP - plant; " + plant);
+                // logger.warn("For PP - market; " + market + " technology; " +
+                // technology + " future time tick; "
+                // + futureStartingTenderTimePoint);
 
                 expectedGenerationPerPlant = 0d;
                 noOfPlants++;
@@ -96,35 +97,43 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                 logger.warn("FOR pp - no of plants; " + noOfPlants);
 
                 for (Segment segment : reps.segmentRepository.findAll()) {
-                    logger.warn("For S - segment; " + segment);
+                    // logger.warn("For S - segment; " + segment);
 
                     double availablePlantCapacity = plant.getExpectedAvailableCapacity(futureStartingTenderTimePoint,
                             segment, numberOfSegments);
-
-                    logger.warn("For S - future time tick; " + futureStartingTenderTimePoint + " segment; " + segment
-                            + " number of segments; " + numberOfSegments + " availablePlantCapacity; "
-                            + availablePlantCapacity);
+                    //
+                    // logger.warn("For S - future time tick; " +
+                    // futureStartingTenderTimePoint + " segment; " + segment
+                    // + " number of segments; " + numberOfSegments +
+                    // " availablePlantCapacity; "
+                    // + availablePlantCapacity);
 
                     double lengthOfSegmentInHours = segment.getLengthInHours();
 
-                    logger.warn("expectedGenerationPerPlant; " + expectedGenerationPerPlant
-                            + " lengthOfSegmentInHours; " + lengthOfSegmentInHours + " availablePlantCapacity "
-                            + availablePlantCapacity);
+                    // logger.warn("expectedGenerationPerPlant; " +
+                    // expectedGenerationPerPlant
+                    // + " lengthOfSegmentInHours; " + lengthOfSegmentInHours +
+                    // " availablePlantCapacity "
+                    // + availablePlantCapacity);
 
                     expectedGenerationPerPlant += availablePlantCapacity * lengthOfSegmentInHours;
 
                 }
-                logger.warn("For S - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
+                // logger.warn("For S - expectedGenerationPerPlant; " +
+                // expectedGenerationPerPlant);
 
                 expectedGenerationPerTechnology += expectedGenerationPerPlant;
 
-                logger.warn("For S - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
+                // logger.warn("For S - expectedGenerationPerPlant; " +
+                // expectedGenerationPerPlant);
             }
-            logger.warn("For PP - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
+            // logger.warn("For PP - expectedGenerationPerPlant; " +
+            // expectedGenerationPerPlant);
 
             totalExpectedGeneration += expectedGenerationPerTechnology;
 
-            logger.warn("For PP - totalExpectedGeneration; " + totalExpectedGeneration);
+            // logger.warn("For PP - totalExpectedGeneration; " +
+            // totalExpectedGeneration);
 
         }
         // logger.warn("No of Expected Plants; " + noOfPlants);
@@ -163,7 +172,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          */
 
         // logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
-        logger.warn("Last - totalExpectedGeneration; " + totalExpectedGeneration);
+        // logger.warn("Last - totalExpectedGeneration; " +
+        // totalExpectedGeneration);
 
         scheme.setExpectedRenewableGeneration(totalExpectedGeneration);
 
