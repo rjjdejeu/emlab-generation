@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "TestGen1"
+nameFile <- "TestGen5"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -121,7 +121,6 @@ renewableGenerationA <-
 demandA <- bigDF$Total_DemandinMWh_Country_A
 realizedTargetA <- renewableGenerationA / demandA 
 
-
 realizedTargetAplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetA*100)) + 
   geom_point() + 
   xlab("Year") +  
@@ -141,6 +140,14 @@ ggsave(filename = paste(filePrefix, "NREAP_target_nl.png", sep=""),scale=1)
 # renewableShareVStargetA <-multiplot(RESgenerationShareAplot, nreapAplot, cols=2)
 # ggsave(filename = paste(filePrefix, "renewableShareVStargetA.png",  sep=""),scale=1)
 
+renewableGenerationB <-  
+  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+
+demandB <- bigDF$Total_DemandinMWh_Country_B
+realizedTargetB <- renewableGenerationB / demandB 
+realizedTargetB 
+
 realizedTargetBplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetB*100)) + 
   geom_point() + 
   xlab("Year") +  
@@ -157,43 +164,38 @@ nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) +
 plot(nreapBplot)
 ggsave(filename = paste(filePrefix, "NREAP_target_de.png", sep=""),scale=1)
 
-renewableGenerationB <-  
-  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
-  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
-
-demandB <- bigDF$Total_DemandinMWh_Country_B
-realizedTargetB <- renewableGenerationB / demandB 
-realizedTargetB 
+write.table(renewableGenerationA , file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
 # renewableShareVStargetB <-multiplot(RESgenerationShareBplot, nreapBplot, cols=2)
 # ggsave(filename = paste(filePrefix, "renewableShareVStargetB.png",  sep=""),scale=1)
 
-#Relative Generation Share of Renewables
-renewableGenerationA <-  
-  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
-  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
-
-totalGenerationA  <-bigDF$GenerationinMWhCountryA_IGCC + 
-  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_CcgtCCS + 
-  bigDF$GenerationinMWhCountryA_CoalPscCSS + bigDF$GenerationinMWhCountryA_Lignite + bigDF$GenerationinMWhCountryA_Biomass + 
-  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_IgccCCS + bigDF$GenerationinMWhCountryA_CoalPSC + 
-  bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_CCGT + bigDF$GenerationinMWhCountryA_WindOffshore + 
-  bigDF$GenerationinMWhCountryA_Nuclear + bigDF$GenerationinMWhCountryA_OCGT
-
-renewableGenerationShareCountryA <-renewableGenerationA/totalGenerationA
-
-renewableGenerationB <-  
-  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
-  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
-
-totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC + 
-  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_CcgtCCS + 
-  bigDF$GenerationinMWhCountryB_CoalPscCSS + bigDF$GenerationinMWhCountryB_Lignite + bigDF$GenerationinMWhCountryB_Biomass + 
-  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_IgccCCS + bigDF$GenerationinMWhCountryB_CoalPSC + 
-  bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_CCGT + bigDF$GenerationinMWhCountryB_WindOffshore + 
-  bigDF$GenerationinMWhCountryB_Nuclear + bigDF$GenerationinMWhCountryB_OCGT
-
-renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
+# #Relative Generation Share of Renewables
+# renewableGenerationA <-  
+#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
+#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
+# 
+# totalGenerationA  <-bigDF$GenerationinMWhCountryA_IGCC + 
+#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_CcgtCCS + 
+#   bigDF$GenerationinMWhCountryA_CoalPscCSS + bigDF$GenerationinMWhCountryA_Lignite + bigDF$GenerationinMWhCountryA_Biomass + 
+#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_IgccCCS + bigDF$GenerationinMWhCountryA_CoalPSC + 
+#   bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_CCGT + bigDF$GenerationinMWhCountryA_WindOffshore + 
+#   bigDF$GenerationinMWhCountryA_Nuclear + bigDF$GenerationinMWhCountryA_OCGT
+# 
+# renewableGenerationShareCountryA <-renewableGenerationA/totalGenerationA
+# 
+# renewableGenerationB <-  
+#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+# 
+# totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC + 
+#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_CcgtCCS + 
+#   bigDF$GenerationinMWhCountryB_CoalPscCSS + bigDF$GenerationinMWhCountryB_Lignite + bigDF$GenerationinMWhCountryB_Biomass + 
+#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_IgccCCS + bigDF$GenerationinMWhCountryB_CoalPSC + 
+#   bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_CCGT + bigDF$GenerationinMWhCountryB_WindOffshore + 
+#   bigDF$GenerationinMWhCountryB_Nuclear + bigDF$GenerationinMWhCountryB_OCGT
+# 
+# renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
 
 # write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 # write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
