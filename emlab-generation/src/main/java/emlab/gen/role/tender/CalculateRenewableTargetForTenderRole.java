@@ -33,6 +33,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
+        long futureStartingTenderTimePoint = getCurrentTick() + scheme.getFutureTenderOperationStartTime();
         double demandFactor;
         double targetFactor;
         Zone zone = scheme.getRegulator().getZone();
@@ -43,35 +44,28 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         // get demand factor
         demandFactor = predictDemandForElectricitySpotMarket(market, scheme.getRegulator()
-                .getNumberOfYearsLookingBackToForecastDemand(),
-                (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
-
-        logger.warn("demandGrowth; " + demandFactor);
+                .getNumberOfYearsLookingBackToForecastDemand(), futureStartingTenderTimePoint);
 
         // get renewable energy target in factor (percent)
         RenewableTargetForTender target = reps.renewableTargetForTenderRepository
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
-        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(
-                (getCurrentTick() + scheme.getFutureTenderOperationStartTime()));
-        logger.warn("targetFactor; " + targetFactor);
+        targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(futureStartingTenderTimePoint);
+        // logger.warn("targetFactor; " + targetFactor);
 
         // get totalLoad in MWh
         double totalExpectedConsumption = 0d;
 
         for (SegmentLoad segmentLoad : market.getLoadDurationCurve()) {
-            // logger.warn("segmentLoad: " + segmentLoad);
             totalExpectedConsumption += segmentLoad.getBaseLoad() * demandFactor
                     * segmentLoad.getSegment().getLengthInHours();
-
-            // logger.warn("demand factor is: " + demandFactor);
 
         }
         logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
         // renewable target for tender operation start year in MWh is
 
         double renewableTargetInMwh = targetFactor * totalExpectedConsumption;
-        logger.warn("renewableTargetInMwh; " + renewableTargetInMwh);
+        // logger.warn("renewableTargetInMwh; " + renewableTargetInMwh);
 
         // calculate expected generation, and subtract that from annual
         // target.
@@ -80,26 +74,60 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         double expectedGenerationPerTechnology = 0d;
         double expectedGenerationPerPlant = 0d;
         long numberOfSegments = reps.segmentRepository.count();
+        logger.warn("number of segments; " + numberOfSegments);
+
         int noOfPlants = 0;
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnology = 0d;
-            for (PowerPlant plant : reps.powerPlantRepository.findOperationalPowerPlantsByMarketAndTechnology(market,
-                    technology, (getCurrentTick() + scheme.getFutureTenderOperationStartTime()))) {
+
+            logger.warn("For PGT - technology; " + technology);
+
+            for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
+                    market, technology, futureStartingTenderTimePoint)) {
+
+                logger.warn("For PP - plant; " + plant);
+                logger.warn("For PP - market; " + market + " technology; " + technology + " future time tick; "
+                        + futureStartingTenderTimePoint);
+
                 expectedGenerationPerPlant = 0d;
                 noOfPlants++;
+
+                logger.warn("FOR pp - no of plants; " + noOfPlants);
+
                 for (Segment segment : reps.segmentRepository.findAll()) {
-                    double availablePlantCapacity = plant.getAvailableCapacity(
-                            (getCurrentTick() + scheme.getFutureTenderOperationStartTime()), segment, numberOfSegments);
+                    logger.warn("For S - segment; " + segment);
+
+                    double availablePlantCapacity = plant.getExpectedAvailableCapacity(futureStartingTenderTimePoint,
+                            segment, numberOfSegments);
+
+                    logger.warn("For S - future time tick; " + futureStartingTenderTimePoint + " segment; " + segment
+                            + " number of segments; " + numberOfSegments + " availablePlantCapacity; "
+                            + availablePlantCapacity);
+
                     double lengthOfSegmentInHours = segment.getLengthInHours();
+
+                    logger.warn("expectedGenerationPerPlant; " + expectedGenerationPerPlant
+                            + " lengthOfSegmentInHours; " + lengthOfSegmentInHours + " availablePlantCapacity "
+                            + availablePlantCapacity);
+
                     expectedGenerationPerPlant += availablePlantCapacity * lengthOfSegmentInHours;
+
                 }
+                logger.warn("For S - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
+
                 expectedGenerationPerTechnology += expectedGenerationPerPlant;
+
+                logger.warn("For S - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
             }
+            logger.warn("For PP - expectedGenerationPerPlant; " + expectedGenerationPerPlant);
+
             totalExpectedGeneration += expectedGenerationPerTechnology;
 
+            logger.warn("For PP - totalExpectedGeneration; " + totalExpectedGeneration);
+
         }
-        logger.warn("No of Expected Plants; " + noOfPlants);
+        // logger.warn("No of Expected Plants; " + noOfPlants);
 
         /*
          * To compare
@@ -135,7 +163,9 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
          */
 
         // logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
-        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
+        logger.warn("Last - totalExpectedGeneration; " + totalExpectedGeneration);
+
+        scheme.setExpectedRenewableGeneration(totalExpectedGeneration);
 
         renewableTargetInMwh = renewableTargetInMwh - totalExpectedGeneration;
 

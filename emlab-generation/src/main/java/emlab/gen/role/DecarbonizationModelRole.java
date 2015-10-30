@@ -69,7 +69,7 @@ import emlab.gen.role.tender.TenderMainRole;
  *
  */
 @ScriptComponent
-public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>implements Role<DecarbonizationModel> {
+public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel> implements Role<DecarbonizationModel> {
 
     @Autowired
     private PayCO2TaxRole payCO2TaxRole;
@@ -372,19 +372,6 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
         timerMarket.stop();
         logger.warn("        took: {} seconds.", timerMarket.seconds());
 
-        logger.warn("  6.b) Creating power plant financial reports.");
-        Timer financialReports = new Timer();
-        financialReports.start();
-
-        creatingFinancialReports.act(model);
-
-        financialReports.stop();
-        logger.warn("        took: {} seconds.", financialReports.seconds());
-
-        /*
-         * RENEWABLE TENDER
-         */
-
         if (model.isRenewableTenderSchemeImplemented()) {
 
             logger.warn(" 6c Running Renewable Tender Scheme");
@@ -401,6 +388,19 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
             }
 
         }
+
+        logger.warn("  6.b) Creating power plant financial reports.");
+        Timer financialReports = new Timer();
+        financialReports.start();
+
+        creatingFinancialReports.act(model);
+
+        financialReports.stop();
+        logger.warn("        took: {} seconds.", financialReports.seconds());
+
+        /*
+         * RENEWABLE TENDER
+         */
 
         // /*
         // * Run Simple Capacity Market (start from tick 1, due to
@@ -499,13 +499,13 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
             logger.warn("  8. Delete old nodes in year {}.", (getCurrentTick() - model.getDeletionAge()));
             // reps.bidRepository.delete(reps.bidRepository.findAllBidsForForTime(getCurrentTick()
             // - model.getDeletionAge()));
-            reps.cashFlowRepository.delete(
-                    reps.cashFlowRepository.findAllCashFlowsForForTime(getCurrentTick() - model.getDeletionAge()));
+            reps.cashFlowRepository.delete(reps.cashFlowRepository.findAllCashFlowsForForTime(getCurrentTick()
+                    - model.getDeletionAge()));
             reps.powerPlantRepository.delete(reps.powerPlantRepository
                     .findAllPowerPlantsDismantledBeforeTick(getCurrentTick() - model.getDeletionAge()));
-            reps.powerPlantDispatchPlanRepository
-                    .delete(reps.powerPlantDispatchPlanRepository.findAllPowerPlantDispatchPlansForTime(
-                            getCurrentTick() + model.getCentralForecastingYear() - 1, true));
+            reps.powerPlantDispatchPlanRepository.delete(reps.powerPlantDispatchPlanRepository
+                    .findAllPowerPlantDispatchPlansForTime(getCurrentTick() + model.getCentralForecastingYear() - 1,
+                            true));
             reps.financialPowerPlantReportRepository.delete(reps.financialPowerPlantReportRepository
                     .findAllFinancialPowerPlantReportsForTime(getCurrentTick() - 5 - model.getDeletionAge()));
             timerMarket.stop();

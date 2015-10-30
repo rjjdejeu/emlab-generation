@@ -88,7 +88,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
     @Override
     public void act(EnergyProducer agent) {
 
-        logger.warn("Submit Tender Bid Role started for " + agent);
+        logger.warn("Submit Tender Bid Role started for: " + agent);
 
         long futureTimePoint = getCurrentTick() + agent.getInvestmentFutureTimeHorizon();
 
@@ -346,18 +346,14 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                         for (long i = 1; i <= numberOfPlants; i++) {
 
+                            long start = getCurrentTick() + plant.calculateActualLeadtime()
+                                    + plant.calculateActualPermittime();
+                            long finish = getCurrentTick() + plant.calculateActualLeadtime()
+                                    + plant.calculateActualPermittime() + tenderSchemeDuration;
+
                             TenderBid bid = new TenderBid();
-                            bid.specifyAndPersist(
-                                    totalAnnualExpectedGenerationOfPlant,
-                                    plant,
-                                    agent,
-                                    zone,
-                                    node,
-                                    (getCurrentTick() + (plant.calculateActualLeadtime() + plant
-                                            .calculateActualPermittime())),
-                                    (getCurrentTick()
-                                            + (plant.calculateActualLeadtime() + plant.calculateActualPermittime()) + tenderSchemeDuration),
-                                    bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
+                            bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, zone, node,
+                                    start, finish, bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
 
                             logger.warn("SubmitBid 454 - Agent " + agent + " at tick " + getCurrentTick() + " in tech "
                                     + technology + " with plant name " + plant.getName() + " with bidprice "
@@ -523,8 +519,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             marginalCostMap.put(plant, plantMarginalCost);
                             capacitySum += targetDifference;
 
-                            logger.warn("SubmitBid 618 - Agent " + targetInvestor + " invested in technology at tick "
-                                    + getCurrentTick() + " in tech " + pggt.getPowerGeneratingTechnology());
+                            // logger.warn("SubmitBid 618 - Agent " +
+                            // targetInvestor +
+                            // " invested in technology at tick "
+                            // + getCurrentTick() + " in tech " +
+                            // pggt.getPowerGeneratingTechnology());
 
                         }
                     }
@@ -552,8 +551,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             marginalCostMap.put(plant, plantMarginalCost);
                             capacitySum += expectedTechnologyAddition;
 
-                            logger.warn("SubmitBid 648 - Agent " + targetInvestor + " invested in technology at tick "
-                                    + getCurrentTick() + " in tech " + pggt.getPowerGeneratingTechnology());
+                            // logger.warn("SubmitBid 648 - Agent " +
+                            // targetInvestor +
+                            // " invested in technology at tick "
+                            // + getCurrentTick() + " in tech " +
+                            // pggt.getPowerGeneratingTechnology());
 
                         }
                     }

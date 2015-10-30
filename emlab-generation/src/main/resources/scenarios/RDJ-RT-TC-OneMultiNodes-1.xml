@@ -16,7 +16,7 @@
 
 	<!-- Decarbonization Model -->
 	<bean id="decarbonizationModel" class="emlab.gen.domain.agent.DecarbonizationModel"
-		p:name="Decarbonization Model" p:simulationLength="40"
+		p:name="Decarbonization Model" p:simulationLength="25"
 		p:co2TradingImplemented="false" p:realRenewableDataImplemented="true"
 		p:iterationSpeedFactor="3" p:iterationSpeedCriterion="0.005"
 		p:capDeviationCriterion="0.03"
@@ -822,7 +822,7 @@
 		class="emlab.gen.role.investment.InvestInPowerGenerationTechnologiesStandard" />
 
 
-	<!-- Initial portfolios You still have to check the initial fractions -->
+	<!-- Initial portfolios  -->
 
 	<bean id="powerPlantManufacturer" class="emlab.gen.domain.agent.PowerPlantManufacturer"
 		p:name="Power Plant Manufacturer" />

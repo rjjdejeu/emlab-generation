@@ -55,6 +55,8 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
 
     private double yearlyTenderDemandTarget;
 
+    private double expectedRenewableGeneration;
+
     // private long time;
     //
     // private double totalExpectedConsumption;
@@ -85,6 +87,14 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
 
     public String toString() {
         return "Scheme " + scheme;
+    }
+
+    public double getExpectedRenewableGeneration() {
+        return expectedRenewableGeneration;
+    }
+
+    public void setExpectedRenewableGeneration(double expectedRenewableGeneration) {
+        this.expectedRenewableGeneration = expectedRenewableGeneration;
     }
 
     public Set<PowerGeneratingTechnology> getPowerGeneratingTechnologiesEligible() {

@@ -52,7 +52,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
     @Override
     public void act(Regulator regulator) {
 
-        logger.warn("Create Power Plants Of Accepted Tender Bids Role started");
+        logger.warn("Create Power Plants Of Accepted Tender Bids Role started for: " + regulator);
 
         Zone zone = regulator.getZone();
         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
@@ -64,7 +64,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
         for (TenderBid currentTenderBid : acceptedTenderBidsByTime) {
 
-            logger.warn("current accepted bid: " + currentTenderBid);
+            // logger.warn("current accepted bid: " + currentTenderBid);
 
             PowerPlant plant = new PowerPlant();
             EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();

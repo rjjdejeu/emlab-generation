@@ -1,5 +1,5 @@
 #File and folder initiation
-nameFile <- "InvestingCheck"
+nameFile <- "TestGen1"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -71,6 +71,102 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
+## Expected Gen check
+
+ExpGenA <- bigDF$ExpectedRenewableGeneration_RenewableTenderDE
+ExpGenB <- bigDF$ExpectedRenewableGeneration_RenewableTenderNL
+
+write.table(ExpGenA , file = "ExpGenA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(ExpGenB, file = "ExpGenB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+
+
+
+AvgPriceMean = 0
+# SupplyRatioMeanCM = 0
+# ConsumerExpMeanCM = 0
+# AggProducerProfitMeanCM = 0
+# ProducerCashSumCM = 0 
+# CapacityPriceMean =0
+# CapacityVolumeMean = 0
+
+for(i in 1:120){
+#bigDFcm$runId <- paste(bigDFcm$runId,"-",sep="")
+# strTemp <- paste("CmPaper-2",i,"-",sep="")
+# Temp <-  subset(bigDFcm, grepl(strTemp, runId))
+Temp <- bigDF
+AvgPriceMean[i] <- mean(Temp$Avg_El_PricesinEURpMWh_Country_B)
+# SupplyRatioMeanCM[i]<- mean(Temp$SupplyRatio_Country.B)
+# ConsumerExpMeanCM[i]<-mean(Temp$ConsumerExpenditure_Country.B.electricity.spot.market)
+# AggProducerProfitMeanCM[i]<-mean(Temp$AggregateFinances_Profit)
+# ProducerCashSumCM[i]<-mean(Temp$ProducerCashSum)
+# CapacityPriceMean[i]<-mean(Temp$CapacityClearingPointPriceinEur)
+# CapacityVolumeMean[i]<-mean(Temp$CapacityClearingPointVolumeinEur)
+# shareOCGT_CM[i]<mean(Temp$CapacityinMW_OCGT/Temp$TotalOperationalCapacityPerZoneInMW_Country.B)
+# shareCCGT_CM[i]<mean(Temp$CapacityinMW_CCGT/Temp$TotalOperationalCapacityPerZoneInMW_Country.B)
+}
+
+avgPricePlotinB <-plotTimeSeriesWithConfidenceIntervalByFacettedGroup(bigDF, "Avg_El_PricesinEURpMWh_Country_A", "Avg. Electricity Price in Country B [EUR/MW]")
+avgPricePlotinB
+
+
+## Renewable generation in terms of demand (compare this with NREAP targets)
+
+#RES-E Share versus NREAP target
+
+renewableGenerationA <-  
+  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
+  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
+
+demandA <- bigDF$Total_DemandinMWh_Country_A
+realizedTargetA <- renewableGenerationA / demandA 
+
+
+realizedTargetAplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetA*100)) + 
+  geom_point() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("RES-E generation in term of demand \n Netherlands") #give the plot a title
+plot(realizedTargetAplot)
+ggsave(filename = paste(filePrefix, "realizedTargetAplot.png", sep=""),scale=1)
+
+nreapAplot = ggplot(data=targetDF, aes(x=tick, y=nl_target*100)) + 
+  geom_point() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("NREAP Target \n Netherlands") #give the plot a title
+plot(nreapAplot)
+ggsave(filename = paste(filePrefix, "NREAP_target_nl.png", sep=""),scale=1)
+
+# renewableShareVStargetA <-multiplot(RESgenerationShareAplot, nreapAplot, cols=2)
+# ggsave(filename = paste(filePrefix, "renewableShareVStargetA.png",  sep=""),scale=1)
+
+realizedTargetBplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetB*100)) + 
+  geom_point() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("RES-E generation in term of demand \n Germany") #give the plot a title
+plot(realizedTargetBplot)
+ggsave(filename = paste(filePrefix, "realizedTargetBplot.png", sep=""),scale=1)
+
+nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) + 
+  geom_point() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("NREAP Target \n Germany") #give the plot a title
+plot(nreapBplot)
+ggsave(filename = paste(filePrefix, "NREAP_target_de.png", sep=""),scale=1)
+
+renewableGenerationB <-  
+  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+
+demandB <- bigDF$Total_DemandinMWh_Country_B
+realizedTargetB <- renewableGenerationB / demandB 
+realizedTargetB 
+
+# renewableShareVStargetB <-multiplot(RESgenerationShareBplot, nreapBplot, cols=2)
+# ggsave(filename = paste(filePrefix, "renewableShareVStargetB.png",  sep=""),scale=1)
 
 #Relative Generation Share of Renewables
 renewableGenerationA <-  
@@ -99,44 +195,9 @@ totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC +
 
 renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
 
-#RES-E Share versus NREAP target
-RESgenerationShareAplot = ggplot(data=bigDF, aes(x=tick, y=renewableGenerationShareCountryA*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("RES-E Share \n Netherlands") #give the plot a title
-plot(RESgenerationShareAplot)
-ggsave(filename = paste(filePrefix, "RESgenerationShareAplot.png", sep=""),scale=1)
+# write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
-nreapAplot = ggplot(data=targetDF, aes(x=tick, y=nl_target*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("NREAP Target \n Netherlands") #give the plot a title
-plot(nreapAplot)
-ggsave(filename = paste(filePrefix, "NREAP_target_nl.png", sep=""),scale=1)
-
-# renewableShareVStargetA <-multiplot(RESgenerationShareAplot, nreapAplot, cols=2)
-# ggsave(filename = paste(filePrefix, "renewableShareVStargetA.png",  sep=""),scale=1)
-
-RESgenerationShareBplot = ggplot(data=bigDF, aes(x=tick, y=renewableGenerationShareCountryB*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("RES-E Share \n Germany") #give the plot a title
-plot(RESgenerationShareBplot)
-ggsave(filename = paste(filePrefix, "RESgenerationShareBplot.png", sep=""))
-
-nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("NREAP Target \n Germany") #give the plot a title
-plot(nreapBplot)
-ggsave(filename = paste(filePrefix, "NREAP_target_de.png", sep=""))
-
-# renewableShareVStargetB <-multiplot(RESgenerationShareBplot, nreapBplot, cols=2)
-# ggsave(filename = paste(filePrefix, "renewableShareVStargetB.png",  sep=""),scale=1)
 
 # Average electricity wholesale price in country
 AverageElectricityPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_A, group=runNumber)) + 
