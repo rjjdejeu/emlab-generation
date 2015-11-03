@@ -1,5 +1,9 @@
+setwd("~/emlab-generation/rscripts")
+source("rConfig.R")
+source("batchRunAnalysis.R")
+
 #File and folder initiation
-nameFile <- "TestGen5"
+nameFile <- "PacedTarget"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -11,7 +15,10 @@ filePrefix <- nameFile
 
 #Read csv-file
 bigDF <- read.csv(analysisFile)
+#segmentDF <- read.csv("~/Desktop/emlabGen/output/BaseCase/BaseCase-SegmentClearingPoints.csv")
 targetDF <- read.csv("~/Desktop/emlabGen/analysis/R_policyGoalNREAP_NL_DE_2050.csv")
+
+#Adjust 
 drops <- c("CapacityinMWinA_CcgtCCS", "CapacityinMWinA_CoalPscCSS","CapacityinMWinA_HydroPower","CapacityinMWinA_IgccCCS","CapacityinMWinA_Igcc")
 drops <- c("CapacityinMWinB_CcgtCCS", "CapacityinMWinB_CoalPscCSS","CapacityinMWinB_HydroPower","CapacityinMWinB_IgccCCS","CapacityinMWinA_Igcc")
 tick <- bigDF$tick
@@ -20,7 +27,7 @@ tick
 #Clean csv-file
 library(stringr)
 #bigDF$runId <- str_replace(bigDF$runId,"\\..*","")
-bigDF$runNumber <- bigDF$runId
+#bigDF$runNumber <- bigDF$runId
 # Some colnames start with "X.", get rid of this 
 colnames(bigDF) = gsub("X\\.", "", colnames(bigDF))
 # Get rid of periods at the start and end of the names
@@ -28,6 +35,10 @@ colnames(bigDF) = gsub("^\\.|\\.$", "", colnames(bigDF))
 # Convert all periods into underscores
 colnames(bigDF) = gsub("\\.", "_", colnames(bigDF))
 summary(bigDF)
+
+#Melt dataframe
+# moltenDF <- melt(bigDF, id.vars = c("runId","tick"))
+# moltenDF
 
 library(gridExtra)
 library(TeachingDemos)
@@ -71,215 +82,36 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
     }
   }
 }
-## Expected Gen check
 
-ExpGenA <- bigDF$ExpectedRenewableGeneration_RenewableTenderDE
-ExpGenB <- bigDF$ExpectedRenewableGeneration_RenewableTenderNL
+# Check tender clearing prices versus average electricity prices or segment prices
 
-write.table(ExpGenA , file = "ExpGenA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-write.table(ExpGenB, file = "ExpGenB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+bigDF$diffTenderAndElectricityPriceA <- bigDF$Avg_El_PricesinEURpMWh_Country_A - bigDF$tenderClearingPrice_Country_A
+bigDF$diffTenderAndElectricityPriceB <- bigDF$Avg_El_PricesinEURpMWh_Country_B - bigDF$tenderClearingPrice_Country_B
 
-
-
-
-AvgPriceMean = 0
-# SupplyRatioMeanCM = 0
-# ConsumerExpMeanCM = 0
-# AggProducerProfitMeanCM = 0
-# ProducerCashSumCM = 0 
-# CapacityPriceMean =0
-# CapacityVolumeMean = 0
-
-for(i in 1:120){
-#bigDFcm$runId <- paste(bigDFcm$runId,"-",sep="")
-# strTemp <- paste("CmPaper-2",i,"-",sep="")
-# Temp <-  subset(bigDFcm, grepl(strTemp, runId))
-Temp <- bigDF
-AvgPriceMean[i] <- mean(Temp$Avg_El_PricesinEURpMWh_Country_B)
-# SupplyRatioMeanCM[i]<- mean(Temp$SupplyRatio_Country.B)
-# ConsumerExpMeanCM[i]<-mean(Temp$ConsumerExpenditure_Country.B.electricity.spot.market)
-# AggProducerProfitMeanCM[i]<-mean(Temp$AggregateFinances_Profit)
-# ProducerCashSumCM[i]<-mean(Temp$ProducerCashSum)
-# CapacityPriceMean[i]<-mean(Temp$CapacityClearingPointPriceinEur)
-# CapacityVolumeMean[i]<-mean(Temp$CapacityClearingPointVolumeinEur)
-# shareOCGT_CM[i]<mean(Temp$CapacityinMW_OCGT/Temp$TotalOperationalCapacityPerZoneInMW_Country.B)
-# shareCCGT_CM[i]<mean(Temp$CapacityinMW_CCGT/Temp$TotalOperationalCapacityPerZoneInMW_Country.B)
-}
-
-avgPricePlotinB <-plotTimeSeriesWithConfidenceIntervalByFacettedGroup(bigDF, "Avg_El_PricesinEURpMWh_Country_A", "Avg. Electricity Price in Country B [EUR/MW]")
-avgPricePlotinB
-
-
-## Renewable generation in terms of demand (compare this with NREAP targets)
-
-#RES-E Share versus NREAP target
-
-renewableGenerationA <-  
-  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
-  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
-
-demandA <- bigDF$Total_DemandinMWh_Country_A
-realizedTargetA <- renewableGenerationA / demandA 
-
-realizedTargetAplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetA*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("RES-E generation in term of demand \n Netherlands") #give the plot a title
-plot(realizedTargetAplot)
-ggsave(filename = paste(filePrefix, "realizedTargetAplot.png", sep=""),scale=1)
-
-nreapAplot = ggplot(data=targetDF, aes(x=tick, y=nl_target*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("NREAP Target \n Netherlands") #give the plot a title
-plot(nreapAplot)
-ggsave(filename = paste(filePrefix, "NREAP_target_nl.png", sep=""),scale=1)
-
-# renewableShareVStargetA <-multiplot(RESgenerationShareAplot, nreapAplot, cols=2)
-# ggsave(filename = paste(filePrefix, "renewableShareVStargetA.png",  sep=""),scale=1)
-
-renewableGenerationB <-  
-  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
-  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
-
-demandB <- bigDF$Total_DemandinMWh_Country_B
-realizedTargetB <- renewableGenerationB / demandB 
-realizedTargetB 
-
-realizedTargetBplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetB*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("RES-E generation in term of demand \n Germany") #give the plot a title
-plot(realizedTargetBplot)
-ggsave(filename = paste(filePrefix, "realizedTargetBplot.png", sep=""),scale=1)
-
-nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) + 
-  geom_point() + 
-  xlab("Year") +  
-  ylab("(%)") + 
-  ggtitle("NREAP Target \n Germany") #give the plot a title
-plot(nreapBplot)
-ggsave(filename = paste(filePrefix, "NREAP_target_de.png", sep=""),scale=1)
-
-write.table(renewableGenerationA , file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-
-# renewableShareVStargetB <-multiplot(RESgenerationShareBplot, nreapBplot, cols=2)
-# ggsave(filename = paste(filePrefix, "renewableShareVStargetB.png",  sep=""),scale=1)
-
-# #Relative Generation Share of Renewables
-# renewableGenerationA <-  
-#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
-#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
-# 
-# totalGenerationA  <-bigDF$GenerationinMWhCountryA_IGCC + 
-#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_CcgtCCS + 
-#   bigDF$GenerationinMWhCountryA_CoalPscCSS + bigDF$GenerationinMWhCountryA_Lignite + bigDF$GenerationinMWhCountryA_Biomass + 
-#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_IgccCCS + bigDF$GenerationinMWhCountryA_CoalPSC + 
-#   bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_CCGT + bigDF$GenerationinMWhCountryA_WindOffshore + 
-#   bigDF$GenerationinMWhCountryA_Nuclear + bigDF$GenerationinMWhCountryA_OCGT
-# 
-# renewableGenerationShareCountryA <-renewableGenerationA/totalGenerationA
-# 
-# renewableGenerationB <-  
-#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
-#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
-# 
-# totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC + 
-#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_CcgtCCS + 
-#   bigDF$GenerationinMWhCountryB_CoalPscCSS + bigDF$GenerationinMWhCountryB_Lignite + bigDF$GenerationinMWhCountryB_Biomass + 
-#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_IgccCCS + bigDF$GenerationinMWhCountryB_CoalPSC + 
-#   bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_CCGT + bigDF$GenerationinMWhCountryB_WindOffshore + 
-#   bigDF$GenerationinMWhCountryB_Nuclear + bigDF$GenerationinMWhCountryB_OCGT
-# 
-# renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
-
-# write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-# write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-
-
-# Average electricity wholesale price in country
-AverageElectricityPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_A, group=runNumber)) + 
-  geom_smooth() + (aes(colour = runNumber)) +
+diffTenderAndElectricityPriceAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=diffTenderAndElectricityPriceA), method="loess") +  
   xlab("Year") +  
   ylab("Eur/MWh") + 
-  ggtitle("Average Electricity Prices \n The Netherlands") #give the plot a title
-plot(AverageElectricityPriceCountryAplot)
-ggsave(filename = paste(filePrefix, "Avg_el_price_A.png", sep=""))
+  ggtitle("Difference Electricity Price - Tender Price \n Country B") #give the plot a title 
+plot(diffTenderAndElectricityPriceAplot)
+ggsave(filename = paste(filePrefix, "diffTenderAndElectricityPriceABplot.png", sep=""))
 
-AverageElectricityPriceCountryBplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_B, group=runNumber)) + 
-  geom_smooth() +  (aes(colour = runNumber)) + 
+diffTenderAndElectricityPriceBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=diffTenderAndElectricityPriceAB), method="loess") +  
   xlab("Year") +  
   ylab("Eur/MWh") + 
-  ggtitle("Average Electricity Prices \n Germany") #give the plot a title
-plot(AverageElectricityPriceCountryBplot)
-ggsave(filename = paste(filePrefix, "Avg_el_price_B.png", sep=""))
-
-# ElectricityPricesAB <-multiplot(AverageElectricityPriceCountryAplot, AverageElectricityPriceCountryBplot, diff_el_price_AB, cols=2)
-# ggsave(filename = paste(filePrefix, "ElectricityPriceAverageNL_DE.png", sep=""))
-
-bigDF$diffPriceAB <- bigDF$Avg_El_PricesinEURpMWh_Country_A - bigDF$Avg_El_PricesinEURpMWh_Country_B
-diff_el_price_AB = ggplot(data=bigDF , aes(x=tick, y=diffPriceAB)) + 
-  geom_smooth() +  #(aes(colour = runNumber))
-  xlab("Year") +  
-  ylab("Eur/MWh") + 
-  ggtitle("Difference Electricity Price \n The Netherlands - Germany") #give the plot a title
-plot(diff_el_price_AB)
-ggsave(filename = paste(filePrefix, "Diff_ElectricityPriceAverageNL_DE.png", sep=""))
+  ggtitle("Difference Electricity Price - Tender Price \n Country B") #give the plot a title 
+plot(diffTenderAndElectricityPriceABplot)
+ggsave(filename = paste(filePrefix, "diffTenderAndElectricityPriceABplot.png", sep=""))
 
 
-#Tender Clearing Prices
-tenderClearingPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingPrice_Country_A, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
-  xlab("Year") +  
-  ylab("Eur/MWh") + 
-  ggtitle("Tender Clearing Prices \n Netherlands") #give the plot a title
-plot(tenderClearingPriceCountryAplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_price_A.png", sep=""))
+# Interconnector
+# moltenSegmentDF <- melt(segmentDF, id.vars = c("runId","tick", "interconectorFlow", "segmentID"))
+# moltenSegmentDF
 
-tenderClearingPriceCountryBplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingPrice_Country_B, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
-  xlab("Year") +  
-  ylab("Eur/MWh") + 
-  ggtitle("Tender Clearing Prices \n Germany") #give the plot a title
-plot(tenderClearingPriceCountryBplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_price_B.png", sep=""))
+# System Costs: fixed and variable costs over the entire simulation period and over all power plants
+ConsumerCostsA <- bigDF$ConsumerExpenditure_Country_A_electricity_spot_market
 
-
-#Tender Clearing Volumes
-tenderClearingVolumeCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_A, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
-  xlab("Year") +  
-  ylab("MWh") + 
-  ggtitle("Tender Clearing Volumes \n Netherlands") #give the plot a title
-plot(tenderClearingVolumeCountryAplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_volume_A.png", sep=""))
-
-tenderClearingVolumeCountryBplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_B, group=runNumber)) + 
-  geom_line() +  (aes(colour = runNumber)) + 
-  xlab("Year") +  
-  ylab("MWh") + 
-  ggtitle("Tender Clearing Volumes \n Germany") #give the plot a title
-plot(tenderClearingVolumeCountryBplot)
-ggsave(filename = paste(filePrefix, "tender_clearing_volume_B.png", sep=""))
-
-
-#Tender Clearing price*volume
-tenderClearingMoneyA <- bigDF$tenderClearingPrice_Country_A * bigDF$tenderClearingVolume_Country_A
-tenderClearingMoneyB <- bigDF$tenderClearingPrice_Country_B * bigDF$tenderClearingVolume_Country_B
-
-write.table(tenderClearingMoneyA, file = "tenderClearingMoneyA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-write.table(tenderClearingMoneyB, file = "tenderClearingMoneyB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-
-# System Costs
-# We define the system cost in all scenario as the payments that leave
-# the circle of consumers, producers and the government, or equivalently as the sum of
-# fixed and variable costs over the entire simulation period and over all power plants
-
-ConsumerCostsA <- bigDF$ConsumerExpenditure_Country_A_electricity_spot_market 
 ProducerCostsA <- bigDF$CountryAProdCosts_Fixed_O_M + 
   bigDF$CountryAProdCosts_Loan + 
   bigDF$CountryAProdCosts_Commodity + 
@@ -296,8 +128,804 @@ GovernmentCostsB <- bigDF$CountryBProdFinances_Tender_Subsidy
 SystemCostsA <- ConsumerCostsA + ProducerCostsA + GovernmentCostsA
 SystemCostsB <- ConsumerCostsB + ProducerCostsB + GovernmentCostsB
 
-write.table(SystemCostsA, file = "SystemCostsA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-write.table(SystemCostsB, file = "SystemCostsB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+systemCostsOveral <- SystemCostsA + SystemCostsB
+
+consumerCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=ConsumerCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("consumerCosts \n Country A ") #give the plot a title
+plot(consumerCostsAplot)
+
+
+producerCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=ProducerCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("producer costs \n Country A ") #give the plot a title
+plot(producerCostsAplot)
+
+governmentCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=GovernmentCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Government Costs \n Country A ") #give the plot a title
+plot(governmentCostsAplot)
+
+systemCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=SystemCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("System Costs \n Country A ") #give the plot a title
+plot(systemCostsAplot)
+
+consumerCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=ConsumerCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("consumerCosts \n Country B ") #give the plot a title
+plot(consumerCostsBplot)
+
+producerCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=ProducerCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("producer costs \n Country B ") #give the plot a title
+plot(producerCostsBplot)
+
+governmentCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=GovernmentCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Government Costs \n Country B ") #give the plot a title
+plot(governmentCostsBplot)
+
+systemCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=SystemCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("System Costs \n Country B ") #give the plot a title
+plot(systemCostsBplot)
+
+systemCostsOveralplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=systemCostsOveral), method="loess") +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("System Costs Overal ") #give the plot a title
+plot(systemCostsOveralplot)
+ggsave(filename = paste(filePrefix, "systemCostsOveral.png", sep=""))
+
+meanConsumerCostsA <- mean(ConsumerCostsA)
+meanProducerCostsA <- mean(ProducerCostsA)
+meanGovernmentCostsA <- mean(GovernmentCostsA)
+meanSystemCostsA <- mean(SystemCostsA)
+
+meanConsumerCostsB <- mean(ConsumerCostsB)
+meanProducerCostsB <- mean(ProducerCostsB)
+meanGovernmentCostsB <- mean(GovernmentCostsB)
+meanSystemCostsB <- mean(SystemCostsB)
+
+# fracConsumerCostsA <- ConsumerCostsA / (ConsumerCostsA + ProducerCostsA + GovernmentCostsA) 
+# fracProducerCostsA <- ProducerCostsA / (ConsumerCostsA + ProducerCostsA + GovernmentCostsA) 
+# fracGovernmentCostsA <- GovernmentCostsA/ (ConsumerCostsA + ProducerCostsA + GovernmentCostsA) 
+
+fracMeanConsumerCostsA <- meanConsumerCostsA*100 / (meanConsumerCostsA + meanProducerCostsA + meanGovernmentCostsA) 
+fracMeanProducerCostsA <- meanProducerCostsA*100 / (meanConsumerCostsA + meanProducerCostsA + meanGovernmentCostsA) 
+fracMeanGovernmentCostsA <- meanGovernmentCostsA*100/ (meanConsumerCostsA + meanProducerCostsA + meanGovernmentCostsA) 
+
+fracMeanConsumerCostsB <- meanConsumerCostsB*100 / (meanConsumerCostsB + meanProducerCostsB + meanGovernmentCostsB) 
+fracMeanProducerCostsB <- meanProducerCostsB*100 / (meanConsumerCostsB + meanProducerCostsB + meanGovernmentCostsB) 
+fracMeanGovernmentCostsB <- meanGovernmentCostsB*100/ (meanConsumerCostsB + meanProducerCostsB + meanGovernmentCostsB) 
+
+meanSystemCostsOveral <- mean(systemCostsOveral)
+sdSystemCostsOveral <- sd(systemCostsOveral)
+
+DataTable <- c(fracMeanConsumerCostsA)
+DataTable <- rbind(DataTable, c(fracMeanProducerCostsA))
+DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsA))
+DataTable <- rbind(DataTable, c(fracMeanConsumerCostsB))
+DataTable <- rbind(DataTable, c(fracMeanProducerCostsB))
+DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsB))
+DataTable <- rbind(DataTable, c(meanSystemCostsOveral))
+DataTable <- rbind(DataTable, c(sdSystemCostsOveral))
+colnames(DataTable) <- c(nameFile)
+rownames(DataTable) <- c("Percentage Consumer Costs A","Percentage Producer Costs A",
+                         "Percentage Government Costs A","Percentage Consumer Costs B","Percentage Producer Costs B",
+                         "Percentage Government Costs B", 
+                         "Mean Overal System Costs","Standard Deviation Overal System Costs")
+write.csv(DataTable, "DataTableSystemCosts.csv")
+DataTable
+
+
+## Producer welfare changes
+moltenDFprofitsExcSubProdA <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA")
+moltenDFprofitsIncSubProdA <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA")
+moltenDFprofitsExcSubProdB <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB")
+moltenDFprofitsIncSubProdB <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB")
+moltenDFprofitsExcSubProdC <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC")
+moltenDFprofitsIncSubProdC <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC")
+moltenDFprofitsExcSubProdD <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD")
+moltenDFprofitsIncSubProdD <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD")
+moltenDFprofitsExcSubProdE <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdE")
+moltenDFprofitsIncSubProdE <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdE")
+moltenDFprofitsExcSubProdF <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdF")
+moltenDFprofitsIncSubProdF <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdF")
+moltenDFprofitsExcSubProdG <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdG")
+moltenDFprofitsIncSubProdG <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdG")
+moltenDFprofitsExcSubProdH <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdH")
+moltenDFprofitsIncSubProdH <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdH")
+moltenDFprofitsExcSubProdI <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdI")
+moltenDFprofitsIncSubProdI <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdI")
+
+s1 <- subset(moltenDFprofitsExcSubProdA, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdA, tick==39)
+changeProducerExcSubProfitsA <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsA <- changeProducerExcSubProfitsA*100/s1$value
+meanPcChangeProducerExcSubProfitsA <- mean(pcChangeProducerExcSubProfitsA)
+
+s1 <- subset(moltenDFprofitsIncSubProdA, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdA, tick==39)
+changeProducerIncSubProfitsA <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsA <- changeProducerIncSubProfitsA*100/s1$value
+meanPcChangeProducerIncSubProfitsA <- mean(pcChangeProducerIncSubProfitsA)
+
+s1 <- subset(moltenDFprofitsExcSubProdB, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdB, tick==39)
+changeProducerExcSubProfitsB <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsB <- changeProducerExcSubProfitsB*100/s1$value
+meanPcChangeProducerExcSubProfitsB <- mean(pcChangeProducerExcSubProfitsB)
+
+s1 <- subset(moltenDFprofitsIncSubProdB, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdB, tick==39)
+changeProducerIncSubProfitsB <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsB <- changeProducerIncSubProfitsB*100/s1$value
+meanPcChangeProducerIncSubProfitsB <- mean(pcChangeProducerIncSubProfitsB)
+
+s1 <- subset(moltenDFprofitsExcSubProdC, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdC, tick==39)
+changeProducerExcSubProfitsC <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsC <- changeProducerExcSubProfitsC*100/s1$value
+meanPcChangeProducerExcSubProfitsC <- mean(pcChangeProducerExcSubProfitsC)
+
+s1 <- subset(moltenDFprofitsIncSubProdC, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdC, tick==39)
+changeProducerIncSubProfitsC <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsC <- changeProducerIncSubProfitsC*100/s1$value
+meanPcChangeProducerIncSubProfitsC <- mean(pcChangeProducerIncSubProfitsC)
+
+s1 <- subset(moltenDFprofitsExcSubProdD, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdD, tick==39)
+changeProducerExcSubProfitsD <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsD <- changeProducerExcSubProfitsD*100/s1$value
+meanPcChangeProducerExcSubProfitsD <- mean(pcChangeProducerExcSubProfitsD)
+
+s1 <- subset(moltenDFprofitsIncSubProdD, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdD, tick==39)
+changeProducerIncSubProfitsD <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsD <- changeProducerIncSubProfitsD*100/s1$value
+meanPcChangeProducerIncSubProfitsD <- mean(pcChangeProducerIncSubProfitsD)
+
+s1 <- subset(moltenDFprofitsExcSubProdE, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdE, tick==39)
+changeProducerExcSubProfitsE <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsE <- changeProducerExcSubProfitsE*100/s1$value
+meanPcChangeProducerExcSubProfitsE <- mean(pcChangeProducerExcSubProfitsE)
+
+s1 <- subset(moltenDFprofitsIncSubProdE, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdE, tick==39)
+changeProducerIncSubProfitsE <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsE <- changeProducerIncSubProfitsE*100/s1$value
+meanPcChangeProducerIncSubProfitsE <- mean(pcChangeProducerIncSubProfitsE)
+
+s1 <- subset(moltenDFprofitsExcSubProdF, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdF, tick==39)
+changeProducerExcSubProfitsF <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsF <- changeProducerExcSubProfitsF*100/s1$value
+meanPcChangeProducerExcSubProfitsF <- mean(pcChangeProducerExcSubProfitsF)
+
+s1 <- subset(moltenDFprofitsIncSubProdF, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdF, tick==39)
+changeProducerIncSubProfitsF <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsF <- changeProducerIncSubProfitsF*100/s1$value
+meanPcChangeProducerIncSubProfitsF <- mean(pcChangeProducerIncSubProfitsF)
+
+s1 <- subset(moltenDFprofitsExcSubProdG, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdG, tick==39)
+changeProducerExcSubProfitsG <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsG <- changeProducerExcSubProfitsG*100/s1$value
+meanPcChangeProducerExcSubProfitsG <- mean(pcChangeProducerExcSubProfitsG)
+
+s1 <- subset(moltenDFprofitsIncSubProdG, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdG, tick==39)
+changeProducerIncSubProfitsG <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsG <- changeProducerIncSubProfitsG*100/s1$value
+meanPcChangeProducerIncSubProfitsG <- mean(pcChangeProducerIncSubProfitsG)
+
+s1 <- subset(moltenDFprofitsExcSubProdH, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdH, tick==39)
+changeProducerExcSubProfitsH <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsH <- changeProducerExcSubProfitsH*100/s1$value
+meanPcChangeProducerExcSubProfitsH <- mean(pcChangeProducerExcSubProfitsH)
+
+s1 <- subset(moltenDFprofitsIncSubProdH, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdH, tick==39)
+changeProducerIncSubProfitsH <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsH <- changeProducerIncSubProfitsH*100/s1$value
+meanPcChangeProducerIncSubProfitsH <- mean(pcChangeProducerIncSubProfitsH)
+
+s1 <- subset(moltenDFprofitsExcSubProdI, tick==0)
+s2 <- subset(moltenDFprofitsExcSubProdI, tick==39)
+changeProducerExcSubProfitsI <- (s2$value - s1$value)
+pcChangeProducerExcSubProfitsI <- changeProducerExcSubProfitsI*100/s1$value
+meanPcChangeProducerExcSubProfitsI <- mean(pcChangeProducerExcSubProfitsI)
+
+s1 <- subset(moltenDFprofitsIncSubProdI, tick==0)
+s2 <- subset(moltenDFprofitsIncSubProdI, tick==39)
+changeProducerIncSubProfitsI <- (s2$value - s1$value)
+pcChangeProducerIncSubProfitsI <- changeProducerIncSubProfitsI*100/s1$value
+meanPcChangeProducerIncSubProfitsI <- mean(pcChangeProducerIncSubProfitsI)
+
+DataTable <- c(meanPcChangeProducerExcSubProfitsA)
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsA))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsB))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsB))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsC))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsC))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsD))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsD))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsE))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsE))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsF))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsF))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsG))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsG))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsH))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsH))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsI))
+DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsI))
+colnames(DataTable) <- c(nameFile)
+rownames(DataTable) <- c("Change Welfare Producer A ExcSub","Change Welfare Producer A IncSub",
+                         "Change Welfare Producer B ExcSub","Change Welfare Producer B IncSub",
+                         "Change Welfare Producer C ExcSub","Change Welfare Producer C IncSub",
+                         "Change Welfare Producer D ExcSub","Change Welfare Producer D IncSub",
+                         "Change Welfare Producer E ExcSub","Change Welfare Producer E IncSub",
+                         "Change Welfare Producer F ExcSub","Change Welfare Producer F IncSub",
+                         "Change Welfare Producer G ExcSub","Change Welfare Producer G IncSub",
+                         "Change Welfare Producer H ExcSub","Change Welfare Producer H IncSub",
+                         "Change Welfare Producer I ExcSub","Change Welfare Producer I IncSub")
+write.csv(DataTable, "DataTableProdWelfareChange.csv")
+DataTable
+
+profitsExcSubProdA = ggplot(data=moltenDFprofitsExcSubProdA, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer A") #give the plot a title
+plot(profitsExcSubProdA)
+
+profitsIncSubProdA = ggplot(data=moltenDFprofitsIncSubProdA, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer A") #give the plot a title
+plot(profitsIncSubProdA)
+
+profitsExcSubProdB = ggplot(data=moltenDFprofitsExcSubProdB, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer B") #give the plot a title
+plot(profitsExcSubProdB)
+
+profitsIncSubProdB = ggplot(data=moltenDFprofitsIncSubProdB, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer B") #give the plot a title
+plot(profitsIncSubProdB)
+
+profitsExcSubProdC = ggplot(data=moltenDFprofitsExcSubProdC, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer C") #give the plot a title
+plot(profitsExcSubProdC)
+
+profitsIncSubProdC = ggplot(data=moltenDFprofitsIncSubProdC, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer C") #give the plot a title
+plot(profitsIncSubProdC)
+
+profitsExcSubProdD = ggplot(data=moltenDFprofitsExcSubProdD, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer D") #give the plot a title
+plot(profitsExcSubProdD)
+
+profitsIncSubProdD = ggplot(data=moltenDFprofitsIncSubProdD, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer D") #give the plot a title
+plot(profitsIncSubProdD)
+
+profitsExcSubProdE = ggplot(data=moltenDFprofitsExcSubProdE, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer E") #give the plot a title
+plot(profitsExcSubProdE)
+
+profitsIncSubProdE = ggplot(data=moltenDFprofitsIncSubProdE, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer E") #give the plot a title
+plot(profitsIncSubProdE)
+
+profitsExcSubProdF = ggplot(data=moltenDFprofitsExcSubProdF, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer F") #give the plot a title
+plot(profitsExcSubProdF)
+
+profitsIncSubProdF = ggplot(data=moltenDFprofitsIncSubProdF, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer F") #give the plot a title
+plot(profitsIncSubProdF)
+
+profitsExcSubProdG = ggplot(data=moltenDFprofitsExcSubProdG, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer G") #give the plot a title
+plot(profitsExcSubProdG)
+
+profitsIncSubProdG = ggplot(data=moltenDFprofitsIncSubProdG, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer G") #give the plot a title
+plot(profitsIncSubProdG)
+
+profitsExcSubProdH = ggplot(data=moltenDFprofitsExcSubProdH, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer H") #give the plot a title
+plot(profitsExcSubProdH)
+
+profitsIncSubProdH = ggplot(data=moltenDFprofitsIncSubProdH, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer H") #give the plot a title
+plot(profitsIncSubProdH)
+
+profitsExcSubProdI = ggplot(data=moltenDFprofitsExcSubProdI, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="green", method = "loess") +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits exc subsidy Producer I") #give the plot a title
+plot(profitsExcSubProdI)
+
+profitsIncSubProdI = ggplot(data=moltenDFprofitsIncSubProdI, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits inc subsidy Producer I") #give the plot a title
+plot(profitsIncSubProdI)
+
+#Consumer Welfare = Difference in consumer expenditure at the beginning and end of simulation
+moltenDFconsumerExpenditureA <- melt(bigDF, id.vars = "tick", "ConsumerExpenditure_Country_A_electricity_spot_market")
+moltenDFconsumerExpenditureB <- melt(bigDF, id.vars = "tick", "ConsumerExpenditure_Country_B_electricity_spot_market")
+
+s1 <- subset(moltenDFconsumerExpenditureA , tick==0)
+s2 <- subset(moltenDFconsumerExpenditureA , tick==39)
+changeConsumerExpenditureA <- (s2$value - s1$value)
+pcChangeConsumerExpenditureA <- changeConsumerExpenditureA*100/s1$value
+meanPcChangeConsumerExpenditureA <- mean(pcChangeConsumerExpenditureA)
+
+s1 <- subset(moltenDFconsumerExpenditureB , tick==0)
+s2 <- subset(moltenDFconsumerExpenditureB , tick==39)
+changeConsumerExpenditureB <- (s2$value - s1$value)
+pcChangeConsumerExpenditureB <- changeConsumerExpenditureB*100/s1$value
+meanPcChangeConsumerExpenditureB <- mean(pcChangeConsumerExpenditureB)
+
+DataTable <- c(meanPcChangeConsumerExpenditureA)
+DataTable <- rbind(DataTable, c(meanPcChangeConsumerExpenditureB))
+colnames(DataTable) <- c(nameFile)
+rownames(DataTable) <- c("Change Welfare Consumer Country A","Change Welfare Consumer Country B")
+write.csv(DataTable, "DataTableConsumerWelfareChange.csv")
+DataTable
+
+consumerExpenditureAplot = ggplot(data=moltenDFconsumerExpenditureA, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Consumer expenditure \n Country A") #give the plot a title
+plot(consumerExpenditureAplot)
+
+consumerExpenditureBplot = ggplot(data=moltenDFconsumerExpenditureB, aes(x=tick)) + 
+  geom_smooth(aes(y=value), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Consumer expenditure \n Country B") #give the plot a title
+plot(consumerExpenditureBplot)
+
+## Welfare now?
+
+## Expected Gen check
+ExpGenA <- bigDF$ExpectedRenewableGeneration_RenewableTenderDE
+ExpGenB <- bigDF$ExpectedRenewableGeneration_RenewableTenderNL
+
+write.table(ExpGenA , file = "ExpGenA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(ExpGenB, file = "ExpGenB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+## Generation shares per technology
+generationSharePVA <- bigDF$GenerationinMWhCountryA_Photovoltaic / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationSharePVAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationSharePVA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generationSharePV  \n Country A") #give the plot a title
+plot(generationSharePVAplot)
+ggsave(filename = paste(filePrefix, "generationSharePVAplot.png", sep=""))
+
+generationShareWindA <- bigDF$GenerationinMWhCountryA_Wind / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareWindAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareWindA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Wind  \n Country A") #give the plot a title
+plot(generationShareWindAplot)
+ggsave(filename = paste(filePrefix, "generationShareWindAplot.png", sep=""))
+
+generationShareWindOffshoreA <- bigDF$GenerationinMWhCountryA_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareWindOffshoreAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareWindOffshoreA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Wind Offshore  \n Country A") #give the plot a title
+plot(generationShareWindOffshoreAplot)
+ggsave(filename = paste(filePrefix, "generationShareWindOffshoreAplot.png", sep=""))
+
+generationShareBiomassA <- bigDF$GenerationinMWhCountryA_Biomass / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareBiomassAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareBiomassA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Biomass  \n Country A") #give the plot a title
+plot(generationShareBiomassAplot)
+ggsave(filename = paste(filePrefix, "generationShareBiomassAplot.png", sep=""))
+
+generationShareBiogasA <- bigDF$GenerationinMWhCountryA_Biogas / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareBiogasAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareBiogasA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Biogas  \n Country A") #give the plot a title
+plot(generationShareBiogasAplot)
+ggsave(filename = paste(filePrefix, "generationShareBiogasAplot.png", sep=""))
+
+generationShareCoalPSCA <- bigDF$GenerationinMWhCountryA_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareCoalPSCAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareCoalPSCA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Coal PSC  \n Country A") #give the plot a title
+plot(generationSharePVAplot)
+ggsave(filename = paste(filePrefix, "generationShareCoalPSCAplot.png", sep=""))
+
+generationShareLigniteA <- bigDF$GenerationinMWhCountryA_Lignite / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareLigniteAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareLigniteA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Lignite A  \n Country A") #give the plot a title
+plot(generationShareLigniteAplot)
+ggsave(filename = paste(filePrefix, "generationShareLigniteAplot.png", sep=""))
+
+generationShareOCGTA <- bigDF$GenerationinMWhCountryA_OCGT / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareOCGTAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareOCGTA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share OCGT  \n Country A") #give the plot a title
+plot(generationShareOCGTAplot)
+ggsave(filename = paste(filePrefix, "generationShareOCGTAplot.png", sep=""))
+
+generationShareCCGTA <- bigDF$GenerationinMWhCountryA_CCGT / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareCCGTAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareCCGTA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share CCGT  \n Country A") #give the plot a title
+plot(generationShareCCGTAplot)
+ggsave(filename = paste(filePrefix, "generationShareCCGTAplot.png", sep=""))
+
+generationShareNuclearA <- bigDF$GenerationinMWhCountryA_Nuclear / bigDF$NationalTotalProductioninMWh_Country_A
+
+generationShareNuclearAplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareNuclearA), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Nuclear  \n Country A") #give the plot a title
+plot(generationShareNuclearAplot)
+ggsave(filename = paste(filePrefix, "generationShareNuclearAplot.png", sep=""))
+
+
+
+generationSharePVBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationSharePVB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generationSharePV  \n Country B") #give the plot a title
+plot(generationSharePVBplot)
+ggsave(filename = paste(filePrefix, "generationSharePVBplot.png", sep=""))
+
+generationShareWindB <- bigDF$GenerationinMWhCountryB_Wind / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareWindBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareWindB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Wind  \n Country B") #give the plot a title
+plot(generationShareWindBplot)
+ggsave(filename = paste(filePrefix, "generationShareWindBplot.png", sep=""))
+
+generationShareWindOffshoreB <- bigDF$GenerationinMWhCountryB_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareWindOffshoreBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareWindOffshoreB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Wind Offshore  \n Country B") #give the plot a title
+plot(generationShareWindOffshoreBplot)
+ggsave(filename = paste(filePrefix, "generationShareWindOffshoreBplot.png", sep=""))
+
+generationShareBiomassB <- bigDF$GenerationinMWhCountryB_Biomass / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareBiomassBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareBiomassB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Biomass  \n Country B") #give the plot a title
+plot(generationShareBiomassBplot)
+ggsave(filename = paste(filePrefix, "generationShareBiomassBplot.png", sep=""))
+
+generationShareBiogasB <- bigDF$GenerationinMWhCountryB_Biogas / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareBiogasBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareBiogasB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Biogas  \n Country B") #give the plot a title
+plot(generationShareBiogasBplot)
+ggsave(filename = paste(filePrefix, "generationShareBiogasBplot.png", sep=""))
+
+generationShareCoalPSCB <- bigDF$GenerationinMWhCountryB_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareCoalPSCBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareCoalPSCB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Coal PSC  \n Country B") #give the plot a title
+plot(generationSharePVBplot)
+ggsave(filename = paste(filePrefix, "generationShareCoalPSCBplot.png", sep=""))
+
+generationShareLigniteB <- bigDF$GenerationinMWhCountryB_Lignite / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareLigniteBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareLigniteB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Lignite B  \n Country B") #give the plot a title
+plot(generationShareLigniteBplot)
+ggsave(filename = paste(filePrefix, "generationShareLigniteBplot.png", sep=""))
+
+generationShareOCGTB <- bigDF$GenerationinMWhCountryB_OCGT / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareOCGTBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareOCGTB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share OCGT  \n Country B") #give the plot a title
+plot(generationShareOCGTBplot)
+ggsave(filename = paste(filePrefix, "generationShareOCGTBplot.png", sep=""))
+
+generationShareCCGTB <- bigDF$GenerationinMWhCountryB_CCGT / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareCCGTBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareCCGTB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share CCGT  \n Country B") #give the plot a title
+plot(generationShareCCGTBplot)
+ggsave(filename = paste(filePrefix, "generationShareCCGTBplot.png", sep=""))
+
+generationShareNuclearB <- bigDF$GenerationinMWhCountryB_Nuclear / bigDF$NationalTotalProductioninMWh_Country_B
+
+generationShareNuclearBplot = ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=generationShareNuclearB), colour="red", method = "loess") + 
+  xlab("Year") +  
+  ylab("Fraction") + 
+  ggtitle("generation share Nuclear  \n Country B") #give the plot a title
+plot(generationShareNuclearBplot)
+ggsave(filename = paste(filePrefix, "generationShareNuclearBplot.png", sep=""))
+
+## Renewable generation in terms of demand (compare this with NREAP targets)
+renewableGenerationA <-  
+  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
+  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
+
+renewableGenerationOverTotalGeneration <- renewableGenerationA / bigDF$NationalTotalProductioninMWh_Country_A
+
+demandA <- bigDF$Total_DemandinMWh_Country_A
+realizedTargetA <- renewableGenerationA / demandA 
+
+realizedTargetAplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetA*100)) + 
+  geom_smooth() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("RES-E generation in terms of demand \n Country A") #give the plot a title
+plot(realizedTargetAplot)
+ggsave(filename = paste(filePrefix, "realizedTargetAplot.png", sep=""),scale=1)
+
+nreapAplot = ggplot(data=targetDF, aes(x=tick, y=nl_target*100)) + 
+  geom_smooth() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("NREAP Target \n Country A") #give the plot a title
+plot(nreapAplot)
+ggsave(filename = paste(filePrefix, "NREAP_target_nl.png", sep=""),scale=1)
+
+# renewableShareVStargetA <-multiplot(RESgenerationShareAplot, nreapAplot, cols=2)
+# ggsave(filename = paste(filePrefix, "renewableShareVStargetA.png",  sep=""),scale=1)
+
+renewableGenerationB <-  
+  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+
+demandB <- bigDF$Total_DemandinMWh_Country_B
+realizedTargetB <- renewableGenerationB / demandB 
+realizedTargetB 
+
+realizedTargetBplot = ggplot(data=bigDF, aes(x=tick, y=realizedTargetB*100)) + 
+  geom_smooth() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("RES-E generation in terms of demand \n Country B") #give the plot a title
+plot(realizedTargetBplot)
+ggsave(filename = paste(filePrefix, "realizedTargetBplot.png", sep=""),scale=1)
+
+nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) + 
+  geom_smooth() + 
+  xlab("Year") +  
+  ylab("(%)") + 
+  ggtitle("NREAP Target \n Country B") #give the plot a title
+plot(nreapBplot)
+ggsave(filename = paste(filePrefix, "NREAP_target_de.png", sep=""),scale=1)
+
+write.table(renewableGenerationA , file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+
+
+# Average electricity wholesale price in country
+AverageElectricityPriceCountryAplot = ggplot(data=bigDF, aes(x=tick,y=Avg_El_PricesinEURpMWh_Country_A)) + 
+  geom_smooth() +
+  xlab("Year") +  
+ ylab("Eur/MWh") + 
+  ggtitle("Average Electricity Prices \n  Country A") #give the plot a title
+plot(AverageElectricityPriceCountryAplot)
+ggsave(filename = paste(filePrefix, "Avg_el_price_A.png", sep=""))
+
+AverageElectricityPriceCountryBplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_B)) + 
+  geom_smooth() +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Average Electricity Prices \n Country B") #give the plot a title
+plot(AverageElectricityPriceCountryBplot)
+ggsave(filename = paste(filePrefix, "Avg_el_price_B.png", sep=""))
+
+# ElectricityPricesAB <-multiplot(AverageElectricityPriceCountryAplot, AverageElectricityPriceCountryBplot, diff_el_price_AB, cols=2)
+# ggsave(filename = paste(filePrefix, "ElectricityPriceAverageNL_DE.png", sep=""))
+
+bigDF$diffPriceAB <- bigDF$Avg_El_PricesinEURpMWh_Country_A - bigDF$Avg_El_PricesinEURpMWh_Country_B
+diff_el_price_AB = ggplot(data=bigDF , aes(x=tick, y=diffPriceAB)) + 
+  geom_smooth() +  #(aes(colour = runNumber))
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Difference Electricity Price \n Country A - Country B") #give the plot a title
+plot(diff_el_price_AB)
+ggsave(filename = paste(filePrefix, "Diff_ElectricityPriceAverageNL_DE.png", sep=""))
+
+
+#Tender Clearing Prices
+tenderClearingPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingPrice_Country_A)) + 
+  geom_point() +  #(aes(colour = runId)) + 
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Tender Clearing Prices \n Country A") #give the plot a title
+plot(tenderClearingPriceCountryAplot)
+ggsave(filename = paste(filePrefix, "tender_clearing_price_A.png", sep=""))
+
+tenderClearingPriceCountryBplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingPrice_Country_B)) + 
+  geom_line() +  #(aes(colour = runNumber)) + 
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Tender Clearing Prices \n Country B") #give the plot a title
+plot(tenderClearingPriceCountryBplot)
+ggsave(filename = paste(filePrefix, "tender_clearing_price_B.png", sep=""))
+
+
+# #Tender Clearing Volumes
+# tenderClearingVolumeCountryAplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_A)) + 
+#   geom_points() +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("MWh") + 
+#   ggtitle("Tender Clearing Volumes \n Country A") #give the plot a title
+# plot(tenderClearingVolumeCountryAplot)
+# ggsave(filename = paste(filePrefix, "tender_clearing_volume_A.png", sep=""))
+# 
+# tenderClearingVolumeCountryBplot = ggplot(data=bigDF, aes(x=tick, y=tenderClearingVolume_Country_B, group=runNumber)) + 
+#   geom_line() +  (aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("MWh") + 
+#   ggtitle("Tender Clearing Volumes \n Country B") #give the plot a title
+# plot(tenderClearingVolumeCountryBplot)
+# ggsave(filename = paste(filePrefix, "tender_clearing_volume_B.png", sep=""))
+# 
+# 
+# #Tender Clearing price*volume
+# tenderClearingMoneyA <- bigDF$tenderClearingPrice_Country_A * bigDF$tenderClearingVolume_Country_A
+# tenderClearingMoneyB <- bigDF$tenderClearingPrice_Country_B * bigDF$tenderClearingVolume_Country_B
+
+# write.table(tenderClearingMoneyA, file = "tenderClearingMoneyA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# write.table(tenderClearingMoneyB, file = "tenderClearingMoneyB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+
+
+# #CHANGE IN System Costs 
+# s1 <- subset(bigDF, tick==1)
+# s2 <- subset(bigDF, tick==39)
+# changeConsumerCostsA <- (s2$ConsumerExpenditure_Country_A_electricity_spot_market - s1$ConsumerExpenditure_Country_A_electricity_spot_market)
+# pcChangeConsumerCostsA <- changeConsumerCostsA*100/s1$ConsumerExpenditure_Country_A_electricity_spot_market
+# meanPcChangeConsumerCostsA <- mean(pcChangeConsumerCostsA)
+# 
+# changeProducerCostsA <- ((s2$CountryAProdCosts_Fixed_O_M + 
+#                            s2$CountryAProdCosts_Loan + 
+#                            s2$CountryAProdCosts_Commodity + 
+#                            s2$CountryAProdCosts_Downpayment) - (s1$CountryAProdCosts_Fixed_O_M + 
+#                            s1$CountryAProdCosts_Loan + 
+#                            s1$CountryAProdCosts_Commodity + 
+#                            s1$CountryAProdCosts_Downpayment))
+# pcChangeProducerCostsA <- changeProducerCostsA*100/(s1$CountryAProdCosts_Fixed_O_M + 
+#   s1$CountryAProdCosts_Loan + 
+#   s1$CountryAProdCosts_Commodity + 
+#   s1$CountryAProdCosts_Downpayment)
+# meanPcChangeProducerCostsA <- mean(pcChangeProducerCostsA)
+# 
+# changeGovernmentCostsA <- (s2$CountryAProdFinances_Tender_Subsidy - s1$CountryAProdFinances_Tender_Subsidy)
+# pcChangeGovernmentCostsA <- (changeGovernmentCostsA*100/s1$CountryAProdFinances_Tender_Subsidy)
+
+
 
 #supply ratio
 # An indicator therefore, would be the the ratio of operational capacity to the peak demand,
@@ -314,19 +942,28 @@ bigDF$PeakDemandPerZoneInMW_Country_A
 write.table(SupplyRatioA, file = "SupplyRatioA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 write.table(SupplyRatioB, file = "SupplyRatioB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 
-supplyRatioAplot = ggplot(data=bigDF, aes(x=tick, y=SupplyRatioA, group=runNumber)) + 
-  geom_point() +  #(aes(colour = runNumber)) + 
+supplyRatioAplot = ggplot(data=bigDF, aes(x=tick, y=SupplyRatioA)) + 
+  geom_point() +  (aes(colour = runNumber)) + 
   xlab("Year") +  
   ylab("Ratio Operational Capacity over \n Peak demand") + 
-  ggtitle("Supply Ratio \n The Netherlands") #give the plot a title
+  ggtitle("Supply Ratio \n Country A") #give the plot a title
 plot(supplyRatioAplot)
 ggsave(filename = paste(filePrefix, "supplyRatioA.png", sep=""),scale=1)
 
-supplyRatioBplot = ggplot(data=bigDF, aes(x=tick, y=SupplyRatioB, group=runNumber)) + 
+# supplyRatioAplot = ggplot(data=bigDF, aes(x=tick, y=SupplyRatioA, group=runId)) + 
+#   stat_density2d(geom="tile", aes(color=1), contour = FALSE) +
+#   xlab("Year") +  
+#   ylab("Ratio Operational Capacity over \n Peak demand") + 
+#   ggtitle("Supply Ratio \n Country A") #give the plot a title
+# plot(supplyRatioAplot)
+# ggsave(filename = paste(filePrefix, "supplyRatioA.png", sep=""),scale=1)
+
+
+supplyRatioBplot = ggplot(data=bigDF, aes(x=tick, y=SupplyRatioB)) + 
   geom_point() +  #(aes(colour = runNumber)) + 
   xlab("Year") +  
   ylab("Ratio Operational Capacity over \n Peak demand") + 
-  ggtitle("Supply Ratio \n Germany") #give the plot a title
+  ggtitle("Supply Ratio \n Country B") #give the plot a title
 plot(supplyRatioBplot)
 ggsave(filename = paste(filePrefix, "supplyRatioB.png", sep=""),scale=1)
 
@@ -336,13 +973,13 @@ ggsave(filename = paste(filePrefix, "supplyRatioB.png", sep=""),scale=1)
 #Verification Expected RES-E Generation & Demand/Consumption
 # Is expected generation in tick t equal to actual RES-E generation in tick t + 1?
 
-renewableGenerationA <-  
-  bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
-  bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
-
-renewableGenerationB <-  
-  bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
-  bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+# renewableGenerationA <-  
+#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
+#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
+# 
+# renewableGenerationB <-  
+#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
 
 ## compare this with logger output like before
 
@@ -358,19 +995,19 @@ renewableGenerationB <-
 
 
 #Demand
-demandCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Total_DemandinMWh_Country_A, group=runNumber)) + 
+demandCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Total_DemandinMWh_Country_A, group=runId)) + 
   geom_smooth() + #(aes(colour = runNumber))
   xlab("Year") +  
   ylab("Demand (MWh)") + 
-  ggtitle("Demand \n The Netherlands") #give the plot a title
+  ggtitle("Demand \n Country A") #give the plot a title
 plot(demandCountryAplot)
 ggsave(filename = paste(filePrefix, "demand_A.png", sep=""))
 
-demandCountryBplot = ggplot(data=bigDF, aes(x=tick, y=Total_DemandinMWh_Country_B, group=runNumber)) + 
+demandCountryBplot = ggplot(data=bigDF, aes(x=tick, y=Total_DemandinMWh_Country_B, group=runId)) + 
   geom_smooth() + #(aes(colour = runNumber))
   xlab("Year") +  
   ylab("Demand (MWh)") + 
-  ggtitle("Demand \n Germany") #give the plot a title
+  ggtitle("Demand \n Country B") #give the plot a title
 plot(demandCountryBplot)
 ggsave(filename = paste(filePrefix, "demand_B.png", sep=""))
 
@@ -385,7 +1022,7 @@ plotStackedCapacities <- function(df) {
                   environment = localEnv)+
     geom_area(position="stack")+
     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
-    ggtitle("Capacity mix The Netherlands")+
+    ggtitle("Capacity mix Country A")+
     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
     scale_fill_discrete(name = "Legend",
                         breaks = colnames(technologyCapacities),
@@ -409,7 +1046,7 @@ plotStackedCapacities <- function(df) {
                   environment = localEnv)+
     geom_area(position="stack")+
     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
-    ggtitle("Capacity mix Germany")+
+    ggtitle("Capacity mix Country B")+
     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
     scale_fill_discrete(name = "Legend",
                         breaks = colnames(technologyCapacities),
@@ -434,7 +1071,7 @@ plotStackedGeneration <- function(df) {
                   environment = localEnv)+
     geom_area(position="stack")+
     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
-    ggtitle("Generation mix The Netherlands")+
+    ggtitle("Generation mix Country A")+
     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
     scale_fill_discrete(name = "Legend",
                         breaks = colnames(technologyGeneration),
@@ -458,7 +1095,7 @@ plotStackedGeneration <- function(df) {
                   environment = localEnv)+
     geom_area(position="stack")+
     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
-    ggtitle("Generation mix Germany")+
+    ggtitle("Generation mix Country B")+
     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
     scale_fill_discrete(name = "Legend",
                         breaks = colnames(technologyGeneration),
@@ -479,7 +1116,7 @@ yearlyTenderSubsidyplotA = ggplot(data=bigDF, aes(x=tick, y=yearlyTotalTenderSub
   geom_line() + #(aes(colour = runNumber))
   xlab("Year") +  
   ylab("Eur") + 
-  ggtitle("Tender Subsidy \n The Netherlands") #give the plot a title
+  ggtitle("Tender Subsidy \n Country A") #give the plot a title
 plot(yearlyTenderSubsidyplotA)
 ggsave(filename = paste(filePrefix, "yearlyTenderSubsidyplotA.png", sep=""))
 
@@ -487,7 +1124,7 @@ yearlyTenderSubsidyplotB = ggplot(data=bigDF, aes(x=tick, y=yearlyTotalTenderSub
   geom_line() + #(aes(colour = runNumber))
   xlab("Year") +  
   ylab("Eur") + 
-  ggtitle("Tender Subsidy \n Germany") #give the plot a title
+  ggtitle("Tender Subsidy \n Country B") #give the plot a title
 plot(yearlyTenderSubsidyplotB)
 ggsave(filename = paste(filePrefix, "yearlyTenderSubsidyplotB.png", sep=""))
 
@@ -660,55 +1297,7 @@ plotTenderSubsidy <- function(df){
 }
 plotTenderSubsidy(bigDF)
 
-#Consumer Welfare = Difference in consumer expenditure at the beginning and end of simulation
-# s1 <- subset(bigDF, tick==1)
-# s2 <- subset(bigDF, tick==30)
-# changeConsumerExpenditureA <- (s2$ConsumerExpenditure_Country_A_electricity_spot_market/1000000 - s1$ConsumerExpenditure_Country_A_electricity_spot_market/1000000)
-# changeConsumerExpenditureA
-# 
-# pcchangeConsumerExpenditureA <- changeConsumerExpenditureA*100000000/s1$ConsumerExpenditure_Country_A_electricity_spot_market
-# pcchangeConsumerExpenditureA
-# meanPercentagechangeConsumerExpenditureA <- mean(pcchangeConsumerExpenditureA)
-# meanPercentagechangeConsumerExpenditureA
-# 
-# changeConsumerExpenditureB <- (s2$ConsumerExpenditure_Country_B_electricity_spot_market/1000000 - s1$ConsumerExpenditure_Country_B_electricity_spot_market/1000000)
-# changeConsumerExpenditureB
-# 
-# pcchangeConsumerExpenditureB <- changeConsumerExpenditureB*100000000/s1$ConsumerExpenditure_Country_B_electricity_spot_market
-# pcchangeConsumerExpenditureB
-# meanPercentagechangeConsumerExpenditureB <- mean(pcchangeConsumerExpenditureB)
-# meanPercentagechangeConsumerExpenditureB
 
-# ConsumerExpenditureA = ggplot(data=bigDF, aes(x=tick, y=ConsumerExpenditureA, group=runNumber)) + #use myDataFrame for the data, columns for x and y
-#   geom_line(aes(colour = runNumber)) + #we want to use points, colored by runNumber
-#   xlab("Year") +  #specify x and y labels
-#   ylab("Expenditure (MEur)") + 
-#   ggtitle("Consumer expenditure - The Netherlands") #give the plot a title
-# plot(ConsumerExpenditureA)
-# ggsave(filename = paste(filePrefix, "ConsumerExpenditureA.png", sep=""))
-# 
-# 
-# ConsumerExpenditureB = ggplot(data=bigDF, aes(x=tick, y=ConsumerExpenditure_Country_B_electricity_spot_market, group=runNumber)) + #use myDataFrame for the data, columns for x and y
-#   geom_line(aes(colour = runNumber)) + #we want to use points, colored by runNumber
-#   xlab("Year") +  #specify x and y labels
-#   ylab("Expenditure (Eur)") + 
-#   ggtitle("Consumer expenditure - Germany") #give the plot a title
-# plot(ConsumerExpenditureB)
-# ggsave(ConsumerExpenditureB,  file="ConsumerExpenditureB.png")
-# 
-# meanConsA <- mean(ConsumerExpenditureAinMillions)
-# meanConsB <- mean(ConsumerExpenditureBinMillions)
-# differenceInChangeOfConsumerExpenditureAB = changeConsumerExpenditureA - changeConsumerExpenditureB
-# differenceInChangeOfConsumerExpenditureAB
-# # meanDiff <- mean(diff)
-# 
-# DataTable <- c(changeConsumerExpenditureA)
-# DataTable <- rbind(DataTable, c(changeConsumerExpenditureB))
-# DataTable <- rbind(DataTable, c(differenceInChangeOfConsumerExpenditureAB))
-# colnames(DataTable) <- c(filePrefix)
-# rownames(DataTable) <- c("Change_Consumer_Expenditure_NL (MEuro)","Change_Consumer_Expenditure_DE (MEuro)", "Diff_NL-DE (MEuro)")
-# write.csv(DataTable, "DataTableConsumerExpenditure.csv")
-# read.csv("DataTableConsumerExpenditure.csv")
 
 # Total welfare = consumer welfare and producer welfare
 
@@ -717,446 +1306,70 @@ plotTenderSubsidy(bigDF)
 # system base price = Average electricity price in tick
 # value factor = market value / system base price
 
-# #TEST mean of GenerationinMWh_Biomass
-# GenerationinMWhBiomassMean = 0
-# CapacityinMWhOCGTMean = 0
-# NationalTotalProductioninMWhCountryAMean = 0
-# 
-# for(i in 1:50){
-# i=1
-# bigDFbc$runId <- paste(bigDFbc$runId,"-",sep="")
-# strTemp <- paste("CmPaper-1",i,"-",sep="")
-# Temp <-  subset(bigDFbc, grepl(strTemp, runId))
-# Temp <- bigDFbc
-# GenerationinMWhBiomassMean[i] <- mean(Temp$GenerationinMWh_Biomass)
-# }
-# GenerationinMWhBiomassMean
-# 
-# for(i in 1:50){
-#   i=1
-#   bigDFbc$runId <- paste(bigDFbc$runId,"-",sep="")
-#   strTemp <- paste("CmPaper-1",i,"-",sep="")
-#   Temp <-  subset(bigDFbc, grepl(strTemp, runId))
-#   Temp <- bigDFbc
-#   CapacityinMWhOCGTMean[i] <- mean(Temp$CapacityinMW_OCGT)
-# }
-# CapacityinMWhOCGTMean
-# 
-# for(i in 1:50){
-#   i=1
-#   bigDFbc$runId <- paste(bigDFbc$runId,"-",sep="")
-#   strTemp <- paste("CmPaper-1",i,"-",sep="")
-#   Temp <-  subset(bigDFbc, grepl(strTemp, runId))
-#   Temp <- bigDFbc
-#   NationalTotalProductioninMWhCountryAMean[i] <- mean(Temp$NationalTotalProductioninMWh_Country.A)
-# }
-# NationalTotalProductioninMWhCountryAMean
-# 
-# 
-# 
-# #TEST Writing Results onto a Data Table
-# DataTable <- c(GenerationinMWhBiomassMean)
-# DataTable <- rbind(DataTable, c(CapacityinMWhOCGTMean))
-# DataTable <- rbind(DataTable, c(NationalTotalProductioninMWhCountryAMean))
-# colnames(DataTable) <- c("BaseCase_Mean")
-# rownames(DataTable) <- c("GenerationinMWh_Biomass","CapacityinMWh_OCGT","NationalTotalProductioninMWh_Country A Mean")
-# write.csv(DataTable, "DataTableBaseCase.csv")
-# save()
+pSA_1 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_A_1), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 1 - Country A") #give the plot a title
+plot(pSA_1)
 
+pSA_2 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_A_2), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 2 - Country A") #give the plot a title
+plot(pSA_2)
 
-# pSA_1 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_1, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 1") #give the plot a title
-# plot(pSA_1)
-# 
-# pSA_2 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_2, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 2") #give the plot a title
-# plot(pSA_2)
-# 
-# pSA_3 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_3, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 3") #give the plot a title
-# plot(pSA_3)
-# 
-# pSA_4 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_4, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 4") #give the plot a title
-# plot(pSA_4)
-# 
-# pSA_5 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_5, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 5") #give the plot a title
-# plot(pSA_5)
-# 
-# pSA_6 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_6, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 6") #give the plot a title
-# plot(pSA_6)
-# 
-# pSA_7 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_7, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 7") #give the plot a title
-# plot(pSA_7)
-# 
-# pSA_8 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_8, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 8") #give the plot a title
-# plot(pSA_8)
-# 
-# pSA_9 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_9, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 9") #give the plot a title
-# plot(pSA_9)
-# 
-# pSA_10 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_10, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 10") #give the plot a title
-# plot(pSA_10)
-# 
-# pSA_11 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_11, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 11") #give the plot a title
-# plot(pSA_11)
-# 
-# pSA_12 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_12, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 12") #give the plot a title
-# plot(pSA_12)
-# 
-# pSA_13 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_13, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 13") #give the plot a title
-# plot(pSA_13)
-# 
-# pSA_14 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_14, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 14") #give the plot a title
-# plot(pSA_14)
-# 
-# pSA_15 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_15, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 15") #give the plot a title
-# plot(pSA_15)
-# 
-# pSA_16 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_16, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 16") #give the plot a title
-# plot(pSA_16)
-# 
-# pSA_17 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_17, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 17") #give the plot a title
-# plot(pSA_17)
-# 
-# pSA_18 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_18, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 18") #give the plot a title
-# plot(pSA_18)
-# 
-# pSA_19 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_19, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 19") #give the plot a title
-# plot(pSA_19)
-# 
-# pSA_20 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_20, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 20") #give the plot a title
-# plot(pSA_20)
-# 
-# pSB_1 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_1, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 1") #give the plot a title
-# plot(pSB_1)
-# 
-# pSB_2 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_2, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 2") #give the plot a title
-# plot(pSB_2)
-# 
-# pSB_3 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_3, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 3") #give the plot a title
-# plot(pSB_3)
-# 
-# pSB_4 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_4, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 4") #give the plot a title
-# plot(pSB_4)
-# 
-# pSB_5 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_5, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 5") #give the plot a title
-# plot(pSB_5)
-# 
-# pSB_6 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_6, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 6") #give the plot a title
-# plot(pSB_6)
-# 
-# pSB_7 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_7, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 7") #give the plot a title
-# plot(pSB_7)
-# 
-# pSB_8 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_8, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 8") #give the plot a title
-# plot(pSB_8)
-# 
-# pSB_9 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_9, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 9") #give the plot a title
-# plot(pSB_9)
-# 
-# pSB_10 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_10, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 10") #give the plot a title
-# plot(pSB_10)
-# 
-# pSB_11 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_11, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 11") #give the plot a title
-# plot(pSB_11)
-# 
-# pSB_12 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_12, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 12") #give the plot a title
-# plot(pSB_12)
-# 
-# pSB_13 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_13, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 13") #give the plot a title
-# plot(pSB_13)
-# 
-# pSB_14 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_14, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 14") #give the plot a title
-# plot(pSB_14)
-# 
-# pSB_15 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_15, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 15") #give the plot a title
-# plot(pSB_15)
-# 
-# pSB_16 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_16, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 16") #give the plot a title
-# plot(pSB_16)
-# 
-# pSB_17 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_17, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 17") #give the plot a title
-# plot(pSB_17)
-# 
-# pSB_18 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_18, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 18") #give the plot a title
-# plot(pSB_18)
-# 
-# pSB_19 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_19, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 19") #give the plot a title
-# plot(pSB_19)
-# 
-# pSB_20 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_B_20, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 20") #give the plot a title
-# plot(pSB_20)
-# 
-# 
-# 
-# segmentPricesA <-multiplot(pSA_1, pSA_2, pSA_3, pSA_4, pSA_5, pSA_6, pSA_7, pSA_8, pSA_9, pSA_10, pSA_11, pSA_12, pSA_13, pSA_14, pSA_15, pSA_16, pSA_17, pSA_18, pSA_19, pSA_20, cols=5)
-# #ggsave(filename = paste(filePrefix, "segmentPricesA.png", sep=""), plot=segmentPricesA,width=30, height=16.51, units="cm", scale=1)
-# 
-# segmentPricesB <-multiplot(pSB_1, pSB_2, pSB_3, pSB_4, pSB_5, pSB_6, pSB_7, pSB_8, pSB_9, pSB_10, pSB_11, pSB_12, pSB_13, pSB_14, pSB_15, pSB_16, pSB_17, pSB_18, pSB_19, pSB_20, cols=5)
-# #ggsave(filename = paste(filePrefix, "segmentPricesB.png", sep=""), plot=segmentPricesA,width=30, height=16.51, units="cm", scale=1)
-# #Relative Capacity Share of Renewables
-# renewableCapacityA <-  
-#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_Biomass + 
-#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_WindOffshore 
-# 
-# totalCapacityA  <-bigDF$CapacityinMWinA_IGCC + 
-#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_CcgtCCS + 
-#   bigDF$CapacityinMWinA_CoalPscCSS + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_Biomass + 
-#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_IgccCCS + bigDF$CapacityinMWinA_CoalPSC + 
-#   bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_WindOffshore + 
-#   bigDF$CapacityinMWinA_Nuclear + bigDF$CapacityinMWinA_OCGT
-# 
-# renewableCapacityB <-  
-#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_Biomass + 
-#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_WindOffshore 
-# 
-# totalCapacityB  <-bigDF$CapacityinMWinB_IGCC + 
-#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_CcgtCCS + 
-#   bigDF$CapacityinMWinB_CoalPscCSS + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_Biomass + 
-#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_IgccCCS + bigDF$CapacityinMWinB_CoalPSC + 
-#   bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_WindOffshore + 
-#   bigDF$CapacityinMWinB_Nuclear + bigDF$CapacityinMWinB_OCGT
-# 
-# renewableCapacityShareCountryA <-renewableCapacityA/totalCapacityA
-# renewableCapacityShareCountryB <-renewableCapacityB/totalCapacityB
-# 
-# write.table(renewableCapacityShareCountryA, file = "renewableCapacityShareCountryA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-# write.table(renewableCapacityShareCountryB, file = "renewableCapacityShareCountryB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+pSA_3 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_A_3), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 3 - Country A") #give the plot a title
+plot(pSA_3)
 
-# SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_A/bigDF$NationalTotalProductioninMWh_Country_A
-# SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_B/bigDF$NationalTotalProductioninMWh_Country_B
-# 
-# SupplyRatioGenerationA
-# SupplyRatioGenerationB
-# 
-# write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-# write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-# 
-# # #CapacityMargin Check
-# totalCapacityA <- bigDF$CapacityinMWinA_IGCC + 
-#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_CcgtCCS + 
-#   bigDF$CapacityinMWinA_CoalPscCSS + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_Biomass + 
-#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_IgccCCS + bigDF$CapacityinMWinA_CoalPSC + 
-#   bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_WindOffshore + 
-#   bigDF$CapacityinMWinA_Nuclear + bigDF$CapacityinMWinA_OCGT
-# totalCapacityA
-# 
-# totalCapacityB <- bigDF$CapacityinMWinB_IGCC + 
-#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_CcgtCCS + 
-#   bigDF$CapacityinMWinB_CoalPscCSS + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_Biomass + 
-#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_IgccCCS + bigDF$CapacityinMWinB_CoalPSC + 
-#   bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_WindOffshore + 
-#   bigDF$CapacityinMWinB_Nuclear + bigDF$CapacityinMWinB_OCGT
-# totalCapacityB
-# 
-# 
-# capacityMargingA <- (totalCapacityA/bigDF$PeakDemandPerZoneInMW_Country_A) - 1
-# capacityMargingA 
-# 
-# capacityMargingB <- (totalCapacityB/bigDF$PeakDemandPerZoneInMW_Country_B) - 1
-# capacityMargingB
+pSA_4 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_A_4), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 4 - Country A") #give the plot a title
+plot(pSA_4)
 
-# #TEST Writing Results onto a Data Table
-# DataTable <- c(capacityFractionPeakDemandA)
-# DataTable <- rbind(DataTable, c(OperationalCapacityFractionPeakDemandA))
-# colnames(DataTable) <- c("Capacity_Fraction_A","Capacity_Fraction_B")
-# rownames(DataTable) <- c("GenerationinMWh_Biomass","CapacityinMWh_OCGT","NationalTotalProductioninMWh_Country A Mean")
-# write.csv(DataTable, "DataTableBaseCase.csv")
-# save()
+pSB_1 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_B_1), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 1 - Country B") #give the plot a title
+plot(pSB_1)
+
+pSB_2 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_B_2), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 2 - Country B") #give the plot a title
+plot(pSB_2)
+
+pSB_3 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_B_3), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 3 - Country B") #give the plot a title
+plot(pSB_3)
+
+pSB_4 = 
+  ggplot(data=bigDF, aes(x=tick)) + 
+  geom_smooth(aes(y=bigDF$PriceInEURperMWh_Segment_Country_B_4), method= "loess") + #(aes(colour = runId)) +
+  xlab("Tick") +  
+  ylab("Price (EUR/MWh)") + 
+  ggtitle("Segment 4 - Country B") #give the plot a title
+plot(pSB_4)
+
+noInitialShortagesPlot <-multiplot(pSA_1,pSA_2,pSA_3,pSA_4, pSB_1,pSB_2,pSB_3,pSB_4, cols=4)
+plot(noInitialShortagesPlot)
+ggsave(filename = paste(filePrefix, "noInitialShortages.png", sep=""))

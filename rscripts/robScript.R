@@ -624,30 +624,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-# pSA_1 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_1, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 1") #give the plot a title
-# plot(pSA_1)
-# 
-# pSA_2 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_2, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 2") #give the plot a title
-# plot(pSA_2)
-# 
-# pSA_3 = 
-#   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_3, group=runNumber)) + 
-#   geom_line() + (aes(colour = runNumber)) +
-#   xlab("Tick") +  
-#   ylab("Price (EUR/MWh)") + 
-#   ggtitle("Segment 3") #give the plot a title
-# plot(pSA_3)
-# 
 # pSA_4 = 
 #   ggplot(data=bigDF, aes(x=tick, y=bigDF$PriceInEURperMWh_Segment_Country_A_4, group=runNumber)) + 
 #   geom_line() + (aes(colour = runNumber)) +
@@ -951,3 +927,105 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 # 
 # segmentPricesB <-multiplot(pSB_1, pSB_2, pSB_3, pSB_4, pSB_5, pSB_6, pSB_7, pSB_8, pSB_9, pSB_10, pSB_11, pSB_12, pSB_13, pSB_14, pSB_15, pSB_16, pSB_17, pSB_18, pSB_19, pSB_20, cols=5)
 # #ggsave(filename = paste(filePrefix, "segmentPricesB.png", sep=""), plot=segmentPricesA,width=30, height=16.51, units="cm", scale=1)
+# #Relative Capacity Share of Renewables
+# renewableCapacityA <-  
+#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_Biomass + 
+#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_WindOffshore 
+# 
+# totalCapacityA  <-bigDF$CapacityinMWinA_IGCC + 
+#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_CcgtCCS + 
+#   bigDF$CapacityinMWinA_CoalPscCSS + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_Biomass + 
+#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_IgccCCS + bigDF$CapacityinMWinA_CoalPSC + 
+#   bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_WindOffshore + 
+#   bigDF$CapacityinMWinA_Nuclear + bigDF$CapacityinMWinA_OCGT
+# 
+# renewableCapacityB <-  
+#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_Biomass + 
+#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_WindOffshore 
+# 
+# totalCapacityB  <-bigDF$CapacityinMWinB_IGCC + 
+#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_CcgtCCS + 
+#   bigDF$CapacityinMWinB_CoalPscCSS + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_Biomass + 
+#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_IgccCCS + bigDF$CapacityinMWinB_CoalPSC + 
+#   bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_WindOffshore + 
+#   bigDF$CapacityinMWinB_Nuclear + bigDF$CapacityinMWinB_OCGT
+# 
+# renewableCapacityShareCountryA <-renewableCapacityA/totalCapacityA
+# renewableCapacityShareCountryB <-renewableCapacityB/totalCapacityB
+# 
+# write.table(renewableCapacityShareCountryA, file = "renewableCapacityShareCountryA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# write.table(renewableCapacityShareCountryB, file = "renewableCapacityShareCountryB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+# SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_A/bigDF$NationalTotalProductioninMWh_Country_A
+# SupplyRatioGenerationA <- bigDF$Total_DemandinMWh_Country_B/bigDF$NationalTotalProductioninMWh_Country_B
+# 
+# SupplyRatioGenerationA
+# SupplyRatioGenerationB
+# 
+# write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# write.table(SupplyRatioGenerationA, file = "SupplyRatioGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# 
+# # #CapacityMargin Check
+# totalCapacityA <- bigDF$CapacityinMWinA_IGCC + 
+#   bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_CcgtCCS + 
+#   bigDF$CapacityinMWinA_CoalPscCSS + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_Biomass + 
+#   bigDF$CapacityinMWinA_HydroPower + bigDF$CapacityinMWinA_IgccCCS + bigDF$CapacityinMWinA_CoalPSC + 
+#   bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_WindOffshore + 
+#   bigDF$CapacityinMWinA_Nuclear + bigDF$CapacityinMWinA_OCGT
+# totalCapacityA
+# 
+# totalCapacityB <- bigDF$CapacityinMWinB_IGCC + 
+#   bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_CcgtCCS + 
+#   bigDF$CapacityinMWinB_CoalPscCSS + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_Biomass + 
+#   bigDF$CapacityinMWinB_HydroPower + bigDF$CapacityinMWinB_IgccCCS + bigDF$CapacityinMWinB_CoalPSC + 
+#   bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_WindOffshore + 
+#   bigDF$CapacityinMWinB_Nuclear + bigDF$CapacityinMWinB_OCGT
+# totalCapacityB
+# 
+# 
+# capacityMargingA <- (totalCapacityA/bigDF$PeakDemandPerZoneInMW_Country_A) - 1
+# capacityMargingA 
+# 
+# capacityMargingB <- (totalCapacityB/bigDF$PeakDemandPerZoneInMW_Country_B) - 1
+# capacityMargingB
+
+# #TEST Writing Results onto a Data Table
+# DataTable <- c(capacityFractionPeakDemandA)
+# DataTable <- rbind(DataTable, c(OperationalCapacityFractionPeakDemandA))
+# colnames(DataTable) <- c("Capacity_Fraction_A","Capacity_Fraction_B")
+# rownames(DataTable) <- c("GenerationinMWh_Biomass","CapacityinMWh_OCGT","NationalTotalProductioninMWh_Country A Mean")
+# write.csv(DataTable, "DataTableBaseCase.csv")
+# save()
+
+# renewableShareVStargetB <-multiplot(RESgenerationShareBplot, nreapBplot, cols=2)
+# ggsave(filename = paste(filePrefix, "renewableShareVStargetB.png",  sep=""),scale=1)
+
+# #Relative Generation Share of Renewables
+# renewableGenerationA <-  
+#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
+#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore 
+# 
+# totalGenerationA  <-bigDF$GenerationinMWhCountryA_IGCC + 
+#   bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_CcgtCCS + 
+#   bigDF$GenerationinMWhCountryA_CoalPscCSS + bigDF$GenerationinMWhCountryA_Lignite + bigDF$GenerationinMWhCountryA_Biomass + 
+#   bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_IgccCCS + bigDF$GenerationinMWhCountryA_CoalPSC + 
+#   bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_CCGT + bigDF$GenerationinMWhCountryA_WindOffshore + 
+#   bigDF$GenerationinMWhCountryA_Nuclear + bigDF$GenerationinMWhCountryA_OCGT
+# 
+# renewableGenerationShareCountryA <-renewableGenerationA/totalGenerationA
+# 
+# renewableGenerationB <-  
+#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
+#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore 
+# 
+# totalGenerationB  <-bigDF$GenerationinMWhCountryB_IGCC + 
+#   bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_CcgtCCS + 
+#   bigDF$GenerationinMWhCountryB_CoalPscCSS + bigDF$GenerationinMWhCountryB_Lignite + bigDF$GenerationinMWhCountryB_Biomass + 
+#   bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_IgccCCS + bigDF$GenerationinMWhCountryB_CoalPSC + 
+#   bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_CCGT + bigDF$GenerationinMWhCountryB_WindOffshore + 
+#   bigDF$GenerationinMWhCountryB_Nuclear + bigDF$GenerationinMWhCountryB_OCGT
+# 
+# renewableGenerationShareCountryB <-renewableGenerationB/totalGenerationB
+
+# write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+# write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")

@@ -126,8 +126,13 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         MarketInformation marketInformation = new MarketInformation(market, expectedDemand, expectedFuelPrices,
                 expectedCO2Price.get(market).doubleValue(), futureTimePoint);
 
-        for (PowerGeneratingTechnology technology : reps.renewableSupportSchemeTenderRepository
-                .findPowerGeneratingTechnologiesEligible()) {
+        Zone zone = agent.getInvestorMarket().getZone();
+        RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
+                .determineSupportSchemeForZone(zone);
+
+        for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
+
+            logger.warn("eligible are: " + technology);
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
@@ -339,10 +344,6 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         // calculate generation in MWh per year
                         bidPricePerMWh = -projectValue
                                 / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
-
-                        Zone zone = agent.getInvestorMarket().getZone();
-                        RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
-                                .determineSupportSchemeForZone(zone);
 
                         for (long i = 1; i <= numberOfPlants; i++) {
 

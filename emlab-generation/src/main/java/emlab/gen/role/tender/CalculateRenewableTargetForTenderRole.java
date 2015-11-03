@@ -81,12 +81,12 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnology = 0d;
 
-            // logger.warn("For PGT - technology; " + technology);
+            logger.warn("For PGT - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {
 
-                // logger.warn("For PP - plant; " + plant);
+                logger.warn("For PP - plant; " + plant);
                 // logger.warn("For PP - market; " + market + " technology; " +
                 // technology + " future time tick; "
                 // + futureStartingTenderTimePoint);
