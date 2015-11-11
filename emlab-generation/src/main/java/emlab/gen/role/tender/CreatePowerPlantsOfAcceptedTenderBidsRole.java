@@ -29,6 +29,7 @@ import emlab.gen.domain.agent.Regulator;
 import emlab.gen.domain.contract.CashFlow;
 import emlab.gen.domain.contract.Loan;
 import emlab.gen.domain.gis.Zone;
+import emlab.gen.domain.market.Bid;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
 import emlab.gen.domain.technology.PowerPlant;
@@ -66,9 +67,10 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
             // logger.warn("current accepted bid: " + currentTenderBid);
 
-            PowerPlant plant = new PowerPlant();
+            PowerPlant plant = currentTenderBid.getPowerPlant();
+            // PowerPlant plant = new PowerPlant();
             EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();
-
+            // check if all information exists
             plant.specifyAndPersist(currentTenderBid.getStart(), bidder, currentTenderBid.getPowerGridNode(),
                     currentTenderBid.getTechnology());
             PowerPlantManufacturer manufacturer = reps.genericRepository.findFirst(PowerPlantManufacturer.class);
@@ -91,6 +93,13 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
             logger.warn("CreatingPowerPlant 69 - Agent " + bidder + " at tick " + getCurrentTick() + " in tech "
                     + currentTenderBid.getTechnology() + " with plant name " + plant.getName() + " in zone "
                     + currentTenderBid.getZone());
+        }
+        Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
+        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
+        for (TenderBid currentBid : sortedTenderBidsbyPriceAndZone) {
+            if (currentBid.getStatus() == Bid.FAILED) {
+                currentBid.getPowerPlant().dismantlePowerPlant(getCurrentTick());
+            }
         }
     }
 

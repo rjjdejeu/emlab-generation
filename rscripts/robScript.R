@@ -38,7 +38,6 @@ library(reshape2)
 
 #Prices
 # Average electricity wholesale price in country
-# electricity price per segment
 AverageElectricityPriceCountryAplot = ggplot(data=bigDF, aes(x=tick, y=Avg_El_PricesinEURpMWh_Country_A, group=runNumber)) + 
   geom_line() + (aes(colour = runNumber)) +
   xlab("Year") +  
@@ -1029,3 +1028,710 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 # write.table(renewableGenerationA, file = "renewableGenerationA.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
 # write.table(renewableGenerationB, file = "renewableGenerationB.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
+
+# DataTable <- c(fracMeanConsumerCostsA)
+# DataTable <- rbind(DataTable, c(fracMeanProducerCostsA))
+# DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsA))
+# DataTable <- rbind(DataTable, c(fracMeanConsumerCostsB))
+# DataTable <- rbind(DataTable, c(fracMeanProducerCostsB))
+# DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsB))
+# DataTable <- rbind(DataTable, c(meanSystemCostsOveral))
+# DataTable <- rbind(DataTable, c(sdSystemCostsOveral))
+# colnames(DataTable) <- c("Mean fraction")
+# rownames(DataTable) <- c(" Consumer Costs A"," Producer Costs A",
+#                          " Government Costs A"," Consumer Costs B"," Producer Costs B",
+#                          " Government Costs B", 
+#                          "Mean Overal System Costs","Standard Deviation Overal System Costs")
+# write.csv(DataTable, "DataTableSystemCosts.csv")
+# DataTable
+# 
+# DataTable <- c(fracSdConsumerCostsA)
+# DataTable <- rbind(DataTable, c(fracSdProducerCostsA))
+# DataTable <- rbind(DataTable, c(fracSdGovernmentCostsA))
+# DataTable <- rbind(DataTable, c(fracSdConsumerCostsB))
+# DataTable <- rbind(DataTable, c(fracSdProducerCostsB))
+# DataTable <- rbind(DataTable, c(fracSdGovernmentCostsB))
+# colnames(DataTable) <- c("Standard deviation")
+# rownames(DataTable) <- c(" Consumer Costs A"," Producer Costs A",
+#                          " Government Costs A"," Consumer Costs B"," Producer Costs B",
+#                          " Government Costs B" )
+# write.csv(DataTable, "DataTableSystemCostsSD.csv")
+# DataTable
+# 
+# consumerCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=ConsumerCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("consumerCosts \n Country A ") #give the plot a title
+# plot(consumerCostsAplot)
+# ggsave(filename = paste(filePrefix, "consumerCostsAplot.png", sep=""))
+# 
+# producerCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=ProducerCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("producer costs \n Country A ") #give the plot a title
+# plot(producerCostsAplot)
+# ggsave(filename = paste(filePrefix, "producerCostsAplot.png", sep=""))
+# 
+# governmentCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=GovernmentCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Government Costs \n Country A ") #give the plot a title
+# plot(governmentCostsAplot)
+# ggsave(filename = paste(filePrefix, "governmentCostsAplot.png", sep=""))
+# 
+# systemCostsAplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=SystemCostsA), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("System Costs \n Country A ") #give the plot a title
+# plot(systemCostsAplot)
+# ggsave(filename = paste(filePrefix, "systemCostsAplot.png", sep=""))
+# 
+# consumerCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=ConsumerCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("consumerCosts \n Country B ") #give the plot a title
+# plot(consumerCostsBplot)
+# ggsave(filename = paste(filePrefix, "consumerCostsBplot.png", sep=""))
+# 
+# producerCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=ProducerCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("producer costs \n Country B ") #give the plot a title
+# plot(producerCostsBplot)
+# ggsave(filename = paste(filePrefix, "producerCostsBplot.png", sep=""))
+# 
+# governmentCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=GovernmentCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Government Costs \n Country B ") #give the plot a title
+# plot(governmentCostsBplot)
+# ggsave(filename = paste(filePrefix, "governmentCostsBplot.png", sep=""))
+# 
+# systemCostsBplot = ggplot(data=bigDF, aes(x=tick)) + 
+#   geom_smooth(aes(y=SystemCostsB), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("System Costs \n Country B ") #give the plot a title
+# plot(systemCostsBplot)
+# ggsave(filename = paste(filePrefix, "systemCostsBplot.png", sep=""))
+# 
+# systemCostsOveralplot = ggplot(data=bigDF, x=tick)) + 
+#   geom_smooth(aes(y=meanSystemCostsOverall), method="loess") +  #(aes(colour = runNumber)) + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("System Costs Overal ") #give the plot a title
+# plot(systemCostsOveralplot)
+# ggsave(filename = paste(filePrefix, "systemCostsOveral.png", sep=""))
+
+# DataTable
+# 
+# profitsExcSubProdA = ggplot(data=moltenDFprofitsExcSubProdA, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer A") #give the plot a title
+# plot(profitsExcSubProdA)
+# 
+# profitsIncSubProdA = ggplot(data=moltenDFprofitsIncSubProdA, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer A") #give the plot a title
+# plot(profitsIncSubProdA)
+# 
+# profitsExcSubProdB = ggplot(data=moltenDFprofitsExcSubProdB, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer B") #give the plot a title
+# plot(profitsExcSubProdB)
+# 
+# profitsIncSubProdB = ggplot(data=moltenDFprofitsIncSubProdB, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer B") #give the plot a title
+# plot(profitsIncSubProdB)
+# 
+# profitsExcSubProdC = ggplot(data=moltenDFprofitsExcSubProdC, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer C") #give the plot a title
+# plot(profitsExcSubProdC)
+# 
+# profitsIncSubProdC = ggplot(data=moltenDFprofitsIncSubProdC, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer C") #give the plot a title
+# plot(profitsIncSubProdC)
+# 
+# profitsExcSubProdD = ggplot(data=moltenDFprofitsExcSubProdD, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer D") #give the plot a title
+# plot(profitsExcSubProdD)
+# 
+# profitsIncSubProdD = ggplot(data=moltenDFprofitsIncSubProdD, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer D") #give the plot a title
+# plot(profitsIncSubProdD)
+# 
+# profitsExcSubProdE = ggplot(data=moltenDFprofitsExcSubProdE, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer E") #give the plot a title
+# plot(profitsExcSubProdE)
+# 
+# profitsIncSubProdE = ggplot(data=moltenDFprofitsIncSubProdE, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer E") #give the plot a title
+# plot(profitsIncSubProdE)
+# 
+# profitsExcSubProdF = ggplot(data=moltenDFprofitsExcSubProdF, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer F") #give the plot a title
+# plot(profitsExcSubProdF)
+# 
+# profitsIncSubProdF = ggplot(data=moltenDFprofitsIncSubProdF, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer F") #give the plot a title
+# plot(profitsIncSubProdF)
+# 
+# profitsExcSubProdG = ggplot(data=moltenDFprofitsExcSubProdG, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer G") #give the plot a title
+# plot(profitsExcSubProdG)
+# 
+# profitsIncSubProdG = ggplot(data=moltenDFprofitsIncSubProdG, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer G") #give the plot a title
+# plot(profitsIncSubProdG)
+# 
+# profitsExcSubProdH = ggplot(data=moltenDFprofitsExcSubProdH, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer H") #give the plot a title
+# plot(profitsExcSubProdH)
+# 
+# profitsIncSubProdH = ggplot(data=moltenDFprofitsIncSubProdH, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer H") #give the plot a title
+# plot(profitsIncSubProdH)
+# 
+# profitsExcSubProdI = ggplot(data=moltenDFprofitsExcSubProdI, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="green", method = "loess") +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits exc subsidy Producer I") #give the plot a title
+# plot(profitsExcSubProdI)
+# 
+# profitsIncSubProdI = ggplot(data=moltenDFprofitsIncSubProdI, aes(x=tick)) + 
+#   geom_smooth(aes(y=value), colour="red", method = "loess") + 
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Profits inc subsidy Producer I") #give the plot a title
+# plot(profitsIncSubProdI)
+
+# #Multiplot function
+# multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+#   require(grid)
+#   
+#   # Make a list from the ... arguments and plotlist
+#   plots <- c(list(...), plotlist)
+#   
+#   numPlots = length(plots)
+#   
+#   # If layout is NULL, then use 'cols' to determine layout
+#   if (is.null(layout)) {
+#     # Make the panel
+#     # ncol: Number of columns of plots
+#     # nrow: Number of rows needed, calculated from # of cols
+#     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+#                      ncol = cols, nrow = ceiling(numPlots/cols))
+#   }
+#   
+#   if (numPlots==1) {
+#     print(plots[[1]])
+#     
+#   } else {
+#     # Set up the page
+#     grid.newpage()
+#     pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+#     
+#     # Make each plot, in the correct location
+#     for (i in 1:numPlots) {
+#       # Get the i,j matrix positions of the regions that contain this subplot
+#       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+#       
+#       print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+#                                       layout.pos.col = matchidx$col))
+#     }
+#   }
+# }
+
+# # Capacity mix
+# plotStackedCapacities <- function(df) {
+#   localEnv <- environment()
+#   technologyCapacities <- df[grepl( "CapacityinMWinA_" , names( df ))]
+#   colnames(technologyCapacities)
+#   moltenTechnologyCapacities <- melt(df, id.vars = "tick", measure.vars = colnames(technologyCapacities))
+#   stack <- ggplot(moltenTechnologyCapacities, aes(x = moltenTechnologyCapacities$tick, y = moltenTechnologyCapacities$value, fill = moltenTechnologyCapacities$variable, order = moltenTechnologyCapacities$variable),
+#                   environment = localEnv)+
+#     geom_area(position="stack")+
+#     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
+#     ggtitle("Capacity mix Country A")+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
+#     scale_fill_discrete(name = "Legend",
+#                         breaks = colnames(technologyCapacities),
+#                         labels = substring(colnames(technologyCapacities), 17))+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Capacity (MW)")+
+#     theme(axis.title.y = element_text(size = 9, angle = 90),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "stackedCapacityPlotNL.png", sep=""),
+#          plot = stack, width=30, height=16.51, units="cm", scale=scaleFactor)}
+# plotStackedCapacities(bigDF)
+# 
+# plotStackedCapacities <- function(df) {
+#   localEnv <- environment()
+#   technologyCapacities <- df[grepl( "CapacityinMWinB_" , names( df ))]
+#   colnames(technologyCapacities)
+#   moltenTechnologyCapacities <- melt(df, id.vars = "tick", measure.vars = colnames(technologyCapacities))
+#   stack <- ggplot(moltenTechnologyCapacities, aes(x = moltenTechnologyCapacities$tick, y = moltenTechnologyCapacities$value, fill = moltenTechnologyCapacities$variable, order = moltenTechnologyCapacities$variable),
+#                   environment = localEnv)+
+#     geom_area(position="stack")+
+#     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
+#     ggtitle("Capacity mix Country B")+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
+#     scale_fill_discrete(name = "Legend",
+#                         breaks = colnames(technologyCapacities),
+#                         labels = substring(colnames(technologyCapacities), 17))+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Capacity (MW)")+
+#     theme(axis.title.y = element_text(size = 9, angle = 90),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "stackedCapacityPlotDE.png", sep=""),
+#          plot = stack, width=30, height=16.51, units="cm", scale=scaleFactor)}
+# plotStackedCapacities(bigDF)
+# 
+# # Generation Mix 
+# plotStackedGeneration <- function(df) {
+#   localEnv <- environment()
+#   technologyGeneration <- df[grepl( "GenerationinMWhCountryA_" , names( df ))]
+#   colnames(technologyGeneration)
+#   moltenTechnologyGeneration <- melt(df, id.vars = "tick", measure.vars = colnames(technologyGeneration))
+#   stack <- ggplot(moltenTechnologyGeneration, aes(x = moltenTechnologyGeneration$tick, y = moltenTechnologyGeneration$value, fill = moltenTechnologyGeneration$variable, order = moltenTechnologyGeneration$variable),
+#                   environment = localEnv)+
+#     geom_area(position="stack")+
+#     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
+#     ggtitle("Generation mix Country A")+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
+#     scale_fill_discrete(name = "Legend",
+#                         breaks = colnames(technologyGeneration),
+#                         labels = substring(colnames(technologyGeneration), 17))+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Generation (MWh)")+
+#     theme(axis.title.y = element_text(size = 9, angle = 90),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "stackedGenerationPlotNL.png", sep=""),
+#          plot = stack, width=30, height=16.51, units="cm", scale=scaleFactor)}
+# plotStackedGeneration(bigDF)
+# 
+# plotStackedGeneration <- function(df) {
+#   localEnv <- environment()
+#   technologyGeneration <- df[grepl( "GenerationinMWhCountryB_" , names( df ))]
+#   colnames(technologyGeneration)
+#   moltenTechnologyGeneration <- melt(df, id.vars = "tick", measure.vars = colnames(technologyGeneration))
+#   stack <- ggplot(moltenTechnologyGeneration, aes(x = moltenTechnologyGeneration$tick, y = moltenTechnologyGeneration$value, fill = moltenTechnologyGeneration$variable, order = moltenTechnologyGeneration$variable),
+#                   environment = localEnv)+
+#     geom_area(position="stack")+
+#     guides(fill = guide_legend(reverse=TRUE, title = "Legend", ncol = 1, keywidth = .8, keyheight = .8))+
+#     ggtitle("Generation mix Country B")+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11))+
+#     scale_fill_discrete(name = "Legend",
+#                         breaks = colnames(technologyGeneration),
+#                         labels = substring(colnames(technologyGeneration), 17))+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Generation (MWh)")+
+#     theme(axis.title.y = element_text(size = 9, angle = 90),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "stackedGenerationPlotDE.png", sep=""),
+#          plot = stack, width=30, height=16.51, units="cm", scale=scaleFactor)}
+# plotStackedGeneration(bigDF)
+
+# # Tender subsidy costs per year: threshold is 150 MEuro per year
+# yearlyTenderSubsidyplotA = ggplot(data=bigDF, aes(x=tick, y=yearlyTotalTenderSubsidyCountryA_Tender_Subsidy_Yearly_Country_A)) + 
+#   geom_smooth() + #(aes(colour = runNumber))
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Tender Subsidy \n Country A") #give the plot a title
+# plot(yearlyTenderSubsidyplotA)
+# ggsave(filename = paste(filePrefix, "yearlyTenderSubsidyplotA.png", sep=""))
+# 
+# yearlyTenderSubsidyplotB = ggplot(data=bigDF, aes(x=tick, y=yearlyTotalTenderSubsidyCountryB_Tender_Subsidy_Yearly_Country_B)) + 
+#   geom_smooth() + #(aes(colour = runNumber))
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Tender Subsidy \n Country B") #give the plot a title
+# plot(yearlyTenderSubsidyplotB)
+# ggsave(filename = paste(filePrefix, "yearlyTenderSubsidyplotB.png", sep=""))
+# 
+# #Producer Welfare
+# #Producer Cash
+# plotCashBalances <- function(df){
+#   localEnv <- environment()
+#   cashA <- df$ProducerCash_Energy_Producer_A
+#   cashB <- df$ProducerCash_Energy_Producer_B
+#   cashC <- df$ProducerCash_Energy_Producer_C
+#   cashD <- df$ProducerCash_Energy_Producer_D
+#   cashE <- df$ProducerCash_Energy_Producer_E
+#   cashF <- df$ProducerCash_Energy_Producer_F
+#   cashG <- df$ProducerCash_Energy_Producer_G
+#   cashH <- df$ProducerCash_Energy_Producer_H
+#   cashI <- df$ProducerCash_Energy_Producer_I
+#   prodCashPlot <- ggplot(df, aes(x=df$tick), environment = localEnv)+
+#     geom_line(aes(y=cashA, colour="cashA"))+
+#     geom_line(aes(y=cashB, colour="cashB"))+
+#     geom_line(aes(y=cashC, colour="cashC"))+
+#     geom_line(aes(y=cashD, colour="cashD"))+
+#     geom_line(aes(y=cashE, colour="cashE"))+
+#     geom_line(aes(y=cashF, colour="cashF"))+
+#     geom_line(aes(y=cashG, colour="cashG"))+
+#     geom_line(aes(y=cashH, colour="cashH"))+
+#     geom_line(aes(y=cashI, colour="cashI"))+
+#     ggtitle("Overview of producer cash balances")+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Cash balance (EUR)")+
+#     scale_colour_manual(name = "Legend", values = c(cashA = "green", cashB = "blue", cashC = "yellow", cashD = "seashell4",
+#                                                     cashE = "purple", cashF = "red", cashG = "pink", cashH = "black", cashH = "grey"),
+#                         labels = c(cashA = "Energy producer A",cashB = "Energy producer B",cashC = "Energy producer C",
+#                                    cashD = "Energy producer D",cashE = "Energy producer E",cashF = "Energy producer F",
+#                                    cashG = "Energy producer G",cashH = "Energy producer H",cashI = "Energy producer I"))+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           axis.title.y = element_text(size = 9, angle = 90),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "prodCashBalancePlot.png", sep=""),
+#          plot = prodCashPlot, width=30, height=16.51, units="cm", scale=scaleFactor)
+# }
+# plotCashBalances(bigDF)
+# 
+# #Producer welfare = Producers costs - revenues = profit per producer over time, including Tender subsidy
+# plotProfitIncludingTenderSubsidy <- function(df){
+#   localEnv <- environment()
+#   profitA <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA
+#   profitB <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB
+#   profitC <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC
+#   profitD <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD
+#   profitE <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdE
+#   profitF <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdF
+#   profitG <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdG
+#   profitH <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdH
+#   profitI <- df$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdI
+#   prodProfitPlot <- ggplot(df, aes(x=df$tick), environment = localEnv)+
+#     geom_line(aes(y=profitA, colour="profitA"))+
+#     geom_line(aes(y=profitB, colour="profitB"))+
+#     geom_line(aes(y=profitC, colour="profitC"))+
+#     geom_line(aes(y=profitD, colour="profitD"))+
+#     geom_line(aes(y=profitE, colour="profitE"))+
+#     geom_line(aes(y=profitF, colour="profitF"))+
+#     geom_line(aes(y=profitG, colour="profitG"))+
+#     geom_line(aes(y=profitH, colour="profitH"))+
+#     geom_line(aes(y=profitI, colour="profitI"))+
+#     ggtitle("Overview of producer profit \n Including Tender Subsidy")+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Profit (EUR)")+
+#     scale_colour_manual(name = "Legend", values = c(profitA = "green", profitB = "blue", profitC = "yellow", profitD = "seashell4",
+#                                                     profitE = "purple", profitF = "red", profitG = "pink", profitH = "black" , profitI = "grey"),
+#                         labels = c(profitA = "Energy producer A",profitB = "Energy producer B",profitC = "Energy producer C",
+#                                    profitD = "Energy producer D",profitE = "Energy producer E",profitF = "Energy producer F",
+#                                    profitG = "Energy producer G",profitH = "Energy producer H",profitI = "Energy producer I"))+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           axis.title.y = element_text(size = 9, angle = 90),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "prodProfitIncludingTenderSubsidyPlot.png", sep=""),
+#          plot = prodProfitPlot, width=30, height=16.51, units="cm", scale=scaleFactor)
+# }
+# plotProfitIncludingTenderSubsidy(bigDF)
+# 
+# 
+# #Producer welfare = Producers costs - revenues = profit per producer over time, excluding Tender subsidy
+# producerWelfareExcTenderA <- bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD
+# producerWelfareExcTenderB <- bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD
+# 
+# producerWelfareIncTenderA <- bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD
+# producerWelfareIncTenderB <- bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC + bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD
+# 
+# #Income Distribution
+# # check different profits of producer whether the tender makes them really skewed or not
+# # profits with and without subsidy
+# plotProfitExcludingTenderSubsidy <- function(df){
+#   localEnv <- environment()
+#   profitA <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA
+#   profitB <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB
+#   profitC <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC
+#   profitD <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD
+#   profitE <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdE
+#   profitF <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdF
+#   profitG <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdG
+#   profitH <- df$ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdH
+#   prodProfitPlot <- ggplot(df, aes(x=df$tick), environment = localEnv)+
+#     geom_line(aes(y=profitA, colour="profitA"))+
+#     geom_line(aes(y=profitB, colour="profitB"))+
+#     geom_line(aes(y=profitC, colour="profitC"))+
+#     geom_line(aes(y=profitD, colour="profitD"))+
+#     geom_line(aes(y=profitE, colour="profitE"))+
+#     geom_line(aes(y=profitF, colour="profitF"))+
+#     geom_line(aes(y=profitG, colour="profitG"))+
+#     geom_line(aes(y=profitH, colour="profitH"))+
+#     ggtitle("Overview of producer profit \n Excluding Tender Subsidy")+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Profit (EUR)")+
+#     scale_colour_manual(name = "Legend", values = c(profitA = "green", profitB = "blue", profitC = "yellow", profitD = "seashell4",
+#                                                     profitE = "purple", profitF = "red", profitG = "pink", profitH = "black"),
+#                         labels = c(profitA = "Energy producer A",profitB = "Energy producer B",profitC = "Energy producer C",
+#                                    profitD = "Energy producer D",profitE = "Energy producer E",profitF = "Energy producer F",
+#                                    profitG = "Energy producer G",profitH = "Energy producer H"))+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           axis.title.y = element_text(size = 9, angle = 90),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "prodProfitExcludingTenderSubsidyPlot.png", sep=""),
+#          plot = prodProfitPlot, width=30, height=16.51, units="cm", scale=scaleFactor)
+# }
+# plotProfitExcludingTenderSubsidy(bigDF)
+# 
+# #Producer yearly tender subsidies
+# plotTenderSubsidy <- function(df){
+#   localEnv <- environment()
+#   subsidyA <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_A
+#   subsidyB <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_B
+#   subsidyC <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_C
+#   subsidyD <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_D
+#   subsidyE <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_E
+#   subsidyF <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_F
+#   subsidyG <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_G
+#   subsidyH <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_H
+#   subsidyI <- df$TenderYearlySubsidyProducer_Tender_Subsidy_Yearly_Producer_I
+#   prodSubsidyPlot <- ggplot(df, aes(x=df$tick), environment = localEnv)+
+#     geom_line(aes(y=subsidyA, colour="subsidyA"))+
+#     geom_line(aes(y=subsidyB, colour="subsidyB"))+
+#     geom_line(aes(y=subsidyC, colour="subsidyC"))+
+#     geom_line(aes(y=subsidyD, colour="subsidyD"))+
+#     geom_line(aes(y=subsidyE, colour="subsidyE"))+
+#     geom_line(aes(y=subsidyF, colour="subsidyF"))+
+#     geom_line(aes(y=subsidyG, colour="subsidyG"))+
+#     geom_line(aes(y=subsidyH, colour="subsidyH"))+
+#     geom_line(aes(y=subsidyI, colour="subsidyI"))+
+#     ggtitle("Overview of producer Tender Subsidy")+
+#     scale_x_continuous(name = "Time (year)")+
+#     scale_y_continuous(name = "Subsidy (EUR)")+
+#     scale_colour_manual(name = "Legend", values = c(subsidyA = "green", subsidyB = "blue", subsidyC = "yellow", subsidyD = "seashell4",
+#                                                     subsidyE = "purple", subsidyF = "red", subsidyG = "pink", subsidyH = "black", subsidyI = "grey"),
+#                         labels = c(subsidyA = "Energy producer A",subsidyB = "Energy producer B",subsidyC = "Energy producer C",
+#                                    subsidyD = "Energy producer D",subsidyE = "Energy producer E",subsidyF = "Energy producer F",
+#                                    subsidyG = "Energy producer G",subsidyH = "Energy producer H", subsidyI = "Energy producer I"))+
+#     theme(plot.title = element_text(lineheight = 0.8, face = "bold", size = 11),
+#           axis.title.x = element_text(size = 9, angle = 0),
+#           axis.title.y = element_text(size = 9, angle = 90),
+#           legend.text = element_text(size = 8),
+#           legend.title = element_text(size = 10))
+#   ggsave(filename = paste(filePrefix, "prodSubsidyPlot.png", sep=""),
+#          plot = prodSubsidyPlot, width=30, height=16.51, units="cm", scale=scaleFactor)
+# }
+# plotTenderSubsidy(bigDF)
+
+# moltenDFprofitsExcSubProdA <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdA")
+# moltenDFprofitsIncSubProdA <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA")
+# moltenDFprofitsExcSubProdB <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdB")
+# moltenDFprofitsIncSubProdB <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB")
+# moltenDFprofitsExcSubProdC <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdC")
+# moltenDFprofitsIncSubProdC <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC")
+# moltenDFprofitsExcSubProdD <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdD")
+# moltenDFprofitsIncSubProdD <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD")
+# moltenDFprofitsExcSubProdE <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdE")
+# moltenDFprofitsIncSubProdE <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdE")
+# moltenDFprofitsExcSubProdF <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdF")
+# moltenDFprofitsIncSubProdF <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdF")
+# moltenDFprofitsExcSubProdG <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdG")
+# moltenDFprofitsIncSubProdG <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdG")
+# moltenDFprofitsExcSubProdH <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdH")
+# moltenDFprofitsIncSubProdH <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdH")
+# moltenDFprofitsExcSubProdI <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyExcludingTenderSubsidy_ProfitProdI")
+# moltenDFprofitsIncSubProdI <- melt(bigDF, id.vars = "tick", "ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdI")
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdA, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdA, tick==39)
+# changeProducerExcSubProfitsA <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsA <- changeProducerExcSubProfitsA*100/s1$value
+# meanPcChangeProducerExcSubProfitsA <- mean(pcChangeProducerExcSubProfitsA)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdA, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdA, tick==39)
+# changeProducerIncSubProfitsA <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsA <- changeProducerIncSubProfitsA*100/s1$value
+# meanPcChangeProducerIncSubProfitsA <- mean(pcChangeProducerIncSubProfitsA)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdB, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdB, tick==39)
+# changeProducerExcSubProfitsB <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsB <- changeProducerExcSubProfitsB*100/s1$value
+# meanPcChangeProducerExcSubProfitsB <- mean(pcChangeProducerExcSubProfitsB)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdB, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdB, tick==39)
+# changeProducerIncSubProfitsB <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsB <- changeProducerIncSubProfitsB*100/s1$value
+# meanPcChangeProducerIncSubProfitsB <- mean(pcChangeProducerIncSubProfitsB)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdC, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdC, tick==39)
+# changeProducerExcSubProfitsC <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsC <- changeProducerExcSubProfitsC*100/s1$value
+# meanPcChangeProducerExcSubProfitsC <- mean(pcChangeProducerExcSubProfitsC)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdC, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdC, tick==39)
+# changeProducerIncSubProfitsC <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsC <- changeProducerIncSubProfitsC*100/s1$value
+# meanPcChangeProducerIncSubProfitsC <- mean(pcChangeProducerIncSubProfitsC)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdD, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdD, tick==39)
+# changeProducerExcSubProfitsD <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsD <- changeProducerExcSubProfitsD*100/s1$value
+# meanPcChangeProducerExcSubProfitsD <- mean(pcChangeProducerExcSubProfitsD)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdD, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdD, tick==39)
+# changeProducerIncSubProfitsD <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsD <- changeProducerIncSubProfitsD*100/s1$value
+# meanPcChangeProducerIncSubProfitsD <- mean(pcChangeProducerIncSubProfitsD)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdE, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdE, tick==39)
+# changeProducerExcSubProfitsE <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsE <- changeProducerExcSubProfitsE*100/s1$value
+# meanPcChangeProducerExcSubProfitsE <- mean(pcChangeProducerExcSubProfitsE)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdE, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdE, tick==39)
+# changeProducerIncSubProfitsE <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsE <- changeProducerIncSubProfitsE*100/s1$value
+# meanPcChangeProducerIncSubProfitsE <- mean(pcChangeProducerIncSubProfitsE)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdF, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdF, tick==39)
+# changeProducerExcSubProfitsF <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsF <- changeProducerExcSubProfitsF*100/s1$value
+# meanPcChangeProducerExcSubProfitsF <- mean(pcChangeProducerExcSubProfitsF)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdF, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdF, tick==39)
+# changeProducerIncSubProfitsF <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsF <- changeProducerIncSubProfitsF*100/s1$value
+# meanPcChangeProducerIncSubProfitsF <- mean(pcChangeProducerIncSubProfitsF)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdG, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdG, tick==39)
+# changeProducerExcSubProfitsG <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsG <- changeProducerExcSubProfitsG*100/s1$value
+# meanPcChangeProducerExcSubProfitsG <- mean(pcChangeProducerExcSubProfitsG)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdG, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdG, tick==39)
+# changeProducerIncSubProfitsG <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsG <- changeProducerIncSubProfitsG*100/s1$value
+# meanPcChangeProducerIncSubProfitsG <- mean(pcChangeProducerIncSubProfitsG)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdH, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdH, tick==39)
+# changeProducerExcSubProfitsH <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsH <- changeProducerExcSubProfitsH*100/s1$value
+# meanPcChangeProducerExcSubProfitsH <- mean(pcChangeProducerExcSubProfitsH)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdH, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdH, tick==39)
+# changeProducerIncSubProfitsH <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsH <- changeProducerIncSubProfitsH*100/s1$value
+# meanPcChangeProducerIncSubProfitsH <- mean(pcChangeProducerIncSubProfitsH)
+# 
+# s1 <- subset(moltenDFprofitsExcSubProdI, tick==0)
+# s2 <- subset(moltenDFprofitsExcSubProdI, tick==39)
+# changeProducerExcSubProfitsI <- (s2$value - s1$value)
+# pcChangeProducerExcSubProfitsI <- changeProducerExcSubProfitsI*100/s1$value
+# meanPcChangeProducerExcSubProfitsI <- mean(pcChangeProducerExcSubProfitsI)
+# 
+# s1 <- subset(moltenDFprofitsIncSubProdI, tick==0)
+# s2 <- subset(moltenDFprofitsIncSubProdI, tick==39)
+# changeProducerIncSubProfitsI <- (s2$value - s1$value)
+# pcChangeProducerIncSubProfitsI <- changeProducerIncSubProfitsI*100/s1$value
+# meanPcChangeProducerIncSubProfitsI <- mean(pcChangeProducerIncSubProfitsI)
+# 
+# DataTable <- c(meanPcChangeProducerExcSubProfitsA)
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsA))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsB))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsB))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsC))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsC))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsD))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsD))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsE))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsE))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsF))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerIncSubProfitsF))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsG))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsG))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsH))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsH))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsI))
+# DataTable <- rbind(DataTable, c(meanPcChangeProducerExcSubProfitsI))
+# colnames(DataTable) <- c(nameFile)
+# rownames(DataTable) <- c("Change Welfare Producer A ExcSub","Change Welfare Producer A IncSub",
+#                          "Change Welfare Producer B ExcSub","Change Welfare Producer B IncSub",
+#                          "Change Welfare Producer C ExcSub","Change Welfare Producer C IncSub",
+#                          "Change Welfare Producer D ExcSub","Change Welfare Producer D IncSub",
+#                          "Change Welfare Producer E ExcSub","Change Welfare Producer E IncSub",
+#                          "Change Welfare Producer F ExcSub","Change Welfare Producer F IncSub",
+#                          "Change Welfare Producer G ExcSub","Change Welfare Producer G IncSub",
+#                          "Change Welfare Producer H ExcSub","Change Welfare Producer H IncSub",
+#                          "Change Welfare Producer I ExcSub","Change Welfare Producer I IncSub")
+# write.csv(DataTable, "DataTableProdWelfareChange.csv")
