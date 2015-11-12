@@ -71,15 +71,19 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         // target.
         // will be ActualTarget
         double totalExpectedGeneration = 0d;
-        double expectedGenerationPerTechnology = 0d;
-        double expectedGenerationPerPlant = 0d;
+        double totalExpectedGenerationAvailable = 0d;
+        double expectedGenerationPerTechnologyAvailable = 0d;
+        double expectedGenerationPerPlantAvailable = 0d;
+        double totalExpectedGenerationPipeline = 0d;
+        double expectedGenerationPerTechnologyPipeline = 0d;
+        double expectedGenerationPerPlantPipeline = 0d;
         long numberOfSegments = reps.segmentRepository.count();
         // logger.warn("number of segments; " + numberOfSegments);
 
         int noOfPlants = 0;
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
-            expectedGenerationPerTechnology = 0d;
+            expectedGenerationPerTechnologyAvailable = 0d;
 
             logger.warn("For PGT - technology; " + technology);
 
@@ -87,11 +91,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                     market, technology, futureStartingTenderTimePoint)) {
 
                 logger.warn("For PP - plant; " + plant);
-                // logger.warn("For PP - market; " + market + " technology; " +
-                // technology + " future time tick; "
-                // + futureStartingTenderTimePoint);
 
-                expectedGenerationPerPlant = 0d;
+                expectedGenerationPerPlantAvailable = 0d;
                 noOfPlants++;
 
                 logger.warn("FOR pp - no of plants; " + noOfPlants);
@@ -101,43 +102,47 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
                     double availablePlantCapacity = plant.getExpectedAvailableCapacity(futureStartingTenderTimePoint,
                             segment, numberOfSegments);
-                    //
-                    // logger.warn("For S - future time tick; " +
-                    // futureStartingTenderTimePoint + " segment; " + segment
-                    // + " number of segments; " + numberOfSegments +
-                    // " availablePlantCapacity; "
-                    // + availablePlantCapacity);
-
                     double lengthOfSegmentInHours = segment.getLengthInHours();
-
-                    // logger.warn("expectedGenerationPerPlant; " +
-                    // expectedGenerationPerPlant
-                    // + " lengthOfSegmentInHours; " + lengthOfSegmentInHours +
-                    // " availablePlantCapacity "
-                    // + availablePlantCapacity);
-
-                    expectedGenerationPerPlant += availablePlantCapacity * lengthOfSegmentInHours;
-
+                    expectedGenerationPerPlantAvailable += availablePlantCapacity * lengthOfSegmentInHours;
                 }
-                // logger.warn("For S - expectedGenerationPerPlant; " +
-                // expectedGenerationPerPlant);
+                expectedGenerationPerTechnologyAvailable += expectedGenerationPerPlantAvailable;
 
-                expectedGenerationPerTechnology += expectedGenerationPerPlant;
-
-                // logger.warn("For S - expectedGenerationPerPlant; " +
-                // expectedGenerationPerPlant);
             }
-            // logger.warn("For PP - expectedGenerationPerPlant; " +
-            // expectedGenerationPerPlant);
+            totalExpectedGenerationAvailable += expectedGenerationPerTechnologyAvailable;
 
-            totalExpectedGeneration += expectedGenerationPerTechnology;
+            logger.warn("For PGT pipeline - technology; " + technology);
 
-            // logger.warn("For PP - totalExpectedGeneration; " +
-            // totalExpectedGeneration);
+            for (PowerPlant plant : reps.powerPlantRepository
+                    .findExpectedOperationalPowerPlantsInMarketByTechnologyInPipeline(market, technology,
+                            futureStartingTenderTimePoint)) {
+
+                logger.warn("For PP pipeline - plant; " + plant);
+
+                expectedGenerationPerPlantPipeline = 0d;
+                noOfPlants++;
+
+                logger.warn("FOR pp pipeline - no of plants; " + noOfPlants);
+
+                for (Segment segment : reps.segmentRepository.findAll()) {
+                    // logger.warn("For S - segment; " + segment);
+
+                    double availablePlantCapacity = plant.getExpectedAvailableCapacity(futureStartingTenderTimePoint,
+                            segment, numberOfSegments);
+                    double lengthOfSegmentInHours = segment.getLengthInHours();
+                    expectedGenerationPerPlantPipeline += availablePlantCapacity * lengthOfSegmentInHours;
+                }
+                expectedGenerationPerTechnologyPipeline += expectedGenerationPerPlantPipeline;
+
+            }
+            totalExpectedGenerationPipeline += expectedGenerationPerTechnologyPipeline;
 
         }
-        // logger.warn("No of Expected Plants; " + noOfPlants);
 
+        totalExpectedGeneration = totalExpectedGenerationAvailable + totalExpectedGenerationPipeline;
+
+        logger.warn("totalExpectedGeneration; " + totalExpectedGenerationAvailable);
+        logger.warn("totalExpectedGeneration; " + totalExpectedGenerationPipeline);
+        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
         /*
          * To compare
          * 

@@ -380,4 +380,10 @@ public interface PowerPlantRepository extends GraphRepository<PowerPlant> {
             @Param("market") ElectricitySpotMarket market, @Param("tech") PowerGeneratingTechnology technology,
             @Param("tick") long tick);
 
+    @Query(value = "result = g.v(market).out('ZONE').in('REGION').in('LOCATION').filter{it.__type__=='emlab.gen.domain.technology.PowerPlant'}.as('x').out('TECHNOLOGY').filter{it.name==g.v(tech).name}.back('x').filter{!((it.constructionStartTime + it.actualPermittime + it.actualLeadtime) <= tick) && (it.dismantleTime > tick)};"
+            + "if(result == null){return 0;} else{return result;}", type = QueryType.Gremlin)
+    public Iterable<PowerPlant> findExpectedOperationalPowerPlantsInMarketByTechnologyInPipeline(
+            @Param("market") ElectricitySpotMarket market, @Param("tech") PowerGeneratingTechnology technology,
+            @Param("tick") long tick);
+
 }

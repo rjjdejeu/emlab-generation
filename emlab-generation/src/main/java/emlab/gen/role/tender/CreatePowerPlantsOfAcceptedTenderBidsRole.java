@@ -65,7 +65,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
         for (TenderBid currentTenderBid : acceptedTenderBidsByTime) {
 
-            // logger.warn("current accepted bid: " + currentTenderBid);
+            logger.warn("current accepted bid: " + currentTenderBid);
 
             PowerPlant plant = currentTenderBid.getPowerPlant();
             // PowerPlant plant = new PowerPlant();

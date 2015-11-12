@@ -130,6 +130,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
         RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
                 .determineSupportSchemeForZone(zone);
 
+        int noOfPlantsConsider = 0;
+
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
 
             logger.warn("eligible are: " + technology);
@@ -165,12 +167,16 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
             for (PowerGridNode node : possibleInstallationNodes) {
 
+                logger.warn("node: " + node);
+
                 PowerPlant plant = new PowerPlant();
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
 
-                // logger.warn("SubmitBid 168 - Agent " + agent +
-                // " looking at technology at tick " + getCurrentTick()
-                // + " in tech " + technology);
+                noOfPlantsConsider++;
+                logger.warn("FOR no of plants considered " + noOfPlantsConsider);
+
+                logger.warn("SubmitBid 168 - Agent " + agent + " looking at technology at tick " + getCurrentTick()
+                        + " in tech " + technology);
 
                 // logger.warn(" agent is " + agent + " with technology " +
                 // technology + " and plant " + plant
@@ -345,7 +351,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         bidPricePerMWh = -projectValue
                                 / (discountedTenderReturnFactor * totalAnnualExpectedGenerationOfPlant);
 
+                        int noOfPlantsBid = 0;
                         for (long i = 1; i <= numberOfPlants; i++) {
+
+                            noOfPlantsBid++;
+                            logger.warn("FOR pp - no of plants Bid; " + noOfPlantsBid);
 
                             long start = getCurrentTick() + plant.calculateActualLeadtime()
                                     + plant.calculateActualPermittime();
@@ -356,10 +366,11 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                             bid.specifyAndPersist(totalAnnualExpectedGenerationOfPlant, plant, agent, zone, node,
                                     start, finish, bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme);
 
-                            logger.warn("SubmitBid 454 - Agent " + agent + " at tick " + getCurrentTick() + " in tech "
-                                    + technology + " with plant name " + plant.getName() + " with bidprice "
-                                    + bidPricePerMWh + " with generation " + totalAnnualExpectedGenerationOfPlant
-                                    + "in zone " + zone + " of scheme " + scheme);
+                            logger.warn("SubmitBid 454 - Agent " + agent + " ,generation "
+                                    + totalAnnualExpectedGenerationOfPlant + " ,plant " + plant + " ,zone " + zone
+                                    + " ,node " + node + " ,start " + start + " ,finish " + finish + " ,bid price "
+                                    + bidPricePerMWh + " ,tech " + technology + " ,current tick " + getCurrentTick()
+                                    + " ,status " + Bid.SUBMITTED + " ,scheme " + scheme);
 
                         } // end for loop for tender bids
 
