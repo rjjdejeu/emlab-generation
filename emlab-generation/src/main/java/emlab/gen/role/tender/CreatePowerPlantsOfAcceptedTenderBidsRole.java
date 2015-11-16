@@ -69,6 +69,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
             PowerPlant plant = currentTenderBid.getPowerPlant();
             // PowerPlant plant = new PowerPlant();
+            plant.setRenewableTenderDummyPowerPlant(false);
             EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();
             // check if all information exists
             plant.specifyAndPersist(currentTenderBid.getStart(), bidder, currentTenderBid.getPowerGridNode(),
@@ -94,13 +95,23 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
                     + currentTenderBid.getTechnology() + " with plant name " + plant.getName() + " in zone "
                     + currentTenderBid.getZone());
         }
+        // Remove the non accepted bid power plants
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
         sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
         for (TenderBid currentBid : sortedTenderBidsbyPriceAndZone) {
             if (currentBid.getStatus() == Bid.FAILED) {
                 currentBid.getPowerPlant().dismantlePowerPlant(getCurrentTick());
+
             }
+
         }
+        // Remove the dummy power plant
+        // for (PowerPlant plant : reps.powerPlantRepository.findAll()) {
+        // if (plant.isRenewableTenderDummyPowerPlant() == true) {
+        // plant.dismantlePowerPlant(getCurrentTick());
+        //
+        // }
+        // }
     }
 
     private void createSpreadOutDownPayments(EnergyProducer agent, PowerPlantManufacturer manufacturer,

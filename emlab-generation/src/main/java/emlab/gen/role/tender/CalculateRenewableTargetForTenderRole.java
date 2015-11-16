@@ -140,8 +140,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         totalExpectedGeneration = totalExpectedGenerationAvailable + totalExpectedGenerationPipeline;
 
-        logger.warn("totalExpectedGeneration; " + totalExpectedGenerationAvailable);
-        logger.warn("totalExpectedGeneration; " + totalExpectedGenerationPipeline);
+        logger.warn("totalExpectedGenerationAvailable; " + totalExpectedGenerationAvailable);
+        logger.warn("totalExpectedGenerationPipeline; " + totalExpectedGenerationPipeline);
         logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
         /*
          * To compare

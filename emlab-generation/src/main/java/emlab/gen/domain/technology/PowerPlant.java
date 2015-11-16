@@ -88,6 +88,15 @@ public class PowerPlant {
     private double expectedEndOfLife;
     private double actualNominalCapacity;
     private boolean hasFeedInPremiumContract;
+    private boolean isRenewableTenderDummyPowerPlant;
+
+    public boolean isRenewableTenderDummyPowerPlant() {
+        return isRenewableTenderDummyPowerPlant;
+    }
+
+    public void setRenewableTenderDummyPowerPlant(boolean isRenewableTenderDummyPowerPlant) {
+        this.isRenewableTenderDummyPowerPlant = isRenewableTenderDummyPowerPlant;
+    }
 
     public double ageFraction;
     public double profitability;

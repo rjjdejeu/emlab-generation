@@ -156,7 +156,12 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
         if (model.isRealRenewableDataImplemented())
             determineResidualLoadCurve.act(model);
 
+        Timer timerMarket = new Timer();
+        timerMarket.start();
+
         logger.warn(" 0. Dismantling & paying loans");
+        timerMarket.reset();
+        timerMarket.start();
         for (EnergyProducer producer : reps.genericRepository.findAllAtRandom(EnergyProducer.class)) {
             dismantlePowerPlantRole.act(producer);
             payForLoansRole.act(producer);
@@ -164,32 +169,29 @@ public class DecarbonizationModelRole extends AbstractRole<DecarbonizationModel>
             // producer.act(payForLoansRole);
         }
 
-        /*
-         * Determine fuel mix of power plants
-         */
-        Timer timerMarket = new Timer();
-        timerMarket.start();
-
-        logger.warn("  0b. Dismantling");
-        timerMarket.reset();
-        timerMarket.start();
+        // logger.warn("  0b. Dismantling");
+        // timerMarket.reset();
+        // timerMarket.start();
         // for (ElectricitySpotMarket market :
         // reps.marketRepository.findAllElectricitySpotMarketsAsList()) {
         // dismantlePowerPlantOperationalLossRole.act(market);
         // }
+        // timerMarket.stop();
+        // logger.warn("        took: {} seconds.", timerMarket.seconds());
+
+        // logger.warn("  0c. Paying loans");
+
+        // for (EnergyProducer producer :
+        // reps.genericRepository.findAllAtRandom(EnergyProducer.class)) {
+        // payForLoansRole.act(producer);
+        // }
+
         timerMarket.stop();
         logger.warn("        took: {} seconds.", timerMarket.seconds());
 
-        logger.warn("  0c. Paying loans");
-        timerMarket.reset();
-        timerMarket.start();
-        for (EnergyProducer producer : reps.genericRepository.findAllAtRandom(EnergyProducer.class)) {
-            payForLoansRole.act(producer);
-
-        }
-
-        timerMarket.stop();
-        logger.warn("        took: {} seconds.", timerMarket.seconds());
+        /*
+         * Determine fuel mix of power plants
+         */
 
         logger.warn("  1. Determining fuel mix");
         timerMarket.reset();
