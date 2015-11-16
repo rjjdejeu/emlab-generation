@@ -69,7 +69,8 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
             PowerPlant plant = currentTenderBid.getPowerPlant();
             // PowerPlant plant = new PowerPlant();
-            plant.setRenewableTenderDummyPowerPlant(false);
+            // plant.setRenewableTenderDummyPowerPlant(false);
+
             EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();
             // check if all information exists
             plant.specifyAndPersist(currentTenderBid.getStart(), bidder, currentTenderBid.getPowerGridNode(),
