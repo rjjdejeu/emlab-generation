@@ -171,7 +171,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 PowerPlant plant = new PowerPlant();
                 plant.specifyNotPersist(getCurrentTick(), agent, node, technology);
-                // plant.setRenewableTenderDummyPowerPlant(true);
+                plant.setRenewableTenderDummyPowerPlant(true);
 
                 noOfPlantsConsider++;
                 logger.warn("FOR no of plants considered " + noOfPlantsConsider);
