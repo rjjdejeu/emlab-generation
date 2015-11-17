@@ -106,13 +106,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
             }
 
         }
-        // Remove the dummy power plant
-        // for (PowerPlant plant : reps.powerPlantRepository.findAll()) {
-        // if (plant.isRenewableTenderDummyPowerPlant() == true) {
-        // plant.dismantlePowerPlant(getCurrentTick());
-        //
-        // }
-        // }
+
     }
 
     private void createSpreadOutDownPayments(EnergyProducer agent, PowerPlantManufacturer manufacturer,

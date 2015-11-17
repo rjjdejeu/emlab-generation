@@ -33,12 +33,9 @@ import agentspring.role.RoleComponent;
 import emlab.gen.domain.agent.DecarbonizationModel;
 import emlab.gen.domain.agent.EnergyProducer;
 import emlab.gen.domain.agent.Government;
-import emlab.gen.domain.agent.PowerPlantManufacturer;
 import emlab.gen.domain.agent.StochasticTargetInvestor;
 import emlab.gen.domain.agent.StrategicReserveOperator;
 import emlab.gen.domain.agent.TargetInvestor;
-import emlab.gen.domain.contract.CashFlow;
-import emlab.gen.domain.contract.Loan;
 import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
 import emlab.gen.domain.market.CO2Auction;
@@ -379,6 +376,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 } // end else calculate discounted tender return factor term
 
+                // Remove the dummy power plant
+
             } // end for loop possible installation nodes
 
         } // end for (PowerGeneratingTechnology technology :
@@ -391,16 +390,19 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
     // Creates n downpayments of equal size in each of the n building years of a
     // power plant
     @Transactional
-    private void createSpreadOutDownPayments(EnergyProducer agent, PowerPlantManufacturer manufacturer,
-            double totalDownPayment, PowerPlant plant) {
-        int buildingTime = (int) (plant.calculateActualLeadtime() + plant.calculateActualPermittime());
-        reps.nonTransactionalCreateRepository.createCashFlow(agent, manufacturer, totalDownPayment / buildingTime,
-                CashFlow.DOWNPAYMENT, getCurrentTick(), plant);
-        Loan downpayment = reps.loanRepository.createLoan(agent, manufacturer, totalDownPayment / buildingTime,
-                buildingTime - 1, getCurrentTick(), plant);
-        plant.createOrUpdateDownPayment(downpayment);
-    }
-
+    // private void createSpreadOutDownPayments(EnergyProducer agent,
+    // PowerPlantManufacturer manufacturer,
+    // double totalDownPayment, PowerPlant plant) {
+    // int buildingTime = (int) (plant.calculateActualLeadtime() +
+    // plant.calculateActualPermittime());
+    // reps.nonTransactionalCreateRepository.createCashFlow(agent, manufacturer,
+    // totalDownPayment / buildingTime,
+    // CashFlow.DOWNPAYMENT, getCurrentTick(), plant);
+    // Loan downpayment = reps.loanRepository.createLoan(agent, manufacturer,
+    // totalDownPayment / buildingTime,
+    // buildingTime - 1, getCurrentTick(), plant);
+    // plant.createOrUpdateDownPayment(downpayment);
+    // }
     /**
      * Predicts fuel prices for {@link futureTimePoint} using a geometric trend
      * regression forecast. Only predicts fuels that are traded on a commodity
