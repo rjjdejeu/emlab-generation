@@ -18,6 +18,7 @@ package emlab.gen.role.tender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import agentspring.role.AbstractRole;
 import agentspring.role.Role;
@@ -29,7 +30,6 @@ import emlab.gen.domain.agent.Regulator;
 import emlab.gen.domain.contract.CashFlow;
 import emlab.gen.domain.contract.Loan;
 import emlab.gen.domain.gis.Zone;
-import emlab.gen.domain.market.Bid;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
 import emlab.gen.domain.technology.PowerPlant;
@@ -40,7 +40,7 @@ import emlab.gen.repository.Reps;
  *
  */
 @RoleComponent
-public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regulator> implements Role<Regulator> {
+public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regulator>implements Role<Regulator> {
 
     @Transient
     @Autowired
@@ -51,6 +51,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
     Neo4jTemplate template;
 
     @Override
+    @Transactional
     public void act(Regulator regulator) {
 
         logger.warn("Create Power Plants Of Accepted Tender Bids Role started for: " + regulator);
@@ -67,13 +68,16 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
 
             logger.warn("current accepted bid: " + currentTenderBid);
 
-            PowerPlant plant = currentTenderBid.getPowerPlant();
-            // PowerPlant plant = new PowerPlant();
+            // PowerPlant plant = currentTenderBid.getPowerPlant();
+            PowerPlant plant = new PowerPlant();
             // plant.setRenewableTenderDummyPowerPlant(false);
-
+            currentTenderBid.setPowerPlant(plant);
             EnergyProducer bidder = (EnergyProducer) currentTenderBid.getBidder();
             // check if all information exists
-            plant.specifyAndPersist(currentTenderBid.getStart(), bidder, currentTenderBid.getPowerGridNode(),
+            // plant.specifyAndPersist(currentTenderBid.getStart(), bidder,
+            // currentTenderBid.getPowerGridNode(),
+            // currentTenderBid.getTechnology());
+            plant.specifyAndPersist(getCurrentTick(), bidder, currentTenderBid.getPowerGridNode(),
                     currentTenderBid.getTechnology());
             PowerPlantManufacturer manufacturer = reps.genericRepository.findFirst(PowerPlantManufacturer.class);
             BigBank bigbank = reps.genericRepository.findFirst(BigBank.class);
@@ -84,11 +88,11 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
             double downPayment = investmentCostPayedByEquity;
             createSpreadOutDownPayments(bidder, manufacturer, downPayment, plant);
 
-            double amount = determineLoanAnnuities(investmentCostPayedByDebt, plant.getTechnology()
-                    .getDepreciationTime(), bidder.getLoanInterestRate());
+            double amount = determineLoanAnnuities(investmentCostPayedByDebt,
+                    plant.getTechnology().getDepreciationTime(), bidder.getLoanInterestRate());
             // logger.warn("Loan amount is: " + amount);
-            Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount, plant
-                    .getTechnology().getDepreciationTime(), getCurrentTick(), plant);
+            Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount,
+                    plant.getTechnology().getDepreciationTime(), getCurrentTick(), plant);
             // Create the loan
             plant.createOrUpdateLoan(loan);
 
@@ -97,15 +101,20 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
                     + currentTenderBid.getZone());
         }
         // Remove the non accepted bid power plants
-        Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
-        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
-        for (TenderBid currentBid : sortedTenderBidsbyPriceAndZone) {
-            if (currentBid.getStatus() == Bid.FAILED) {
-                currentBid.getPowerPlant().dismantlePowerPlant(getCurrentTick());
 
-            }
-
-        }
+        /*
+         * Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
+         * sortedTenderBidsbyPriceAndZone =
+         * reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick
+         * (), zone); for (TenderBid currentBid :
+         * sortedTenderBidsbyPriceAndZone) { if (currentBid.getStatus() ==
+         * Bid.FAILED) {
+         * currentBid.getPowerPlant().dismantlePowerPlant(getCurrentTick());
+         * 
+         * }
+         * 
+         * }
+         */
         // Remove the dummy power plant
         // for (PowerPlant plant : reps.powerPlantRepository.findAll()) {
         // if (plant.isRenewableTenderDummyPowerPlant() == true) {

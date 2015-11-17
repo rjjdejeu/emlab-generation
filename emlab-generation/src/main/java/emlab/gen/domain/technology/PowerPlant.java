@@ -448,20 +448,20 @@ public class PowerPlant {
      * @param timeOfPermitorBuildingStart
      */
     public void calculateAndSetActualInvestedCapital(long timeOfPermitorBuildingStart) {
-        setActualInvestedCapital(this.getTechnology().getInvestmentCost(
-                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+        setActualInvestedCapital(this.getTechnology()
+                .getInvestmentCost(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualFixedOperatingCosts(long timeOfPermitorBuildingStart) {
-        setActualFixedOperatingCost(this.getTechnology().getFixedOperatingCost(
-                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
+        setActualFixedOperatingCost(this.getTechnology()
+                .getFixedOperatingCost(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime())
                 * getActualNominalCapacity());
     }
 
     public void calculateAndSetActualEfficiency(long timeOfPermitorBuildingStart) {
-        this.setActualEfficiency(this.getTechnology().getEfficiency(
-                timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime()));
+        this.setActualEfficiency(this.getTechnology()
+                .getEfficiency(timeOfPermitorBuildingStart + getActualLeadTime() + getActualPermittime()));
     }
 
     public double calculateEmissionIntensity() {
@@ -517,8 +517,9 @@ public class PowerPlant {
     @Transactional
     public void specifyAndPersist(long time, EnergyProducer energyProducer, PowerGridNode location,
             PowerGeneratingTechnology technology) {
-        specifyNotPersist(time, energyProducer, location, technology);
         this.persist();
+        specifyNotPersist(time, energyProducer, location, technology);
+
     }
 
     public void specifyNotPersist(long time, EnergyProducer energyProducer, PowerGridNode location,
@@ -537,8 +538,8 @@ public class PowerPlant {
         this.setDismantleTime(1000);
         this.calculateAndSetActualInvestedCapital(time);
         this.calculateAndSetActualFixedOperatingCosts(time);
-        this.setExpectedEndOfLife(time + getActualPermittime() + getActualLeadTime()
-                + getTechnology().getExpectedLifetime());
+        this.setExpectedEndOfLife(
+                time + getActualPermittime() + getActualLeadTime() + getTechnology().getExpectedLifetime());
     }
 
     @Transactional
