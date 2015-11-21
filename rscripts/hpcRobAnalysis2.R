@@ -3,7 +3,7 @@ source("rConfig.R")
 source("batchRunAnalysis.R")
 
 #File and folder initiation
-nameFile <- "SuperTechSpec"
+nameFile <- "AfterTest"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -52,21 +52,26 @@ library(grid)
 library(ggplot2)
 library(reshape2)
 
-# System costs
 meanConsumerCostsA=0
 meanProducerCostsA=0
 meanGovernmentCostsA=0
+meanProducerProfitsA=0
 meanConsumerCostsB=0
 meanProducerCostsB=0
 meanGovernmentCostsB=0
+meanAggProfit=0
+
 
 for(j in 0:39) {
+  meanAggProfit[j] <- mean(subset(bigDF$CountryAProdFinances_Profit + bigDF$CountryBProdFinances_Profit, tick == j))
   meanConsumerCostsA[j] <- mean(subset(bigDF$ConsumerExpenditure_Country_A_electricity_spot_market, tick == j))
   meanProducerCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Fixed_O_M + 
                                          bigDF$CountryAProdCosts_Loan + 
                                          bigDF$CountryAProdCosts_Commodity + 
                                          bigDF$CountryAProdCosts_Downpayment, tick == j))
   meanGovernmentCostsA[j] <- mean(subset(bigDF$CountryAProdFinances_Tender_Subsidy, tick == j))
+  meanProducerProfitsA[j] <- mean(subset(bigDF$CountryAProdFinances_Profit, tick == j))
+  
   meanConsumerCostsB[j] <- mean(subset(bigDF$ConsumerExpenditure_Country_B_electricity_spot_market, tick == j))
   meanProducerCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Fixed_O_M + 
                                          bigDF$CountryBProdCosts_Loan + 
@@ -81,54 +86,218 @@ meanGovernmentCostsA
 meanConsumerCostsB
 meanProducerCostsB
 meanGovernmentCostsB
+meanAggProfit
 
-meanSystemCostsA <- meanConsumerCostsA + meanProducerCostsA + meanGovernmentCostsA
-meanSystemCostsB <- meanConsumerCostsB + meanProducerCostsB + meanGovernmentCostsB
-meanSystemCostsOverall <- meanSystemCostsA + meanSystemCostsB
+bigDF$TotalCostsA <- bigDF$CountryAProdCosts_Commodity + bigDF$CountryAProdCosts_Loan + bigDF$CountryAProdCosts_Downpayment + bigDF$CountryAProdCosts_Fixed_O_M
+bigDF$TotalCostsB <- bigDF$CountryBProdCosts_Commodity + bigDF$CountryBProdCosts_Loan + bigDF$CountryBProdCosts_Downpayment + bigDF$CountryBProdCosts_Fixed_O_M
 
-fracMeanConsumerCostsA <- meanConsumerCostsA*100 / (meanSystemCostsA) 
-fracMeanProducerCostsA <- meanProducerCostsA*100 / (meanSystemCostsA) 
-fracMeanGovernmentCostsA <- meanGovernmentCostsA*100/ (meanSystemCostsA) 
+(bigDF$TotalCostsA / bigDF$CountryAProdFinances_Profit)
+(bigDF$TotalCostsB / bigDF$CountryBProdFinances_Profit)
 
-fracMeanConsumerCostsB <- meanConsumerCostsB*100 / (meanSystemCostsB) 
-fracMeanProducerCostsB <- meanProducerCostsB*100 / (meanSystemCostsB) 
-fracMeanGovernmentCostsB <- meanGovernmentCostsB*100/ (meanSystemCostsB) 
+mean(bigDF$TotalCostsA / bigDF$CountryAProdFinances_Total_Revenue)
+mean(bigDF$TotalCostsB / bigDF$CountryBProdFinances_Total_Revenue)
 
-DataTable <- c(fracMeanConsumerCostsA)
-DataTable <- rbind(DataTable, c(fracMeanProducerCostsA))
-DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsA))
-colnames(DataTable) <- c("Mean fraction")
-rownames(DataTable) <- c(" Consumer Costs A"," Producer Costs A",
-                         " Government Costs A")
-write.csv(DataTable, "DataTableSystemCostsA.csv")
-systemCostsDataA <- melt(DataTable)
+profitsAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdFinances_Profit)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits \n Country A") #give the plot a title
+plot(profitsAplot)
 
-ggplot(systemCostsDataA, aes(X2, value, fill = X1)) + 
-  guides(fill=guide_legend(title=NULL)) +
-  # scale_fill_manual(values=c("green", "red", "blue")) +
-  geom_bar(stat = "identity") + 
-  xlab("Year") + 
-  ylab("Fraction") +
-ggtitle("System costs breakdown country A")
-ggsave(filename = paste(filePrefix, "breakdownSystemCostsAplot.png", sep=""))
+revenuesAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdFinances_Total_Revenue)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Revenues \n Country A") #give the plot a title
+plot(revenuesAplot)
 
-DataTable <- c(fracMeanConsumerCostsB)
-DataTable <- rbind(DataTable, c(fracMeanProducerCostsB))
-DataTable <- rbind(DataTable, c(fracMeanGovernmentCostsB))
-colnames(DataTable) <- c("Mean fraction")
-rownames(DataTable) <- c(" Consumer Costs B"," Producer Costs B",
-                         " Government Costs B")
-write.csv(DataTable, "DataTableSystemCostsB.csv")
-systemCostsDataB <- melt(DataTable)
+totalAcosts = ggplot(data=bigDF, aes(x=tick, y=TotalCostsA)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Total costs \n Country A") #give the plot a title
+plot(totalAcosts)
 
-ggplot(systemCostsDataB, aes(X2, value, fill = X1)) + 
-  guides(fill=guide_legend(title=NULL)) +
-  # scale_fill_manual(values=c("green", "red", "blue")) +
-  geom_bar(stat = "identity") + 
-  xlab("Year") + 
-  ylab("Fraction") +
-  ggtitle("System costs breakdown country B")
-ggsave(filename = paste(filePrefix, "breakdownSystemCostsBplot.png", sep=""))
+profitsBplot = ggplot(data=bigDF, aes(x=tick, y=CountryBProdFinances_Profit)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Profits \n Country B") #give the plot a title
+plot(profitsBplot)
+
+revenuesBplot = ggplot(data=bigDF, aes(x=tick, y=CountryBProdFinances_Total_Revenue)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Revenues \n Country B") #give the plot a title
+plot(revenuesBplot)
+
+totalBcosts = ggplot(data=bigDF, aes(x=tick, y=TotalCostsB)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Total costs \n Country B") #give the plot a title
+plot(totalBcosts)
+
+
+cashProdAAplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_A)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod A \n Country A") #give the plot a title
+plot(cashProdAAplot)
+
+cashProdBaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_B)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod B \n Country A") #give the plot a title
+plot(cashProdBaplot)
+
+cashProdCaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_C)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod C \n Country A") #give the plot a title
+plot(cashProdCaplot)
+
+cashProdDaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_D)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod D \n Country A") #give the plot a title
+plot(cashProdDaplot)
+
+commodityCostsAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdCosts_Commodity)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Commodity costs \n Country A") #give the plot a title
+plot(commodityCostsAplot)
+
+loanCostsAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdCosts_Loan)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Loan Costs \n Country A") #give the plot a title
+plot(loanCostsAplot)
+
+downpaymentCostsAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdCosts_Downpayment)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Downpayment Costs \n Country A") #give the plot a title
+plot(downpaymentCostsAplot)
+
+fixedOMAcosts = ggplot(data=bigDF, aes(x=tick, y=CountryAProdCosts_Fixed_O_M)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Fixed OM costs \n Country A") #give the plot a title
+plot(fixedOMAcosts)
+
+cashProdBAplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_E)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod A \n Country B") #give the plot a title
+plot(cashProdBAplot)
+
+cashProdBaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_F)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod B \n Country B") #give the plot a title
+plot(cashProdBaplot)
+
+cashProdCaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_G)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod C \n Country B") #give the plot a title
+plot(cashProdCaplot)
+
+cashProdDaplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_H)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Cash Prod D \n Country B") #give the plot a title
+plot(cashProdDaplot)
+
+commodityCostsBplot = ggplot(data=bigDF, aes(x=tick, y=CountryBProdCosts_Commodity)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Commodity costs \n Country B") #give the plot a title
+plot(commodityCostsBplot)
+
+loanCostsBplot = ggplot(data=bigDF, aes(x=tick, y=CountryBProdCosts_Loan)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Loan Costs \n Country B") #give the plot a title
+plot(loanCostsBplot)
+
+downpaymentCostsBplot = ggplot(data=bigDF, aes(x=tick, y=CountryBProdCosts_Downpayment)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Downpayment Costs \n Country B") #give the plot a title
+plot(downpaymentCostsBplot)
+
+fixedOMBcosts = ggplot(data=bigDF, aes(x=tick, y=CountryBProdCosts_Fixed_O_M)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur") + 
+  ggtitle("Fixed OM costs \n Country B") #give the plot a title
+plot(fixedOMBcosts)
+
+# bigDF$CountryAProdCosts_Unclassified
+# bigDF$CountryAProdCosts_Electricity_ltc
+# bigDF$CountryAProdCosts_CO2_auction
+# bigDF$CountryAProdCosts_Capacity_Market
+# bigDF$CountryAProdCosts_Strategic_Reserve
+# bigDF$CountryAProdCosts_CO2_Hedging
+# bigDF$CountryAProdCosts_Electricity_spot
+# bigDF$CountryAProdCosts_CO2_tax
+# bigDF$CountryAProdCosts_National_CO2_MinPrice
+
+
+# ggsave(filename = paste(filePrefix, "realizedTargetAplot.png", sep=""),scale=1)
+
+
+s1 <- meanConsumerCostsA[39]
+s2 <- meanConsumerCostsA[1]
+changeMeanConsumerCostsA <- s1 - s2
+pcChangeMeanConsumerCostsA <- changeMeanConsumerCostsA *100/s1
+
+s1 <- meanProducerCostsA[39]
+s2 <- meanProducerCostsA[1]
+changeMeanProducerCostsA <- s1 - s2
+pcChangeMeanProducerCostsA <- changeMeanProducerCostsA *100/s1
+
+s1 <- meanConsumerCostsB[39]
+s2 <- meanConsumerCostsB[1]
+changeMeanConsumerCostsB <- s1 - s2
+pcChangeMeanConsumerCostsB <- changeMeanConsumerCostsB *100/s1
+
+s1 <- meanProducerCostsB[39]
+s2 <- meanProducerCostsB[1]
+changeMeanProducerCostsB <- s1 - s2
+pcChangeMeanProducerCostsB <- changeMeanProducerCostsB *100/s1
+meanGovernmentCostsInBillionsA <- sum(meanGovernmentCostsA)/1000000000
+meanGovernmentCostsInBillionsB <- sum(meanGovernmentCostsB)/1000000000
+
+DataTable <- c(pcChangeMeanConsumerCostsA)
+DataTable <- rbind(DataTable, c(pcChangeMeanProducerCostsA))
+DataTable <- rbind(DataTable, c(pcChangeMeanConsumerCostsB))
+DataTable <- rbind(DataTable, c(pcChangeMeanProducerCostsB))
+DataTable <- rbind(DataTable, c(meanGovernmentCostsInBillionsA))
+DataTable <- rbind(DataTable, c(meanGovernmentCostsInBillionsB))
+colnames(DataTable) <- c("Value")
+rownames(DataTable) <- c("Consumer welfare A d%","Producer costs A d%", "Consumer welfare B d%","Producer costs B d%", "Subsidy in Billions Cum A","Subsidy in Billions Cum B")
+write.csv(DataTable, "DataTableWelfareCostsSubsidies.csv")
+
 
 # Generation shares per technology
 meanSharePVA=0
@@ -156,27 +325,27 @@ meanShareNuclearB=0
 
 for(j in 0:39) {
   meanSharePVA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Photovoltaic / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareWindA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Wind / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareWindOffshoreA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareBiomassA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biomass / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareBiogasA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biogas / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareCoalA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareIGCCA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_IGCC / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareLigniteA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Lignite / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareOCGTA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_OCGT / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareCCGTA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_CCGT / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanShareNuclearA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Nuclear / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
-   meanSharePVB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Photovoltaic / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareWindB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Wind / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareWindOffshoreB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareBiomassB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biomass / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareBiogasB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biogas / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareIGCCB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_IGCC / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareCoalB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareLigniteB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Lignite / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareOCGTB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_OCGT / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareCCGTB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_CCGT / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
-   meanShareNuclearB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Nuclear / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareWindA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Wind / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareWindOffshoreA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareBiomassA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biomass / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareBiogasA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biogas / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareCoalA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareIGCCA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_IGCC / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareLigniteA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Lignite / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareOCGTA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_OCGT / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareCCGTA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_CCGT / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanShareNuclearA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Nuclear / bigDF$NationalTotalProductioninMWh_Country_A, tick == j))
+  meanSharePVB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Photovoltaic / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareWindB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Wind / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareWindOffshoreB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_WindOffshore / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareBiomassB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biomass / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareBiogasB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biogas / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareIGCCB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_IGCC / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareCoalB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_CoalPSC / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareLigniteB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Lignite / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareOCGTB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_OCGT / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareCCGTB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_CCGT / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
+  meanShareNuclearB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Nuclear / bigDF$NationalTotalProductioninMWh_Country_B, tick == j))
 }
 
 meanSharePVA
@@ -382,15 +551,13 @@ meanRealizedTargetB=0
 for(j in 0:39) {
   meanRealizedTargetA[j] <- mean(subset( 
     ((bigDF$GenerationinMWhCountryA_Photovoltaic + bigDF$GenerationinMWhCountryA_Wind + bigDF$GenerationinMWhCountryA_Biomass + 
-      bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore) / bigDF$Total_DemandinMWh_Country_A) 
+        bigDF$GenerationinMWhCountryA_HydroPower + bigDF$GenerationinMWhCountryA_Biogas + bigDF$GenerationinMWhCountryA_WindOffshore) / bigDF$Total_DemandinMWh_Country_A) 
     , tick == j))
-   meanRealizedTargetB[j] <- mean(subset( 
+  meanRealizedTargetB[j] <- mean(subset( 
     ((bigDF$GenerationinMWhCountryB_Photovoltaic + bigDF$GenerationinMWhCountryB_Wind + bigDF$GenerationinMWhCountryB_Biomass + 
         bigDF$GenerationinMWhCountryB_HydroPower + bigDF$GenerationinMWhCountryB_Biogas + bigDF$GenerationinMWhCountryB_WindOffshore) / bigDF$Total_DemandinMWh_Country_B) 
     , tick == j))
 }
-plot(meanRealizedTargetA)
-
 
 realizedTargetAplot = ggplot(data=tickDF, aes(x=X0, y=meanRealizedTargetA*100)) + 
   geom_point() +
@@ -570,6 +737,8 @@ pSA_1 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 1 - Country A") #give the plot a title
 plot(pSA_1)
+ggsave(filename = paste(filePrefix, "PriceSegmentA1.png", sep=""))
+
 
 pSA_2 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -578,6 +747,8 @@ pSA_2 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 2 - Country A") #give the plot a title
 plot(pSA_2)
+ggsave(filename = paste(filePrefix, "PriceSegmentA2.png", sep=""))
+
 
 pSA_3 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -586,6 +757,8 @@ pSA_3 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 3 - Country A") #give the plot a title
 plot(pSA_3)
+ggsave(filename = paste(filePrefix, "PriceSegmentA3.png", sep=""))
+
 
 pSA_4 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -594,6 +767,8 @@ pSA_4 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 4 - Country A") #give the plot a title
 plot(pSA_4)
+ggsave(filename = paste(filePrefix, "PriceSegmentA4.png", sep=""))
+
 
 pSB_1 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -602,6 +777,8 @@ pSB_1 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 1 - Country B") #give the plot a title
 plot(pSB_1)
+ggsave(filename = paste(filePrefix, "PriceSegmentB1.png", sep=""))
+
 
 pSB_2 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -610,6 +787,8 @@ pSB_2 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 2 - Country B") #give the plot a title
 plot(pSB_2)
+ggsave(filename = paste(filePrefix, "PriceSegmentB2.png", sep=""))
+
 
 pSB_3 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -618,6 +797,8 @@ pSB_3 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 3 - Country B") #give the plot a title
 plot(pSB_3)
+ggsave(filename = paste(filePrefix, "PriceSegmentB3.png", sep=""))
+
 
 pSB_4 = 
   ggplot(data=bigDF, aes(x=tick)) + 
@@ -626,162 +807,7 @@ pSB_4 =
   ylab("Price (EUR/MWh)") + 
   ggtitle("Segment 4 - Country B") #give the plot a title
 plot(pSB_4)
-
-noInitialShortagesPlot <-multiplot(pSA_1,pSA_2,pSA_3,pSA_4, pSB_1,pSB_2,pSB_3,pSB_4, cols=4)
-plot(noInitialShortagesPlot)
-ggsave(filename = paste(filePrefix, "noInitialShortages.png", sep=""))
-
-
-
-# Overall welfare
-meanConsumerWelfare=0
-meanProducerWelfare=0
-meanWelfareLossENS=0
-
-for(j in 0:39) {
-  meanConsumerWelfare[j] <- mean(subset(bigDF$ConsumerExpenditure_Country_A_electricity_spot_market + bigDF$ConsumerExpenditure_Country_B_electricity_spot_market, tick == j))
-  meanProducerWelfare[j] <- mean(subset(bigDF$AggregateFinances_Profit, tick == j))
-  meanWelfareLossENS[j] <- mean(subset(bigDF$WelfareLossThroughENS_Country_A + bigDF$WelfareLossThroughENS_Country_B, tick == j))
-}
-
-meanConsumerWelfare
-meanProducerWelfare
-meanWelfareLossENS
-
-meanOverallWelfare <- meanConsumerWelfare + meanProducerWelfare + meanWelfareLossENS
-sd(meanOverallWelfare )
-meanOverallWelfareplot = ggplot(data=tickDF, aes(x=X0, y=meanOverallWelfare)) + 
-  geom_line() +
-  xlab("Year") +  
-  ylab("Eur") + 
-  ggtitle("Mean overall welfare") #give the plot a title
-plot(meanOverallWelfareplot)
-ggsave(filename = paste(filePrefix, "meanOverallWelfareplot.png", sep=""),scale=1)
-
-meanConsumerWelfareStart <- mean(subset(bigDF$ConsumerExpenditure_Country_A_electricity_spot_market + bigDF$ConsumerExpenditure_Country_B_electricity_spot_market, tick == 0))
-meanProducerWelfareStart <- mean(subset(bigDF$AggregateFinances_Profit, tick == 0))
-meanWelfareLossENSStart <- mean(subset(bigDF$WelfareLossThroughENS_Country_A + bigDF$WelfareLossThroughENS_Country_B, tick == 0))
-
-meanConsumerWelfareEnd <- mean(subset(bigDF$ConsumerExpenditure_Country_A_electricity_spot_market + bigDF$ConsumerExpenditure_Country_B_electricity_spot_market, tick == 39))
-meanProducerWelfareEnd <- mean(subset(bigDF$AggregateFinances_Profit, tick == 39))
-meanWelfareLossENSEnd <- mean(subset(bigDF$WelfareLossThroughENS_Country_A + bigDF$WelfareLossThroughENS_Country_B, tick == 39))
-
-meanStartOverallWelfare <- meanConsumerWelfareStart + meanProducerWelfareStart + meanWelfareLossENSStart
-meanEndOverallWelfare <- meanConsumerWelfareEnd + meanProducerWelfareEnd + meanWelfareLossENSEnd
-
-meanChangeOverallWelfare <- meanEndOverallWelfare - meanStartOverallWelfare
-meanChangeOverallWelfare
-
-write.table(meanChangeOverallWelfare , file = "meanChangeOverallWelfare.csv",row.names=FALSE, na="",col.names=FALSE, sep=",")
-
-## Producer welfare changes / Income distrubition changes
-
-meanProfitA=0 
-meanProfitB=0
-meanProfitC=0 
-meanProfitD=0 
-meanProfitE=0
-meanProfitF=0
-meanProfitG=0
-meanProfitH=0
-meanProfitI=0
-
-for(j in 0:39) {
-  meanProfitA[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdA, tick == j))
-  meanProfitB[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdB, tick == j))
-  meanProfitC[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdC, tick == j))
-  meanProfitD[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdD, tick == j))
-  meanProfitE[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdE, tick == j))
-  meanProfitF[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdF, tick == j))
-  meanProfitG[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdG, tick == j))
-  meanProfitH[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdH, tick == j))
-  meanProfitI[j] <- mean(subset(bigDF$ProfitProducersYearlyIncludingTenderSubsidy_ProfitProdI, tick == j))
-}
-
-meanProfitA
-meanProfitB
-meanProfitC
-meanProfitD 
-meanProfitE
-meanProfitF
-meanProfitG
-meanProfitH
-meanProfitI
-
-DataTable <- c(meanProfitA)
-DataTable <- rbind(DataTable, c(meanProfitB))
-DataTable <- rbind(DataTable, c(meanProfitC))
-DataTable <- rbind(DataTable, c(meanProfitD))
-DataTable <- rbind(DataTable, c(meanProfitE))
-DataTable <- rbind(DataTable, c(meanProfitF))
-DataTable <- rbind(DataTable, c(meanProfitG))
-DataTable <- rbind(DataTable, c(meanProfitH))
-DataTable <- rbind(DataTable, c(meanProfitI))
-colnames(DataTable) <- c(nameFile)
-rownames(DataTable) <- c("A","B","C","D","E","F","G","H","I")
-write.csv(DataTable, "DataTableIncomeDistribution.csv")
-meanIncomeDistribution <- melt(DataTable)
-
-ggplot(meanIncomeDistribution, aes(X2, value, fill = X1)) + 
-  guides(fill=guide_legend(title=NULL)) +
-  scale_fill_manual(values=producerPalette) +
-  geom_area(stat = "identity") + 
-  xlab("Year") + 
-  ylab("Eur") +
-  ggtitle("Income distribution")
-ggsave(filename = paste(filePrefix, "incomeDistributionplot.png", sep=""))
-
-
-consumerExpenditureAplot = ggplot(data=moltenDFconsumerExpenditureA, aes(x=tick)) + 
-  geom_smooth(aes(y=value), colour="red", method = "loess") + 
-  xlab("Year") +  
-  ylab("Eur") + 
-  ggtitle("Consumer expenditure \n Country A") #give the plot a title
-plot(consumerExpenditureAplot)
-
-CapShareDataB <- melt(DataTable)
-
-
-
-
-
-#Consumer Welfare = Difference in consumer expenditure at the beginning and end of simulation
-moltenDFconsumerExpenditureA <- melt(bigDF, id.vars = "tick", "ConsumerExpenditure_Country_A_electricity_spot_market")
-moltenDFconsumerExpenditureB <- melt(bigDF, id.vars = "tick", "ConsumerExpenditure_Country_B_electricity_spot_market")
-
-s1 <- subset(moltenDFconsumerExpenditureA , tick==0)
-s2 <- subset(moltenDFconsumerExpenditureA , tick==39)
-changeConsumerExpenditureA <- (s2$value - s1$value)
-pcChangeConsumerExpenditureA <- changeConsumerExpenditureA*100/s1$value
-meanPcChangeConsumerExpenditureA <- mean(pcChangeConsumerExpenditureA)
-
-s1 <- subset(moltenDFconsumerExpenditureB , tick==0)
-s2 <- subset(moltenDFconsumerExpenditureB , tick==39)
-changeConsumerExpenditureB <- (s2$value - s1$value)
-pcChangeConsumerExpenditureB <- changeConsumerExpenditureB*100/s1$value
-meanPcChangeConsumerExpenditureB <- mean(pcChangeConsumerExpenditureB)
-
-DataTable <- c(meanPcChangeConsumerExpenditureA)
-DataTable <- rbind(DataTable, c(meanPcChangeConsumerExpenditureB))
-colnames(DataTable) <- c(nameFile)
-rownames(DataTable) <- c("Change Welfare Consumer Country A","Change Welfare Consumer Country B")
-write.csv(DataTable, "DataTableConsumerWelfareChange.csv")
-DataTable
-
-consumerExpenditureAplot = ggplot(data=moltenDFconsumerExpenditureA, aes(x=tick)) + 
-  geom_smooth(aes(y=value), colour="red", method = "loess") + 
-  xlab("Year") +  
-  ylab("Eur") + 
-  ggtitle("Consumer expenditure \n Country A") #give the plot a title
-plot(consumerExpenditureAplot)
-
-consumerExpenditureBplot = ggplot(data=moltenDFconsumerExpenditureB, aes(x=tick)) + 
-  geom_smooth(aes(y=value), colour="red", method = "loess") + 
-  xlab("Year") +  
-  ylab("Eur") + 
-  ggtitle("Consumer expenditure \n Country B") #give the plot a title
-plot(consumerExpenditureBplot)
-
+ggsave(filename = paste(filePrefix, "PriceSegmentB4.png", sep=""))
 
 
 #Market Value of RES-E (PV, Wind, WindOfshore)

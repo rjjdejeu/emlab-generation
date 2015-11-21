@@ -40,7 +40,7 @@ import emlab.gen.repository.Reps;
  *
  */
 @RoleComponent
-public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regulator>implements Role<Regulator> {
+public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regulator> implements Role<Regulator> {
 
     @Transient
     @Autowired
@@ -88,11 +88,11 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
             double downPayment = investmentCostPayedByEquity;
             createSpreadOutDownPayments(bidder, manufacturer, downPayment, plant);
 
-            double amount = determineLoanAnnuities(investmentCostPayedByDebt,
-                    plant.getTechnology().getDepreciationTime(), bidder.getLoanInterestRate());
+            double amount = determineLoanAnnuities(investmentCostPayedByDebt, plant.getTechnology()
+                    .getDepreciationTime(), bidder.getLoanInterestRate());
             // logger.warn("Loan amount is: " + amount);
-            Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount,
-                    plant.getTechnology().getDepreciationTime(), getCurrentTick(), plant);
+            Loan loan = reps.loanRepository.createLoan(currentTenderBid.getBidder(), bigbank, amount, plant
+                    .getTechnology().getDepreciationTime(), getCurrentTick(), plant);
             // Create the loan
             plant.createOrUpdateLoan(loan);
 
@@ -124,6 +124,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Regu
         // }
     }
 
+    @Transactional
     private void createSpreadOutDownPayments(EnergyProducer agent, PowerPlantManufacturer manufacturer,
             double totalDownPayment, PowerPlant plant) {
         int buildingTime = (int) plant.getActualLeadTime();

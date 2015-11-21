@@ -50,6 +50,9 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     SubmitTenderBidRole submitTenderBidRole;
 
     @Autowired
+    FilterTenderBidsWithSufficientCashForDownpaymentRole filterTenderBidsWithSufficientCashflowRole;
+
+    @Autowired
     ClearRenewableTenderRole clearRenewableTenderRole;
 
     @Autowired
@@ -73,6 +76,12 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
             for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
                 submitTenderBidRole.act(producer);
             }
+
+            for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
+                filterTenderBidsWithSufficientCashflowRole.act(producer);
+
+            }
+
         }
 
         clearRenewableTenderRole.act(regulator);

@@ -60,11 +60,11 @@
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
-<!-- 				<ref bean="photovoltaicPGT" /> -->
-<!-- 				<ref bean="windOffshorePGT" /> -->
+				<ref bean="photovoltaicPGT" />
+				<ref bean="windOffshorePGT" />
 				<ref bean="windPGT" />
-<!-- 				<ref bean="biomassPGT" /> -->
-<!-- 				<ref bean="biogasPGT" /> -->
+				<ref bean="biomassPGT" />
+				<ref bean="biogasPGT" />
 			</set>
 		</property>
 	</bean>
@@ -78,10 +78,10 @@
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
-<!-- 				<ref bean="windOffshorePGT" /> -->
-<!-- 				<ref bean="windPGT" /> -->
-<!-- 				<ref bean="biomassPGT" /> -->
-<!-- 				<ref bean="biogasPGT" /> -->
+				<ref bean="windOffshorePGT" />
+				<ref bean="windPGT" />
+				<ref bean="biomassPGT" />
+				<ref bean="biogasPGT" />
 			</set>
 		</property>
 	</bean>
@@ -957,24 +957,8 @@
 		p:auction="false" p:referencePrice="0" p:name="CO2 auction"
 		p:substance-ref="co2" />
 
-	<!-- Fuel Prices -->
-	<!-- <bean id="coalPrice" class="emlab.gen.trend.TimeSeriesCSVReader" p:filename="/data/stoichasticFuelPrices/fuelPrices-19.csv" 
-		p:delimiter="," p:variableName="Coal" /> -->
-	<!-- <bean id="gasPrice" class="emlab.gen.trend.TimeSeriesCSVReader" p:filename="/data/stoichasticFuelPrices/fuelPrices-19.csv" 
-		p:delimiter="," p:variableName="Gas" /> -->
-	<!-- <bean id="biomassPrice" class="emlab.gen.trend.TimeSeriesCSVReader" 
-		p:filename="/data/stoichasticFuelPrices/fuelPrices-19.csv" p:delimiter="," 
-		p:variableName="Biomass" /> -->
-	<!-- <bean id="uraniumPrice" class="emlab.gen.trend.TimeSeriesCSVReader" 
-		p:filename="/data/stoichasticFuelPrices/fuelPrices-19.csv" p:delimiter="," 
-		p:variableName="Uranium" /> -->
-	<!-- <bean id="lignitePrice" class="emlab.gen.trend.TimeSeriesCSVReader" 
-		p:filename="/data/stoichasticFuelPrices/fuelPrices-19.csv" p:delimiter="," 
-		p:variableName="Lignite" /> -->
-
 
 	<!-- Fuel Prices -->
-
 	<bean id="coalPrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/coalPrice.csv" p:startingYear="0"
 		p:delimiter="," p:variableName="coalPrice-1" />

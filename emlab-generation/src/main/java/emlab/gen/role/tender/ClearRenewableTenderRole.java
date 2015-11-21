@@ -56,7 +56,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         // Initialize a sorted list for tender bids
         Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
-        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSortedTenderBidsbyTime(getCurrentTick(), zone);
+        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSubmittedSortedTenderBidsbyTime(
+                getCurrentTick(), zone);
 
         double tenderQuota = regulator.getAnnualRenewableTargetInMwh();
         // logger.warn("TenderQuota; " + tenderQuota);
@@ -76,6 +77,8 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
         // Goes through the list of the bids that are sorted on ascending order
         // by price
         for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndZone) {
+
+            // logger.warn("current Tender bid; " + currentTenderBid);
 
             // if the tender is not cleared yet, it collects complete bids
             if (isTheTenderCleared == false) {
@@ -102,34 +105,37 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
                 // it collects a bid partially if that bid fulfills the quota
                 // partially
-                else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
-                    acceptedSubsidyPrice = currentTenderBid.getPrice();
-                    currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
-                    currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
-
-                    // logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
-                    // + (tenderQuota - sumOfTenderBidQuantityAccepted));
-                    //
-                    // logger.warn("PARTLYbidder; " +
-                    // currentTenderBid.getBidder());
-                    // logger.warn("PARTLYbidAmount; " +
-                    // currentTenderBid.getAmount());
-                    // logger.warn("PARTLYacceptedSubsidyPrice; " +
-                    // acceptedSubsidyPrice);
-                    // logger.warn("PARTLYTechnology; " +
-                    // currentTenderBid.getTechnology());
-                    // logger.warn("PARTLYStatus; " +
-                    // currentTenderBid.getStatus());
-
-                    sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
-                            + currentTenderBid.getAcceptedAmount();
-
-                    // logger.warn("PARTLYsumOfTenderBidQuantityAccepted; " +
-                    // sumOfTenderBidQuantityAccepted);
-
-                    isTheTenderCleared = true;
-
-                }
+                // else if (tenderQuota - (sumOfTenderBidQuantityAccepted +
+                // currentTenderBid.getAmount()) < clearingEpsilon) {
+                // acceptedSubsidyPrice = currentTenderBid.getPrice();
+                // currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
+                // currentTenderBid.setAcceptedAmount((tenderQuota -
+                // sumOfTenderBidQuantityAccepted));
+                //
+                // // logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
+                // // + (tenderQuota - sumOfTenderBidQuantityAccepted));
+                // //
+                // // logger.warn("PARTLYbidder; " +
+                // // currentTenderBid.getBidder());
+                // // logger.warn("PARTLYbidAmount; " +
+                // // currentTenderBid.getAmount());
+                // // logger.warn("PARTLYacceptedSubsidyPrice; " +
+                // // acceptedSubsidyPrice);
+                // // logger.warn("PARTLYTechnology; " +
+                // // currentTenderBid.getTechnology());
+                // // logger.warn("PARTLYStatus; " +
+                // // currentTenderBid.getStatus());
+                //
+                // sumOfTenderBidQuantityAccepted =
+                // sumOfTenderBidQuantityAccepted
+                // + currentTenderBid.getAcceptedAmount();
+                //
+                // // logger.warn("PARTLYsumOfTenderBidQuantityAccepted; " +
+                // // sumOfTenderBidQuantityAccepted);
+                //
+                // isTheTenderCleared = true;
+                //
+                // }
                 // the tenderQuota is reached and the bids after that are not
                 // accepted
 
@@ -150,7 +156,6 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         if (isTheTenderCleared == true) {
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
-            // logger.warn("Tender CLEARED at price: " + acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setRenewableSupportSchemeTender(scheme);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
@@ -161,8 +166,6 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         } else {
             TenderClearingPoint tenderClearingPoint = new TenderClearingPoint();
-            // logger.warn("MARKET UNCLEARED at price: " +
-            // acceptedSubsidyPrice);
             tenderClearingPoint.setPrice(acceptedSubsidyPrice);
             tenderClearingPoint.setVolume(sumOfTenderBidQuantityAccepted);
             tenderClearingPoint.setRenewableSupportSchemeTender(scheme);

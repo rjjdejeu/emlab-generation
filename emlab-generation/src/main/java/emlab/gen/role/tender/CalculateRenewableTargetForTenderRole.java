@@ -85,17 +85,17 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnologyAvailable = 0d;
 
-            logger.warn("For PGT - technology; " + technology);
+            // logger.warn("For PGT - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {
 
-                logger.warn("For PP - plant; " + plant);
+                // logger.warn("For PP - plant; " + plant);
 
                 expectedGenerationPerPlantAvailable = 0d;
                 noOfPlants++;
 
-                logger.warn("FOR pp - no of plants; " + noOfPlants);
+                // logger.warn("FOR pp - no of plants; " + noOfPlants);
 
                 for (Segment segment : reps.segmentRepository.findAll()) {
                     // logger.warn("For S - segment; " + segment);
@@ -110,18 +110,18 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             }
             totalExpectedGenerationAvailable += expectedGenerationPerTechnologyAvailable;
 
-            logger.warn("For PGT pipeline - technology; " + technology);
+            // logger.warn("For PGT pipeline - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository
                     .findExpectedOperationalPowerPlantsInMarketByTechnologyInPipeline(market, technology,
                             futureStartingTenderTimePoint)) {
 
-                logger.warn("For PP pipeline - plant; " + plant);
+                // logger.warn("For PP pipeline - plant; " + plant);
 
                 expectedGenerationPerPlantPipeline = 0d;
                 noOfPlants++;
 
-                logger.warn("FOR pp pipeline - no of plants; " + noOfPlants);
+                // logger.warn("FOR pp pipeline - no of plants; " + noOfPlants);
 
                 for (Segment segment : reps.segmentRepository.findAll()) {
                     // logger.warn("For S - segment; " + segment);
