@@ -79,6 +79,11 @@
 <!-- 	</bean> -->
 	
 	<!-- Regulators DE Technology Specific -->	
+	<bean id="regulatorDEphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorGermanyphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
+	</bean>
+	
 		<bean id="regulatorDEwindOffshorePGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorGermanywindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="de" />
