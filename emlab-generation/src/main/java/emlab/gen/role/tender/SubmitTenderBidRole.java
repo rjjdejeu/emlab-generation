@@ -58,13 +58,12 @@ import emlab.gen.util.GeometricTrendRegression;
 import emlab.gen.util.MapValueComparator;
 
 /**
- * @author kaveri
+ * @author kaveri, rjjdejeu
  *
  */
 
 @RoleComponent
 public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProducer> implements Role<EnergyProducer> {
-
     @Transient
     @Autowired
     Reps reps;
@@ -130,7 +129,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
 
-            // logger.warn("eligible are: " + technology);
+            logger.warn("eligible are: " + technology);
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
@@ -178,11 +177,13 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 // " looking at technology at tick " + getCurrentTick()
                 // + " in tech " + technology);
 
-                // logger.warn(" agent is " + agent + " with technology " +
+                // logger.warn(" agent is " + agent +
+                // " with technology " +
                 // technology + " and plant " + plant
                 // + " in node " + node);
 
-                // if too much capacity of this technology in the pipeline
+                // if too much capacity of this technology in the
+                // pipeline
                 // (not
                 // limited to the 5 years)
                 double expectedInstalledCapacityOfTechnology = reps.powerPlantRepository
@@ -208,7 +209,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     pgtNodeLimit = pgtLimit.getUpperCapacityLimit(futureTimePoint);
                 }
 
-                // Calculate bid quantity. Number of plants to be bid - as
+                // Calculate bid quantity. Number of plants to be bid -
+                // as
                 // many
                 // as
                 // the node permits
@@ -224,18 +226,21 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 double cashNeededForPlantDownpayments = numberOfPlants * plant.getActualInvestedCapital()
                         * (1 - agent.getDebtRatioOfInvestments());
 
-                // if cash strapped, bid quantity according to fraction of
+                // if cash strapped, bid quantity according to fraction
+                // of
                 // cash,
                 // which is translated to the number of plants
                 // available.
 
                 // If cash needed is larger than current cash of agent
 
-                // logger.warn("Cash needed for plants; " + numberOfPlants *
+                // logger.warn("Cash needed for plants; " +
+                // numberOfPlants *
                 // plant.getActualInvestedCapital()
                 // * (1 - agent.getDebtRatioOfInvestments()));
                 // logger.warn("Cash available for plants; " +
-                // agent.getDownpaymentFractionOfCash() * agent.getCash());
+                // agent.getDownpaymentFractionOfCash() *
+                // agent.getCash());
 
                 if (cashNeededForPlantDownpayments > cashAvailableForPlantDownpayments) {
 
@@ -274,8 +279,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                 long numberOfSegments = reps.segmentRepository.count();
                 double totalAnnualExpectedGenerationOfPlant = 0d;
 
-                long tenderSchemeDuration = reps.renewableSupportSchemeTenderRepository
-                        .determineSupportSchemeDurationForEnergyProducer(agent);
+                long tenderSchemeDuration = scheme.getSupportSchemeDuration();
+
+                // logger.warn("support scheme duration " +
+                // tenderSchemeDuration);
 
                 // should be
                 // modified when
@@ -325,8 +332,10 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                     }
                 }
 
-                // logger.warn("expectedGrossProfit; " + expectedGrossProfit);
-                // logger.warn("totalAnnualExpectedGenerationOfPlant; " +
+                // logger.warn("expectedGrossProfit; " +
+                // expectedGrossProfit);
+                // logger.warn("totalAnnualExpectedGenerationOfPlant; "
+                // +
                 // totalAnnualExpectedGenerationOfPlant);
 
                 double fixedOMCost = calculateFixedOperatingCost(plant, getCurrentTick());
@@ -364,7 +373,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                 // logger.warn("discountedCapitalCosts; " +
                 // discountedCapitalCosts);
-                // logger.warn("discountedOpProfit; " + discountedOpProfit);
+                // logger.warn("discountedOpProfit; " +
+                // discountedOpProfit);
                 // logger.warn("projectValue; " + projectValue);
 
                 double bidPricePerMWh = 0d;
@@ -396,7 +406,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                         for (long i = 1; i <= numberOfPlants; i++) {
 
                             noOfPlantsBid++;
-                            // logger.warn("FOR pp - no of plants Bid; " +
+                            // logger.warn("FOR pp - no of plants Bid; "
+                            // +
                             // noOfPlantsBid);
 
                             long start = getCurrentTick() + plant.calculateActualLeadtime()
@@ -424,7 +435,8 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
                     } // end else calculate generation in MWh per year
 
-                } // end else calculate discounted tender return factor term
+                } // end else calculate discounted tender return factor
+                  // term
                 plant.setDismantleTime(getCurrentTick());
 
             } // end for loop possible installation nodes

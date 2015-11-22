@@ -33,6 +33,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
+        logger.warn("scheme is " + scheme);
+
         long futureStartingTenderTimePoint = getCurrentTick() + scheme.getFutureTenderOperationStartTime();
         double demandFactor;
         double targetFactor;
@@ -51,7 +53,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
         targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(futureStartingTenderTimePoint);
-        // logger.warn("targetFactor; " + targetFactor);
+        logger.warn("targetFactor; " + targetFactor);
 
         // get totalLoad in MWh
         double totalExpectedConsumption = 0d;
@@ -85,7 +87,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnologyAvailable = 0d;
 
-            // logger.warn("For PGT - technology; " + technology);
+            logger.warn("For PGT - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {

@@ -3,7 +3,7 @@ source("rConfig.R")
 source("batchRunAnalysis.R")
 
 #File and folder initiation
-nameFile <- "AfterTest"
+nameFile <- "BaseCase"
 analysisFolder <- "~/Desktop/emlabGen/output/"
 analysisFolder <- paste(analysisFolder, nameFile, "/", sep="")
 analysisFolder
@@ -88,14 +88,17 @@ meanProducerCostsB
 meanGovernmentCostsB
 meanAggProfit
 
+sum(bigDF$CountryAProdFinances_Profit)
+sum(bigDF$CountryBProdFinances_Profit)
+
 bigDF$TotalCostsA <- bigDF$CountryAProdCosts_Commodity + bigDF$CountryAProdCosts_Loan + bigDF$CountryAProdCosts_Downpayment + bigDF$CountryAProdCosts_Fixed_O_M
 bigDF$TotalCostsB <- bigDF$CountryBProdCosts_Commodity + bigDF$CountryBProdCosts_Loan + bigDF$CountryBProdCosts_Downpayment + bigDF$CountryBProdCosts_Fixed_O_M
 
 (bigDF$TotalCostsA / bigDF$CountryAProdFinances_Profit)
 (bigDF$TotalCostsB / bigDF$CountryBProdFinances_Profit)
 
-mean(bigDF$TotalCostsA / bigDF$CountryAProdFinances_Total_Revenue)
-mean(bigDF$TotalCostsB / bigDF$CountryBProdFinances_Total_Revenue)
+(sum(bigDF$TotalCostsA) / sum(bigDF$CountryAProdFinances_Total_Revenue))
+(sum(bigDF$TotalCostsB) / sum(bigDF$CountryBProdFinances_Total_Revenue))
 
 profitsAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdFinances_Profit)) + 
   geom_point() +
@@ -110,6 +113,8 @@ revenuesAplot = ggplot(data=bigDF, aes(x=tick, y=CountryAProdFinances_Total_Reve
   ylab("Eur") + 
   ggtitle("Revenues \n Country A") #give the plot a title
 plot(revenuesAplot)
+
+# plotTimeSeriesWithConfidenceIntervalByFacettedGroup <- function(bigDF, CountryAProdFinances_Total_Revenue, Revenue, fun.data="median_hilow", conf.int=0.5, conf.int2=0.90, nrow=NULL)
 
 totalAcosts = ggplot(data=bigDF, aes(x=tick, y=TotalCostsA)) + 
   geom_point() +
@@ -138,7 +143,6 @@ totalBcosts = ggplot(data=bigDF, aes(x=tick, y=TotalCostsB)) +
   ylab("Eur") + 
   ggtitle("Total costs \n Country B") #give the plot a title
 plot(totalBcosts)
-
 
 cashProdAAplot = ggplot(data=bigDF, aes(x=tick, y=ProducerCash_Energy_Producer_A)) + 
   geom_point() +
@@ -447,29 +451,31 @@ meanCapShareCCGTB=0
 meanCapShareNuclearB=0
 
 for(j in 0:39) {
-  meanCapSharePVA[j] <- mean(subset(bigDF$CapacityinMWinA_Photovoltaic / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareWindA[j] <- mean(subset(bigDF$CapacityinMWinA_Wind / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareWindOffshoreA[j] <- mean(subset(bigDF$CapacityinMWinA_WindOffshore / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareBiomassA[j] <- mean(subset(bigDF$CapacityinMWinA_Biomass / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareBiogasA[j] <- mean(subset(bigDF$CapacityinMWinA_Biogas / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareCoalA[j] <- mean(subset(bigDF$CapacityinMWinA_CoalPSC / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareIGCCA[j] <- mean(subset(bigDF$CapacityinMWinA_IGCC / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareLigniteA[j] <- mean(subset(bigDF$CapacityinMWinA_Lignite / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareOCGTA[j] <- mean(subset(bigDF$CapacityinMWinA_OCGT / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareCCGTA[j] <- mean(subset(bigDF$CapacityinMWinA_CCGT / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapShareNuclearA[j] <- mean(subset(bigDF$CapacityinMWinA_Nuclear / bigDF$TotalOperationalCapacityPerZoneInMW_Country_A, tick == j))
-  meanCapSharePVB[j] <- mean(subset(bigDF$CapacityinMWinB_Photovoltaic / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareWindB[j] <- mean(subset(bigDF$CapacityinMWinB_Wind / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareWindOffshoreB[j] <- mean(subset(bigDF$CapacityinMWinB_WindOffshore / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareBiomassB[j] <- mean(subset(bigDF$CapacityinMWinB_Biomass / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareBiogasB[j] <- mean(subset(bigDF$CapacityinMWinB_Biogas / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareIGCCB[j] <- mean(subset(bigDF$CapacityinMWinB_IGCC / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareCoalB[j] <- mean(subset(bigDF$CapacityinMWinB_CoalPSC / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareLigniteB[j] <- mean(subset(bigDF$CapacityinMWinB_Lignite / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareOCGTB[j] <- mean(subset(bigDF$CapacityinMWinB_OCGT / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareCCGTB[j] <- mean(subset(bigDF$CapacityinMWinB_CCGT / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
-  meanCapShareNuclearB[j] <- mean(subset(bigDF$CapacityinMWinB_Nuclear / bigDF$TotalOperationalCapacityPerZoneInMW_Country_B, tick == j))
+  meanCapSharePVA[j] <- mean(subset(bigDF$CapacityinMWinA_Photovoltaic / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareWindA[j] <- mean(subset(bigDF$CapacityinMWinA_Wind / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareWindOffshoreA[j] <- mean(subset(bigDF$CapacityinMWinA_WindOffshore / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareBiomassA[j] <- mean(subset(bigDF$CapacityinMWinA_Biomass / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareBiogasA[j] <- mean(subset(bigDF$CapacityinMWinA_Biogas / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareCoalA[j] <- mean(subset(bigDF$CapacityinMWinA_CoalPSC / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareIGCCA[j] <- mean(subset(bigDF$CapacityinMWinA_IGCC / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareLigniteA[j] <- mean(subset(bigDF$CapacityinMWinA_Lignite / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareOCGTA[j] <- mean(subset(bigDF$CapacityinMWinA_OCGT / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareCCGTA[j] <- mean(subset(bigDF$CapacityinMWinA_CCGT / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapShareNuclearA[j] <- mean(subset(bigDF$CapacityinMWinA_Nuclear / (bigDF$CapacityinMWinA_Photovoltaic + bigDF$CapacityinMWinA_Wind + bigDF$CapacityinMWinA_WindOffshore + bigDF$CapacityinMWinA_Biomass + bigDF$CapacityinMWinA_Biogas + bigDF$CapacityinMWinA_CoalPSC + bigDF$CapacityinMWinA_IGCC + bigDF$CapacityinMWinA_Lignite + bigDF$CapacityinMWinA_OCGT +   bigDF$CapacityinMWinA_CCGT + bigDF$CapacityinMWinA_Nuclear), tick == j))
+  meanCapSharePVB[j] <- mean(subset(bigDF$CapacityinMWinB_Photovoltaic / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareWindB[j] <- mean(subset(bigDF$CapacityinMWinB_Wind / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareWindOffshoreB[j] <- mean(subset(bigDF$CapacityinMWinB_WindOffshore / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareBiomassB[j] <- mean(subset(bigDF$CapacityinMWinB_Biomass / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareBiogasB[j] <- mean(subset(bigDF$CapacityinMWinB_Biogas / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareIGCCB[j] <- mean(subset(bigDF$CapacityinMWinB_IGCC / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareCoalB[j] <- mean(subset(bigDF$CapacityinMWinB_CoalPSC / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareLigniteB[j] <- mean(subset(bigDF$CapacityinMWinB_Lignite / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareOCGTB[j] <- mean(subset(bigDF$CapacityinMWinB_OCGT / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareCCGTB[j] <- mean(subset(bigDF$CapacityinMWinB_CCGT / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
+  meanCapShareNuclearB[j] <- mean(subset(bigDF$CapacityinMWinB_Nuclear / (bigDF$CapacityinMWinB_Photovoltaic + bigDF$CapacityinMWinB_Wind + bigDF$CapacityinMWinB_WindOffshore + bigDF$CapacityinMWinB_Biomass + bigDF$CapacityinMWinB_Biogas + bigDF$CapacityinMWinB_CoalPSC + bigDF$CapacityinMWinB_IGCC + bigDF$CapacityinMWinB_Lignite + bigDF$CapacityinMWinB_OCGT +   bigDF$CapacityinMWinB_CCGT + bigDF$CapacityinMWinB_Nuclear), tick == j))
 }
+
+
 
 meanCapSharePVA
 meanCapShareWindA
