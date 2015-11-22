@@ -65,18 +65,16 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        Iterable<RenewableSupportSchemeTender> schemes = null;
-        schemes = reps.renewableSupportSchemeTenderRepository.findAll();
+        // Iterable<RenewableSupportSchemeTender> schemes = null;
+        // schemes = reps.renewableSupportSchemeTenderRepository.findAll();
+        //
+        // for (RenewableSupportSchemeTender currentScheme : schemes) {}
 
-        for (RenewableSupportSchemeTender currentScheme : schemes) {
+        logger.warn("currentScheme: " + scheme);
 
-            logger.warn("currentScheme: " + currentScheme);
+        calculateRenewableTargetForTenderRole.act(scheme);
 
-            calculateRenewableTargetForTenderRole.act(currentScheme);
-
-            submitTenderBidRole.act(currentScheme);
-
-        }
+        submitTenderBidRole.act(scheme);
 
         Regulator regulator = scheme.getRegulator();
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(regulator.getZone());
@@ -86,16 +84,13 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
 
         }
 
-        for (RenewableSupportSchemeTender currentScheme : schemes) {
+        logger.warn("currentScheme: " + scheme);
 
-            logger.warn("currentScheme: " + currentScheme);
+        clearRenewableTenderRole.act(scheme);
 
-            clearRenewableTenderRole.act(currentScheme);
+        createPowerPlantsOfAcceptedTenderBidsRole.act(scheme);
 
-            createPowerPlantsOfAcceptedTenderBidsRole.act(currentScheme);
-
-            organizeRenewableTenderPaymentsRole.act(currentScheme);
-        }
+        organizeRenewableTenderPaymentsRole.act(scheme);
 
     }
 }

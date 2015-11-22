@@ -48,6 +48,8 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
         for (TenderBid currentTenderBid : reps.tenderBidRepository.findAllTenderBidsThatShouldBePaidInTimeStep(scheme,
                 getCurrentTick())) {
 
+            logger.warn("currentTenderBid: " + currentTenderBid);
+
             TenderClearingPoint tenderClearingPoint = reps.tenderClearingPointRepository
                     .findOneClearingPointForTimeAndRenewableSupportSchemeTender(currentTenderBid.getTime(), scheme);
 
