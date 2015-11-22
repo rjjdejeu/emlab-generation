@@ -22,7 +22,7 @@
 		p:capDeviationCriterion="0.03"
 		p:noPrivateIntermittentRESInvestment="false"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="false">
+		p:renewableTenderSchemeImplemented="true">
 	</bean>
 
 
@@ -30,7 +30,7 @@
 	<!-- https://www.rvo.nl/sites/default/files/2015/05/IP01_Inpassingsplan%20DW380%20Toelichting%20en%20regels%2020150415%20-%20EXCL%20BIJLAGEN_vKT.pdf 
 		says 2450 MW in (2014) with an expected increase to 3950 MW in 2017 -->
 	<bean id="interconnectorNetherlandsGermany" class="emlab.gen.domain.technology.Interconnector"
-		p:capacity="3950">
+		p:capacity="9000000000">
 		<property name="connections">
 			<set>
 				<ref bean="nlNode1" />
@@ -97,7 +97,7 @@
 
 	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
-		p:delimiter="," p:variableName="nl_target" />
+		p:delimiter="," p:variableName="nl_target_slow" />
 
 
 	<!-- Renewable Energy Target DE -->

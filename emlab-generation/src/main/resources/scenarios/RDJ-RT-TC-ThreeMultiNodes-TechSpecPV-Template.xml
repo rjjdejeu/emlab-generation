@@ -22,7 +22,7 @@
 		p:capDeviationCriterion="0.03"
 		p:noPrivateIntermittentRESInvestment="false"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="false">
+		p:renewableTenderSchemeImplemented="true">
 	</bean>
 
 
@@ -79,10 +79,10 @@
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
 				<ref bean="photovoltaicPGT" />
-				<ref bean="windOffshorePGT" />
-				<ref bean="windPGT" />
-				<ref bean="biomassPGT" />
-				<ref bean="biogasPGT" />
+<!-- 				<ref bean="windOffshorePGT" /> -->
+<!-- 				<ref bean="windPGT" /> -->
+<!-- 				<ref bean="biomassPGT" /> -->
+<!-- 				<ref bean="biogasPGT" /> -->
 			</set>
 		</property>
 	</bean>
@@ -109,7 +109,7 @@
 
 	<bean id="de_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
-		p:delimiter="," p:variableName="de_target" />
+		p:delimiter="," p:variableName="de_target_photovoltaics" />
 
 
 	<!-- Demand growth -->

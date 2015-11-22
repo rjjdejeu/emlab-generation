@@ -22,7 +22,7 @@
 		p:capDeviationCriterion="0.03"
 		p:noPrivateIntermittentRESInvestment="false"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="false">
+		p:renewableTenderSchemeImplemented="true">
 	</bean>
 
 
@@ -56,7 +56,7 @@
 	<!-- Renewable Tender Scheme NL -->
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderNL" p:futureTenderOperationStartTime="1"
+		p:scheme="RenewableTenderNL" p:futureTenderOperationStartTime="3"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
@@ -73,7 +73,7 @@
 	<!-- Renewable Tender Scheme DE -->
 	<bean id="renewableSupportSchemeDE"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderDE" p:futureTenderOperationStartTime="1"
+		p:scheme="RenewableTenderDE" p:futureTenderOperationStartTime="3"
 		p:supportSchemeDuration="10">
 		<property name="regulator" ref="regulatorDE" />
 		<property name="powerGeneratingTechnologiesEligible">
@@ -115,11 +115,11 @@
 	<!-- Demand growth -->
 	<bean id="demandGrowthTrendNL" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticDemandNLandDE/demandGrowthNL.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="demandNL-#repetitionNumber" />
+		p:startingYear="0" p:delimiter="," p:variableName="demandNL-1" />
 
 	<bean id="demandGrowthTrendDE" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticDemandNLandDE/demandGrowthDE.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="demandDE-#repetitionNumber" />
+		p:startingYear="0" p:delimiter="," p:variableName="demandDE-1" />
 
 
 	<!-- Substances -->
@@ -963,19 +963,19 @@
 
 	<bean id="coalPrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/coalPrice.csv" p:startingYear="0"
-		p:delimiter="," p:variableName="coalPrice-#repetitionNumber" />
+		p:delimiter="," p:variableName="coalPrice-1" />
 	<bean id="gasPrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/gasPrice.csv" p:startingYear="0"
-		p:delimiter="," p:variableName="gasPrice-#repetitionNumber" />
+		p:delimiter="," p:variableName="gasPrice-1" />
 	<bean id="biomassPrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/biomassPrice.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="biomassPrice-#repetitionNumber" />
+		p:startingYear="0" p:delimiter="," p:variableName="biomassPrice-1" />
 	<bean id="uraniumPrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/uraniumPrice.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="uraniumPrice-#repetitionNumber" />
+		p:startingYear="0" p:delimiter="," p:variableName="uraniumPrice-1" />
 	<bean id="lignitePrice" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticFuelPrices/lignitePrice.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="lignitePrice-#repetitionNumber" />
+		p:startingYear="0" p:delimiter="," p:variableName="lignitePrice-1" />
 
 	<!-- Agents -->
 	<bean id="coalSupplier" class="emlab.gen.domain.agent.CommoditySupplier">
