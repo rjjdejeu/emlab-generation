@@ -18,6 +18,7 @@ package emlab.gen.role.tender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import agentspring.role.Role;
 import agentspring.role.RoleComponent;
@@ -44,6 +45,7 @@ public class FilterTenderBidsWithSufficientCashForDownpaymentRole extends Abstra
     Neo4jTemplate template;
 
     @Override
+    @Transactional
     public void act(EnergyProducer agent) {
 
         logger.warn("Filter Tender Bids With Sufficient Cashflow for Downpayment Role started for " + agent);
@@ -62,25 +64,22 @@ public class FilterTenderBidsWithSufficientCashForDownpaymentRole extends Abstra
 
         for (TenderBid currentTenderBid : sortedTenderBidsbyPrice) {
 
-            // logger.warn("currentTenderBid; " + currentTenderBid);
+            logger.warn("currentTenderBid; " + currentTenderBid);
 
             if (cashAvailableForPlantDownpayment > 0) {
                 cashAvailableForPlantDownpayment = cashAvailableForPlantDownpayment
                         - currentTenderBid.getCashNeededForPlantDownpayments();
 
-                // logger.warn("cashAvailableForPlantDownpayment; " +
-                // cashAvailableForPlantDownpayment);
-                // logger.warn("currentTenderBid.getCashNeededForPlantDownpayments; "
-                // + currentTenderBid.getCashNeededForPlantDownpayments());
-                // logger.warn("status of bid; " +
-                // currentTenderBid.getStatus());
+                logger.warn("cashAvailableForPlantDownpayment; " + cashAvailableForPlantDownpayment);
+                logger.warn("currentTenderBid.getCashNeededForPlantDownpayments; "
+                        + currentTenderBid.getCashNeededForPlantDownpayments());
+                logger.warn("status of bid; " + currentTenderBid.getStatus());
             }
 
             else {
                 currentTenderBid.setStatus(Bid.NOT_SUBMITTED);
 
-                // logger.warn("status of bid; " +
-                // currentTenderBid.getStatus());
+                logger.warn("status of bid; " + currentTenderBid.getStatus());
 
             }
 

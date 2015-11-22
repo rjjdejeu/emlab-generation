@@ -65,29 +65,37 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        calculateRenewableTargetForTenderRole.act(scheme);
+        Iterable<RenewableSupportSchemeTender> schemes = null;
+        schemes = reps.renewableSupportSchemeTenderRepository.findAll();
+
+        for (RenewableSupportSchemeTender currentScheme : schemes) {
+
+            logger.warn("currentScheme: " + currentScheme);
+
+            calculateRenewableTargetForTenderRole.act(currentScheme);
+
+            submitTenderBidRole.act(currentScheme);
+
+        }
 
         Regulator regulator = scheme.getRegulator();
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(regulator.getZone());
 
-        double tenderTarget = regulator.getAnnualRenewableTargetInMwh();
-        if (tenderTarget > 0) {
-
-            for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
-                submitTenderBidRole.act(producer);
-            }
-
-            for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
-                filterTenderBidsWithSufficientCashflowRole.act(producer);
-
-            }
+        for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
+            filterTenderBidsWithSufficientCashflowRole.act(producer);
 
         }
 
-        clearRenewableTenderRole.act(regulator);
+        for (RenewableSupportSchemeTender currentScheme : schemes) {
 
-        createPowerPlantsOfAcceptedTenderBidsRole.act(regulator);
+            logger.warn("currentScheme: " + currentScheme);
 
-        organizeRenewableTenderPaymentsRole.act(scheme);
+            clearRenewableTenderRole.act(currentScheme);
+
+            createPowerPlantsOfAcceptedTenderBidsRole.act(currentScheme);
+
+            organizeRenewableTenderPaymentsRole.act(currentScheme);
+        }
+
     }
 }

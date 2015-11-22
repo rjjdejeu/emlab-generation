@@ -169,7 +169,6 @@ public class TenderBid extends Bid {
     @Override
     public String toString() {
         return "for " + getBidder() + " price: " + getPrice() + " amount: " + getAmount() + " cash needed downpayment "
-                + cashNeededForPlantDownpayments + " scheme " + getRenewableSupportSchemeTender() + " tech "
-                + getTechnology();
+                + cashNeededForPlantDownpayments + " " + getRenewableSupportSchemeTender() + " tech " + getTechnology();
     }
 }

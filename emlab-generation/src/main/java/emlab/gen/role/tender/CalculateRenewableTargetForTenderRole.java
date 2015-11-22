@@ -88,6 +88,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
             expectedGenerationPerTechnologyAvailable = 0d;
 
             logger.warn("For PGT - technology; " + technology);
+            scheme.setCurrentTechnologyUnderConsideration(technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {
@@ -145,42 +146,6 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         logger.warn("totalExpectedGenerationAvailable; " + totalExpectedGenerationAvailable);
         logger.warn("totalExpectedGenerationPipeline; " + totalExpectedGenerationPipeline);
         logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
-        /*
-         * To compare
-         * 
-         * Electricity consumption in 2011 was for 1) NL: 1.17E+08 MWh 2) DE:
-         * 5.79E+08 MWh 3) source http://www.indexmundi.com/facts/indicators
-         * /EG.USE.ELEC.KH/rankings
-         * 
-         * Total electricity production in 2011 for 1) NL: 1.09E+08 MWh 2) DE:
-         * 5.77+08 MWh 3) source
-         * http://ec.europa.eu/eurostat/statistics-explained/images
-         * /d/d9/Net_electricity_generation
-         * %2C_1990%E2%80%932013_%28thousand_GWh%29_YB15.png
-         * 
-         * Total RENEWABLE electricity production in 2010 for 1) NL: 1.04E+07
-         * MWh DE: 1.05E+08 MWh 2) sources http://www.cbs.nl/NR/rdonlyres
-         * /BED23760-23C0-47D0-8A2A-224402F055F 3/0/2012c90pub.pdf
-         * https://en.wikipedia.org/wiki/Renewable_energy_in_Germany#Sources
-         * 
-         * totalExpectedGeneration EMLab RES-E for 2020 1) NL: 2.51E+10 MWh 2)
-         * DE: 2.51E+10 MWh
-         * 
-         * Conclusions: 0) Although I compare 2010 with 2020, the numbers should
-         * be more or less in the same ball park, and they are not. 1) There is
-         * a factor 100(0) too much in EMLab most likely, originating from
-         * totalExpectingGeneration 2) Also, NL and DE start with the same
-         * totalExpectedGeneration, which could not be right. Probably due to
-         * the initial portfolios.
-         * 
-         * --> solved, the queries in line 118 and 122 were not market/zone
-         * specific and summed all the totalExpectedGeneration instead of doing
-         * it per market/zone
-         */
-
-        // logger.warn("renewabeTargetInMWh; " + renewableTargetInMwh);
-        // logger.warn("Last - totalExpectedGeneration; " +
-        // totalExpectedGeneration);
 
         scheme.setExpectedRenewableGeneration(totalExpectedGeneration);
 
@@ -189,7 +154,9 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         if (renewableTargetInMwh < 0) {
             renewableTargetInMwh = 0;
         }
-        scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
+        // scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
+
+        scheme.setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
         logger.warn("actualRenewableTargetInMwh; " + renewableTargetInMwh);
     }

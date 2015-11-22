@@ -40,6 +40,26 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
     @RelatedTo(type = "TECHNOLOGIES_ELIGIBLE_ARE", elementClass = PowerGeneratingTechnology.class, direction = Direction.OUTGOING)
     private Set<PowerGeneratingTechnology> powerGeneratingTechnologiesEligible;
 
+    private double annualRenewableTargetInMwh;
+
+    public double getAnnualRenewableTargetInMwh() {
+        return annualRenewableTargetInMwh;
+    }
+
+    public void setAnnualRenewableTargetInMwh(double annualRenewableTargetInMwh) {
+        this.annualRenewableTargetInMwh = annualRenewableTargetInMwh;
+    }
+
+    private PowerGeneratingTechnology currentTechnologyUnderConsideration;
+
+    public PowerGeneratingTechnology getCurrentTechnologyUnderConsideration() {
+        return currentTechnologyUnderConsideration;
+    }
+
+    public void setCurrentTechnologyUnderConsideration(PowerGeneratingTechnology currentTechnologyUnderConsideration) {
+        this.currentTechnologyUnderConsideration = currentTechnologyUnderConsideration;
+    }
+
     private boolean technologySpecificityEnabled;
 
     private boolean jointTargetImplemented;

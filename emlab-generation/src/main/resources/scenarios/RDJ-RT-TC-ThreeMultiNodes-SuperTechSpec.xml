@@ -75,7 +75,8 @@
 	<bean id="renewableSupportSchemeNL"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:scheme="RenewableTenderNL" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="false">
 		<property name="regulator" ref="regulatorNL" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
@@ -92,7 +93,8 @@
 	<bean id="renewableSupportSchemeDEphotovoltaicsPGT"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:scheme="RenewableTenderDEphotovoltaicPGT" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
 		<property name="regulator" ref="regulatorDEphotovoltaicPGT" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
@@ -104,7 +106,8 @@
 	<bean id="renewableSupportSchemeDEwindOffshorePGT"
 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
 		p:scheme="RenewableTenderDEwindOffshorePGT" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
 		<property name="regulator" ref="regulatorDEwindOffshorePGT" />
 		<property name="powerGeneratingTechnologiesEligible">
 			<set>
@@ -113,41 +116,44 @@
 		</property>
 	</bean>
 	
-		<bean id="renewableSupportSchemeDEwindPGT"
-		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderDEwindPGT" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
-		<property name="regulator" ref="regulatorDEwindPGT" />
-		<property name="powerGeneratingTechnologiesEligible">
-			<set>
-				<ref bean="windPGT" />
-			</set>
-		</property>
-	</bean>
+<!-- 		<bean id="renewableSupportSchemeDEwindPGT" -->
+<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
+<!-- 		p:scheme="RenewableTenderDEwindPGT" p:futureTenderOperationStartTime="1" -->
+<!-- 		p:supportSchemeDuration="10"> -->
+<!-- 		p:technologySpecificityEnabled="true" -->
+<!-- 		<property name="regulator" ref="regulatorDEwindPGT" /> -->
+<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
+<!-- 			<set> -->
+<!-- 				<ref bean="windPGT" /> -->
+<!-- 			</set> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 	
-		<bean id="renewableSupportSchemeDEbiomassPGT"
-		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderDEbiomassPGT" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
-		<property name="regulator" ref="regulatorDEbiomassPGT" />
-		<property name="powerGeneratingTechnologiesEligible">
-			<set>
-				<ref bean="biomassPGT" />
-			</set>
-		</property>
-	</bean>
+<!-- 		<bean id="renewableSupportSchemeDEbiomassPGT" -->
+<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
+<!-- 		p:scheme="RenewableTenderDEbiomassPGT" p:futureTenderOperationStartTime="1" -->
+<!-- 		p:supportSchemeDuration="10"> -->
+<!-- 		p:technologySpecificityEnabled="true" -->
+<!-- 		<property name="regulator" ref="regulatorDEbiomassPGT" /> -->
+<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
+<!-- 			<set> -->
+<!-- 				<ref bean="biomassPGT" /> -->
+<!-- 			</set> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 	
-		<bean id="renewableSupportSchemeDEbiogasPGT"
-		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderDEbiogasPGT" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10">
-		<property name="regulator" ref="regulatorDEbiogasPGT" />
-		<property name="powerGeneratingTechnologiesEligible">
-			<set>
-				<ref bean="biogasPGT" />
-			</set>
-		</property>
-	</bean>
+<!-- 		<bean id="renewableSupportSchemeDEbiogasPGT" -->
+<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
+<!-- 		p:scheme="RenewableTenderDEbiogasPGT" p:futureTenderOperationStartTime="1" -->
+<!-- 		p:supportSchemeDuration="10"> -->
+<!-- 		p:technologySpecificityEnabled="true" -->
+<!-- 		<property name="regulator" ref="regulatorDEbiogasPGT" /> -->
+<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
+<!-- 			<set> -->
+<!-- 				<ref bean="biogasPGT" /> -->
+<!-- 			</set> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 
 
 	<!-- Renewable Energy Target NL -->

@@ -22,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import agentspring.role.AbstractRole;
 import agentspring.role.Role;
 import agentspring.role.RoleComponent;
-import emlab.gen.domain.agent.Regulator;
-import emlab.gen.domain.gis.Zone;
 import emlab.gen.domain.market.Bid;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.domain.policy.renewablesupport.TenderBid;
@@ -34,8 +32,8 @@ import emlab.gen.repository.Reps;
  * @author rjjdejeu
  */
 @RoleComponent
-public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements Role<Regulator> {
-
+public class ClearRenewableTenderRole extends AbstractRole<RenewableSupportSchemeTender> implements
+        Role<RenewableSupportSchemeTender> {
     @Autowired
     Reps reps;
 
@@ -44,23 +42,24 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
     @Override
     @Transactional
-    public void act(Regulator regulator) {
+    public void act(RenewableSupportSchemeTender scheme) {
 
-        logger.warn("Clear Renewable Tender Role started for: " + regulator);
+        logger.warn("Clear Renewable Tender Role started for: " + scheme);
 
-        Zone zone = regulator.getZone();
-        RenewableSupportSchemeTender scheme = reps.renewableSupportSchemeTenderRepository
-                .determineSupportSchemeForZone(zone);
+        // Zone zone = regulator.getZone();
+        // RenewableSupportSchemeTender scheme =
+        // reps.renewableSupportSchemeTenderRepository
+        // .determineSupportSchemeForZone(zone);
 
         // logger.warn("scheme is: " + scheme);
 
         // Initialize a sorted list for tender bids
-        Iterable<TenderBid> sortedTenderBidsbyPriceAndZone = null;
-        sortedTenderBidsbyPriceAndZone = reps.tenderBidRepository.findAllSubmittedSortedTenderBidsbyTime(
-                getCurrentTick(), zone);
+        Iterable<TenderBid> sortedTenderBidsbyPriceAndScheme = null;
+        sortedTenderBidsbyPriceAndScheme = reps.tenderBidRepository.findAllSubmittedSortedTenderBidsbyTime(
+                getCurrentTick(), scheme);
 
-        double tenderQuota = regulator.getAnnualRenewableTargetInMwh();
-        // logger.warn("TenderQuota; " + tenderQuota);
+        double tenderQuota = scheme.getAnnualRenewableTargetInMwh();
+        logger.warn("TenderQuota; " + tenderQuota);
         double sumOfTenderBidQuantityAccepted = 0d;
         double acceptedSubsidyPrice = 0d;
         boolean isTheTenderCleared = false;
@@ -76,9 +75,9 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
 
         // Goes through the list of the bids that are sorted on ascending order
         // by price
-        for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndZone) {
+        for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndScheme) {
 
-            // logger.warn("current Tender bid; " + currentTenderBid);
+            logger.warn("current Tender bid; " + currentTenderBid);
 
             // if the tender is not cleared yet, it collects complete bids
             if (isTheTenderCleared == false) {
@@ -87,14 +86,11 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
 
-                    // logger.warn("bidder; " + currentTenderBid.getBidder());
-                    // logger.warn("bidAmount; " +
-                    // currentTenderBid.getAmount());
-                    // logger.warn("acceptedSubsidyPrice; " +
-                    // acceptedSubsidyPrice);
-                    // logger.warn("Technology; " +
-                    // currentTenderBid.getTechnology());
-                    // logger.warn("Status; " + currentTenderBid.getStatus());
+                    logger.warn("bidder; " + currentTenderBid.getBidder());
+                    logger.warn("bidAmount; " + currentTenderBid.getAmount());
+                    logger.warn("acceptedSubsidyPrice; " + acceptedSubsidyPrice);
+                    logger.warn("Technology; " + currentTenderBid.getTechnology());
+                    logger.warn("Status; " + currentTenderBid.getStatus());
 
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
 
