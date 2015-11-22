@@ -38,18 +38,47 @@
 		</property>
 	</bean>
 
-	<!-- Regulator NL -->
+<!-- Regulator NL -->
 	<bean id="regulatorNL" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlands" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="nl" />
 	</bean>
-
-	<!-- Regulators DE Technology Specific -->
-	<bean id="regulatorDEphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator"
-		p:name="regulatorGermanyphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
-	</bean>
 	
+	<!-- Regulators NL Technology Specific -->
+<!-- 	<bean id="regulatorNLphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlandsphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+<!-- 		<bean id="regulatorNLwindOffshorePGT" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlandswindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+<!-- 		<bean id="regulatorNLwindPGT" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlandswindPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+<!-- 		<bean id="regulatorNLbiomassPGT" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlandsbiomassPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+<!-- 		<bean id="regulatorNLbiogasPGT" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlandsbiogasPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+
+
+
+	<!-- Regulators DE -->
+<!-- 	<bean id="regulatorDE" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorGermany" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+	<!-- Regulators DE Technology Specific -->	
 		<bean id="regulatorDEwindOffshorePGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorGermanywindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="de" />
@@ -374,6 +403,7 @@
 	<bean id="de_nreap_biogasPGT" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
 		p:delimiter="," p:variableName="de_target_biogas" />
+		
 		
 	
 

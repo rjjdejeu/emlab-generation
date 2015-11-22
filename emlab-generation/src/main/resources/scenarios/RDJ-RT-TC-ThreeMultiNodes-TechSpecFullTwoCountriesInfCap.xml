@@ -29,7 +29,7 @@
 	<!-- https://www.rvo.nl/sites/default/files/2015/05/IP01_Inpassingsplan%20DW380%20Toelichting%20en%20regels%2020150415%20-%20EXCL%20BIJLAGEN_vKT.pdf 
 		says 2450 MW in (2014) with an expected increase to 3950 MW in 2017 -->
 	<bean id="interconnectorNetherlandsGermany" class="emlab.gen.domain.technology.Interconnector"
-		p:capacity="3950">
+		p:capacity="9000000000">
 		<property name="connections">
 			<set>
 				<ref bean="nlNode1" />
@@ -39,17 +39,46 @@
 	</bean>
 
 	<!-- Regulator NL -->
-	<bean id="regulatorNL" class="emlab.gen.domain.agent.Regulator"
-		p:name="regulatorNetherlands" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="nl" />
-	</bean>
-
-	<!-- Regulators DE Technology Specific -->
-	<bean id="regulatorDEphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator"
-		p:name="regulatorGermanyphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4">
+<!-- 	<bean id="regulatorNL" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorNetherlands" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="nl" /> -->
+<!-- 	</bean> -->
+	
+	<!-- Regulators NL Technology Specific -->
+	<bean id="regulatorNLphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorNetherlandsphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="de" />
 	</bean>
 	
+		<bean id="regulatorNLwindOffshorePGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorNetherlandswindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
+	</bean>
+	
+		<bean id="regulatorNLwindPGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorNetherlandswindPGT" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
+	</bean>
+	
+		<bean id="regulatorNLbiomassPGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorNetherlandsbiomassPGT" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
+	</bean>
+	
+		<bean id="regulatorNLbiogasPGT" class="emlab.gen.domain.agent.Regulator"
+		p:name="regulatorNetherlandsbiogasPGT" p:numberOfYearsLookingBackToForecastDemand="4">
+		<property name="zone" ref="de" />
+	</bean>
+
+
+
+	<!-- Regulators DE -->
+<!-- 	<bean id="regulatorDE" class="emlab.gen.domain.agent.Regulator" -->
+<!-- 		p:name="regulatorGermany" p:numberOfYearsLookingBackToForecastDemand="4"> -->
+<!-- 		<property name="zone" ref="de" /> -->
+<!-- 	</bean> -->
+	
+	<!-- Regulators DE Technology Specific -->	
 		<bean id="regulatorDEwindOffshorePGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorGermanywindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4">
 		<property name="zone" ref="de" />
@@ -72,87 +101,87 @@
 
 
 	<!-- Renewable Tender Scheme NL -->
-	<bean id="renewableSupportSchemeNL"
-		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
-		p:scheme="RenewableTenderNL" p:futureTenderOperationStartTime="1"
-		p:supportSchemeDuration="10"
-		p:technologySpecificityEnabled="false">
-		<property name="regulator" ref="regulatorNL" />
-		<property name="powerGeneratingTechnologiesEligible">
-			<set>
-				<ref bean="photovoltaicPGT" />
-				<ref bean="windOffshorePGT" />
-				<ref bean="windPGT" />
-				<ref bean="biomassPGT" />
-				<ref bean="biogasPGT" />
-			</set>
-		</property>
-	</bean>
-	
-<!-- 		<bean id="renewableSupportSchemeNLphotovoltaicsPGT" -->
+<!-- 	<bean id="renewableSupportSchemeNL" -->
 <!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
-<!-- 		p:scheme="RenewableTenderNLphotovoltaicPGT" p:futureTenderOperationStartTime="1" -->
+<!-- 		p:scheme="RenewableTenderNL" p:futureTenderOperationStartTime="1" -->
 <!-- 		p:supportSchemeDuration="10" -->
-<!-- 		p:technologySpecificityEnabled="true"> -->
-<!-- 		<property name="regulator" ref="regulatorNLphotovoltaicPGT" /> -->
+<!-- 		p:technologySpecificityEnabled="false"> -->
+<!-- 		<property name="regulator" ref="regulatorNL" /> -->
 <!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
 <!-- 			<set> -->
 <!-- 				<ref bean="photovoltaicPGT" /> -->
-<!-- 			</set> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	
-<!-- 	<bean id="renewableSupportSchemeNLwindOffshorePGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
-<!-- 		p:scheme="RenewableTenderNLwindOffshorePGT" p:futureTenderOperationStartTime="1" -->
-<!-- 		p:supportSchemeDuration="10" -->
-<!-- 		p:technologySpecificityEnabled="true"> -->
-<!-- 		<property name="regulator" ref="regulatorNLwindOffshorePGT" /> -->
-<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
-<!-- 			<set> -->
 <!-- 				<ref bean="windOffshorePGT" /> -->
-<!-- 			</set> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	
-<!-- 		<bean id="renewableSupportSchemeNLwindPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
-<!-- 		p:scheme="RenewableTenderNLwindPGT" p:futureTenderOperationStartTime="1" -->
-<!-- 		p:supportSchemeDuration="10" -->
-<!-- 		p:technologySpecificityEnabled="true"> -->
-<!-- 		<property name="regulator" ref="regulatorNLwindPGT" /> -->
-<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
-<!-- 			<set> -->
 <!-- 				<ref bean="windPGT" /> -->
-<!-- 			</set> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	
-<!-- 		<bean id="renewableSupportSchemeNLbiomassPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
-<!-- 		p:scheme="RenewableTenderNLbiomassPGT" p:futureTenderOperationStartTime="1" -->
-<!-- 		p:supportSchemeDuration="10" -->
-<!-- 		p:technologySpecificityEnabled="true"> -->
-<!-- 		<property name="regulator" ref="regulatorNLbiomassPGT" /> -->
-<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
-<!-- 			<set> -->
 <!-- 				<ref bean="biomassPGT" /> -->
-<!-- 			</set> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
-	
-<!-- 		<bean id="renewableSupportSchemeNLbiogasPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender" -->
-<!-- 		p:scheme="RenewableTenderNLbiogasPGT" p:futureTenderOperationStartTime="1" -->
-<!-- 		p:supportSchemeDuration="10" -->
-<!-- 		p:technologySpecificityEnabled="true"> -->
-<!-- 		<property name="regulator" ref="regulatorNLbiogasPGT" /> -->
-<!-- 		<property name="powerGeneratingTechnologiesEligible"> -->
-<!-- 			<set> -->
 <!-- 				<ref bean="biogasPGT" /> -->
 <!-- 			</set> -->
 <!-- 		</property> -->
 <!-- 	</bean> -->
+	
+		<bean id="renewableSupportSchemeNLphotovoltaicsPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
+		p:scheme="RenewableTenderNLphotovoltaicPGT" p:futureTenderOperationStartTime="1"
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
+		<property name="regulator" ref="regulatorNLphotovoltaicPGT" />
+		<property name="powerGeneratingTechnologiesEligible">
+			<set>
+				<ref bean="photovoltaicPGT" />
+			</set>
+		</property>
+	</bean>
+	
+	<bean id="renewableSupportSchemeNLwindOffshorePGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
+		p:scheme="RenewableTenderNLwindOffshorePGT" p:futureTenderOperationStartTime="1"
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
+		<property name="regulator" ref="regulatorNLwindOffshorePGT" />
+		<property name="powerGeneratingTechnologiesEligible">
+			<set>
+				<ref bean="windOffshorePGT" />
+			</set>
+		</property>
+	</bean>
+	
+		<bean id="renewableSupportSchemeNLwindPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
+		p:scheme="RenewableTenderNLwindPGT" p:futureTenderOperationStartTime="1"
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
+		<property name="regulator" ref="regulatorNLwindPGT" />
+		<property name="powerGeneratingTechnologiesEligible">
+			<set>
+				<ref bean="windPGT" />
+			</set>
+		</property>
+	</bean>
+	
+		<bean id="renewableSupportSchemeNLbiomassPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
+		p:scheme="RenewableTenderNLbiomassPGT" p:futureTenderOperationStartTime="1"
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
+		<property name="regulator" ref="regulatorNLbiomassPGT" />
+		<property name="powerGeneratingTechnologiesEligible">
+			<set>
+				<ref bean="biomassPGT" />
+			</set>
+		</property>
+	</bean>
+	
+		<bean id="renewableSupportSchemeNLbiogasPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender"
+		p:scheme="RenewableTenderNLbiogasPGT" p:futureTenderOperationStartTime="1"
+		p:supportSchemeDuration="10"
+		p:technologySpecificityEnabled="true">
+		<property name="regulator" ref="regulatorNLbiogasPGT" />
+		<property name="powerGeneratingTechnologiesEligible">
+			<set>
+				<ref bean="biogasPGT" />
+			</set>
+		</property>
+	</bean>
 
 
 	<!-- Technology Specific Renewable Tender Schemes DE -->
@@ -241,71 +270,71 @@
 
 
 	<!-- Renewable Energy Target NL -->
-	<bean id="renewableTenderTargetNL"
-		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
-		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap">
-		<property name="regulator" ref="regulatorNL" />
-	</bean>
+<!-- 	<bean id="renewableTenderTargetNL" -->
+<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
+<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap"> -->
+<!-- 		<property name="regulator" ref="regulatorNL" /> -->
+<!-- 	</bean> -->
 
-	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader"
-		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
-		p:delimiter="," p:variableName="nl_target" />
+<!-- 	<bean id="nl_nreap" class="emlab.gen.trend.TimeSeriesCSVReader" -->
+<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
+<!-- 		p:delimiter="," p:variableName="nl_target" /> -->
 		
 		<!-- Technology Specific Renewable Energy Targets NL -->
 		
-<!-- 	<bean id="renewableTenderTargetNLphotovoltaicPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
-<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_photovoltaicPGT"> -->
-<!-- 		<property name="regulator" ref="regulatorNLphotovoltaicPGT" /> -->
-<!-- 	</bean> -->
+	<bean id="renewableTenderTargetNLphotovoltaicPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
+		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_photovoltaicPGT">
+		<property name="regulator" ref="regulatorNLphotovoltaicPGT" />
+	</bean>
 
-<!-- 	<bean id="nl_nreap_photovoltaicPGT" class="emlab.gen.trend.TimeSeriesCSVReader" -->
-<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
-<!-- 		p:delimiter="," p:variableName="nl_target_photovoltaics" /> -->
+	<bean id="nl_nreap_photovoltaicPGT" class="emlab.gen.trend.TimeSeriesCSVReader"
+		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
+		p:delimiter="," p:variableName="nl_target_photovoltaics" />
 
 
-<!-- 	<bean id="renewableTenderTargetNLwindOffshorePGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
-<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_windOffshorePGT"> -->
-<!-- 		<property name="regulator" ref="regulatorNLwindOffshorePGT" /> -->
-<!-- 	</bean> -->
+	<bean id="renewableTenderTargetNLwindOffshorePGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
+		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_windOffshorePGT">
+		<property name="regulator" ref="regulatorNLwindOffshorePGT" />
+	</bean>
 
-<!-- 	<bean id="nl_nreap_windOffshorePGT" class="emlab.gen.trend.TimeSeriesCSVReader" -->
-<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
-<!-- 		p:delimiter="," p:variableName="nl_target_windoff" /> -->
+	<bean id="nl_nreap_windOffshorePGT" class="emlab.gen.trend.TimeSeriesCSVReader"
+		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
+		p:delimiter="," p:variableName="nl_target_windoff" />
 		
 	
-<!-- 		<bean id="renewableTenderTargetNLwindPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
-<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_windPGT"> -->
-<!-- 		<property name="regulator" ref="regulatorNLwindPGT" /> -->
-<!-- 	</bean> -->
+		<bean id="renewableTenderTargetNLwindPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
+		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_windPGT">
+		<property name="regulator" ref="regulatorNLwindPGT" />
+	</bean>
 
-<!-- 	<bean id="nl_nreap_windPGT" class="emlab.gen.trend.TimeSeriesCSVReader" -->
-<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
-<!-- 		p:delimiter="," p:variableName="nl_target_windon" /> -->
+	<bean id="nl_nreap_windPGT" class="emlab.gen.trend.TimeSeriesCSVReader"
+		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
+		p:delimiter="," p:variableName="nl_target_windon" />
 		
 	
-<!-- 		<bean id="renewableTenderTargetNLbiomassPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
-<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_biomassPGT"> -->
-<!-- 		<property name="regulator" ref="regulatorNLbiomassPGT" /> -->
-<!-- 	</bean> -->
+		<bean id="renewableTenderTargetNLbiomassPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
+		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_biomassPGT">
+		<property name="regulator" ref="regulatorNLbiomassPGT" />
+	</bean>
 
-<!-- 	<bean id="nl_nreap_biomassPGT" class="emlab.gen.trend.TimeSeriesCSVReader" -->
-<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
-<!-- 		p:delimiter="," p:variableName="nl_target_biomass" /> -->
+	<bean id="nl_nreap_biomassPGT" class="emlab.gen.trend.TimeSeriesCSVReader"
+		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
+		p:delimiter="," p:variableName="nl_target_biomass" />
 		
 		
-<!-- 		<bean id="renewableTenderTargetNLbiogasPGT" -->
-<!-- 		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender" -->
-<!-- 		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_biogasPGT"> -->
-<!-- 		<property name="regulator" ref="regulatorNLbiogasPGT" /> -->
-<!-- 	</bean> -->
+		<bean id="renewableTenderTargetNLbiogasPGT"
+		class="emlab.gen.domain.policy.renewablesupport.RenewableTargetForTender"
+		p:yearlyRenewableTargetTimeSeries-ref="nl_nreap_biogasPGT">
+		<property name="regulator" ref="regulatorNLbiogasPGT" />
+	</bean>
 
-<!-- 	<bean id="nl_nreap_biogasPGT" class="emlab.gen.trend.TimeSeriesCSVReader" -->
-<!-- 		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0" -->
-<!-- 		p:delimiter="," p:variableName="nl_target_biogas" /> -->
+	<bean id="nl_nreap_biogasPGT" class="emlab.gen.trend.TimeSeriesCSVReader"
+		p:filename="/data/policyGoalNREAP_NL_DE_2050.csv" p:startingYear="0"
+		p:delimiter="," p:variableName="nl_target_biogas" />
 		
 		
 
