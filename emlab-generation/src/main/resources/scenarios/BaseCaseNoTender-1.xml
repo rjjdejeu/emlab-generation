@@ -22,7 +22,7 @@
 		p:capDeviationCriterion="0.03"
 		p:noPrivateIntermittentRESInvestment="false"
 		p:deletionOldPPDPBidsAndCashFlowsEnabled="true" p:deletionAge="4"
-		p:renewableTenderSchemeImplemented="true">
+		p:renewableTenderSchemeImplemented="false">
 	</bean>
 
 
