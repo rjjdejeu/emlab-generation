@@ -47,27 +47,27 @@
 	<!-- Regulators NL Technology Specific -->
 	<bean id="regulatorNLphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlandsphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
+		<property name="zone" ref="nl" />
 	</bean>
 	
 		<bean id="regulatorNLwindOffshorePGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlandswindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
+		<property name="zone" ref="nl" />
 	</bean>
 	
 		<bean id="regulatorNLwindPGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlandswindPGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
+		<property name="zone" ref="nl" />
 	</bean>
 	
 		<bean id="regulatorNLbiomassPGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlandsbiomassPGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
+		<property name="zone" ref="nl" />
 	</bean>
 	
 		<bean id="regulatorNLbiogasPGT" class="emlab.gen.domain.agent.Regulator"
 		p:name="regulatorNetherlandsbiogasPGT" p:numberOfYearsLookingBackToForecastDemand="4">
-		<property name="zone" ref="de" />
+		<property name="zone" ref="nl" />
 	</bean>
 
 
@@ -410,19 +410,6 @@
 		p:delimiter="," p:variableName="de_target_biogas" />
 		
 	
-
-
-
-	<!-- Demand growth -->
-	<bean id="demandGrowthTrendNL" class="emlab.gen.trend.TimeSeriesCSVReader"
-		p:filename="/data/stochasticDemandNLandDE/demandGrowthNL.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="demandNL-1" />
-
-	<bean id="demandGrowthTrendDE" class="emlab.gen.trend.TimeSeriesCSVReader"
-		p:filename="/data/stochasticDemandNLandDE/demandGrowthDE.csv"
-		p:startingYear="0" p:delimiter="," p:variableName="demandDE-1" />
-
-
 	<!-- Substances -->
 	<bean id="coal" class="emlab.gen.domain.technology.Substance"
 		p:name="Coal" p:quality="1" p:energyDensity="1000" p:co2Density="0.095"
@@ -489,8 +476,17 @@
 		
 	</bean>
 
-
 	<!-- Demand in MW -->
+	<bean id="demandNL" class="emlab.gen.trend.HourlyCSVTimeSeries"
+		p:filename="/data/Load_NL_2010.csv" p:variableName="nl_demand"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
+
+	<bean id="demandDE" class="emlab.gen.trend.HourlyCSVTimeSeries"
+		p:filename="/data/Load_DE_2010.csv" p:variableName="de_demand"
+		p:timeSeriesAreInDifferentColumns="true" p:delimiter="," />
+
+
+	<!-- Demand growth -->
 	<bean id="demandGrowthTrendNL" class="emlab.gen.trend.TimeSeriesCSVReader"
 		p:filename="/data/stochasticDemandNLandDE/demandGrowthNL.csv"
 		p:startingYear="0" p:delimiter="," p:variableName="demandNL-#repetitionNumber" />

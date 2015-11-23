@@ -47,27 +47,27 @@
 	<!-- Regulators NL Technology Specific -->
 <!-- 	<bean id="regulatorNLphotovoltaicPGT" class="emlab.gen.domain.agent.Regulator" -->
 <!-- 		p:name="regulatorNetherlandsphotovoltaicPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
-<!-- 		<property name="zone" ref="de" /> -->
+<!-- 		<property name="zone" ref="nl" /> -->
 <!-- 	</bean> -->
 	
 <!-- 		<bean id="regulatorNLwindOffshorePGT" class="emlab.gen.domain.agent.Regulator" -->
 <!-- 		p:name="regulatorNetherlandswindOffshorePGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
-<!-- 		<property name="zone" ref="de" /> -->
+<!-- 		<property name="zone" ref="nl" /> -->
 <!-- 	</bean> -->
 	
 <!-- 		<bean id="regulatorNLwindPGT" class="emlab.gen.domain.agent.Regulator" -->
 <!-- 		p:name="regulatorNetherlandswindPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
-<!-- 		<property name="zone" ref="de" /> -->
+<!-- 		<property name="zone" ref="nl" /> -->
 <!-- 	</bean> -->
 	
 <!-- 		<bean id="regulatorNLbiomassPGT" class="emlab.gen.domain.agent.Regulator" -->
 <!-- 		p:name="regulatorNetherlandsbiomassPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
-<!-- 		<property name="zone" ref="de" /> -->
+<!-- 		<property name="zone" ref="nl" /> -->
 <!-- 	</bean> -->
 	
 <!-- 		<bean id="regulatorNLbiogasPGT" class="emlab.gen.domain.agent.Regulator" -->
 <!-- 		p:name="regulatorNetherlandsbiogasPGT" p:numberOfYearsLookingBackToForecastDemand="4"> -->
-<!-- 		<property name="zone" ref="de" /> -->
+<!-- 		<property name="zone" ref="nl" /> -->
 <!-- 	</bean> -->
 
 

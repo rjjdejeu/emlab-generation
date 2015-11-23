@@ -21,9 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import agentspring.role.AbstractRole;
 import agentspring.role.Role;
 import agentspring.role.RoleComponent;
-import emlab.gen.domain.agent.EnergyProducer;
-import emlab.gen.domain.agent.Regulator;
-import emlab.gen.domain.market.electricity.ElectricitySpotMarket;
 import emlab.gen.domain.policy.renewablesupport.RenewableSupportSchemeTender;
 import emlab.gen.repository.Reps;
 
@@ -70,21 +67,21 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
         //
         // for (RenewableSupportSchemeTender currentScheme : schemes) {}
 
-        logger.warn("currentScheme: " + scheme);
-
         calculateRenewableTargetForTenderRole.act(scheme);
 
         submitTenderBidRole.act(scheme);
 
-        Regulator regulator = scheme.getRegulator();
-        ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(regulator.getZone());
-
-        for (EnergyProducer producer : reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market)) {
-            filterTenderBidsWithSufficientCashflowRole.act(producer);
-
-        }
-
-        logger.warn("currentScheme: " + scheme);
+        // this role needs to be adjusted for the techspec feature
+        // Regulator regulator = scheme.getRegulator();
+        // ElectricitySpotMarket market =
+        // reps.marketRepository.findElectricitySpotMarketForZone(regulator.getZone());
+        //
+        // for (EnergyProducer producer :
+        // reps.energyProducerRepository.findEnergyProducersByMarketAtRandom(market))
+        // {
+        // filterTenderBidsWithSufficientCashflowRole.act(producer);
+        //
+        // }
 
         clearRenewableTenderRole.act(scheme);
 
