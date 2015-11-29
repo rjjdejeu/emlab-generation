@@ -106,9 +106,10 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                 // it collects a bid partially if that bid fulfills the quota
                 // partially
                 else if (tenderQuota - (sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount()) < clearingEpsilon) {
-                    acceptedSubsidyPrice = currentTenderBid.getPrice();
-                    currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
-                    currentTenderBid.setAcceptedAmount((tenderQuota - sumOfTenderBidQuantityAccepted));
+                    // acceptedSubsidyPrice = currentTenderBid.getPrice();
+                    // currentTenderBid.setStatus(Bid.PARTLY_ACCEPTED);
+                    // currentTenderBid.setAcceptedAmount((tenderQuota -
+                    // sumOfTenderBidQuantityAccepted));
 
                     // logger.warn("Tender Quota minus sumofTenderBidQAccepted: "
                     // + (tenderQuota - sumOfTenderBidQuantityAccepted));
@@ -124,12 +125,15 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                     // logger.warn("PARTLYStatus; " +
                     // currentTenderBid.getStatus());
 
-                    sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted
-                            + currentTenderBid.getAcceptedAmount();
+                    // sumOfTenderBidQuantityAccepted =
+                    // sumOfTenderBidQuantityAccepted
+                    // + currentTenderBid.getAcceptedAmount();
 
                     // logger.warn("PARTLYsumOfTenderBidQuantityAccepted; " +
                     // sumOfTenderBidQuantityAccepted);
 
+                    currentTenderBid.setStatus(Bid.FAILED);
+                    currentTenderBid.setAcceptedAmount(0);
                     isTheTenderCleared = true;
 
                 }
