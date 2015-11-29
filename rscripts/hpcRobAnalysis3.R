@@ -102,9 +102,9 @@ for(j in 0:39) {
   seAggProfitB[j] <- std.error(subset(bigDF$CountryBProdFinances_Profit, tick == j))
   seConsumerCostsA[j] <- std.error(subset(bigDF$ConsumerExpenditure_Country_A_electricity_spot_market, tick == j))
   seProducerCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Fixed_O_M + 
-                                         bigDF$CountryAProdCosts_Loan + 
-                                         bigDF$CountryAProdCosts_Commodity + 
-                                         bigDF$CountryAProdCosts_Downpayment, tick == j))
+                                            bigDF$CountryAProdCosts_Loan + 
+                                            bigDF$CountryAProdCosts_Commodity + 
+                                            bigDF$CountryAProdCosts_Downpayment, tick == j))
   seGovernmentCostsA[j] <- std.error(subset(bigDF$CountryAProdFinances_Tender_Subsidy, tick == j))
   
   seConsumerCostsB[j] <- std.error(subset(bigDF$ConsumerExpenditure_Country_B_electricity_spot_market, tick == j))
@@ -240,22 +240,22 @@ seCommodityCostsB=0
 seDownpaymentsCostsB=0
 
 for(j in 0:39) {
- meanFixedOMCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Fixed_O_M, tick == j)) 
- meanLoanCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Loan, tick == j))
- meanCommodityCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Commodity, tick == j)) 
- meanDownpaymentsCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Downpayment, tick == j))
- seFixedOMCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Fixed_O_M, tick == j))  
- seLoanCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Loan, tick == j)) 
- seCommodityCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Commodity, tick == j)) 
- seDownpaymentsCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Downpayment, tick == j))
- meanFixedOMCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Fixed_O_M, tick == j)) 
- meanLoanCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Loan, tick == j))
- meanCommodityCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Commodity, tick == j)) 
- meanDownpaymentsCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Downpayment, tick == j))
- seFixedOMCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Fixed_O_M, tick == j))  
- seLoanCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Loan, tick == j)) 
- seCommodityCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Commodity, tick == j)) 
- seDownpaymentsCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Downpayment, tick == j))
+  meanFixedOMCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Fixed_O_M, tick == j)) 
+  meanLoanCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Loan, tick == j))
+  meanCommodityCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Commodity, tick == j)) 
+  meanDownpaymentsCostsA[j] <- mean(subset(bigDF$CountryAProdCosts_Downpayment, tick == j))
+  seFixedOMCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Fixed_O_M, tick == j))  
+  seLoanCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Loan, tick == j)) 
+  seCommodityCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Commodity, tick == j)) 
+  seDownpaymentsCostsA[j] <- std.error(subset(bigDF$CountryAProdCosts_Downpayment, tick == j))
+  meanFixedOMCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Fixed_O_M, tick == j)) 
+  meanLoanCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Loan, tick == j))
+  meanCommodityCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Commodity, tick == j)) 
+  meanDownpaymentsCostsB[j] <- mean(subset(bigDF$CountryBProdCosts_Downpayment, tick == j))
+  seFixedOMCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Fixed_O_M, tick == j))  
+  seLoanCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Loan, tick == j)) 
+  seCommodityCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Commodity, tick == j)) 
+  seDownpaymentsCostsB[j] <- std.error(subset(bigDF$CountryBProdCosts_Downpayment, tick == j))
 }
 
 fixedOMcostsAplot = ggplot(data=tickDF, aes(x=X0, y=meanFixedOMCostsA)) + 
@@ -497,18 +497,18 @@ expectedRenewableGenerationA=0
 expectedRenewableGenerationB=0
 
 for(j in 0:39) {
-generationPVA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Photovoltaic, tick == j))
-generationWindA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Wind, tick == j))
-generationWindOffshoreA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_WindOffshore, tick == j))
-generationBiomassA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biomass, tick == j))
-generationBiogasA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biogas, tick == j))
-generationPVB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Photovoltaic, tick == j))
-generationWindB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Wind, tick == j))
-generationWindOffshoreB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_WindOffshore, tick == j))
-generationBiomassB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biomass, tick == j))
-generationBiogasB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biogas, tick == j))
-expectedRenewableGenerationA[j] <- mean(subset(bigDF$ExpectedRenewableGeneration_RenewableTenderNL, tick == j-1))
-expectedRenewableGenerationB[j] <- mean(subset(bigDF$ExpectedRenewableGeneration_RenewableTenderDE, tick == j-1))
+  generationPVA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Photovoltaic, tick == j))
+  generationWindA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Wind, tick == j))
+  generationWindOffshoreA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_WindOffshore, tick == j))
+  generationBiomassA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biomass, tick == j))
+  generationBiogasA[j] <- mean(subset(bigDF$GenerationinMWhCountryA_Biogas, tick == j))
+  generationPVB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Photovoltaic, tick == j))
+  generationWindB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Wind, tick == j))
+  generationWindOffshoreB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_WindOffshore, tick == j))
+  generationBiomassB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biomass, tick == j))
+  generationBiogasB[j] <- mean(subset(bigDF$GenerationinMWhCountryB_Biogas, tick == j))
+  expectedRenewableGenerationA[j] <- mean(subset(bigDF$ExpectedRenewableGeneration_RenewableTenderNL, tick == j-1))
+  expectedRenewableGenerationB[j] <- mean(subset(bigDF$ExpectedRenewableGeneration_RenewableTenderDE, tick == j-1))
 }
 
 seGenerationPVA=0

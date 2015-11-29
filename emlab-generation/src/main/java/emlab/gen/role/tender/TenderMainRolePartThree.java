@@ -29,7 +29,7 @@ import emlab.gen.repository.Reps;
  *
  */
 @RoleComponent
-public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> implements
+public class TenderMainRolePartThree extends AbstractRole<RenewableSupportSchemeTender> implements
         Role<RenewableSupportSchemeTender> {
 
     /*
@@ -40,14 +40,16 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     @Autowired
     Reps reps;
 
-    @Autowired
-    CalculateRenewableTargetForTenderRole calculateRenewableTargetForTenderRole;
-
-    @Autowired
-    SubmitTenderBidRole submitTenderBidRole;
-
-    @Autowired
-    FilterTenderBidsWithSufficientCashForDownpaymentRole filterTenderBidsWithSufficientCashflowRole;
+    // @Autowired
+    // CalculateRenewableTargetForTenderRole
+    // calculateRenewableTargetForTenderRole;
+    //
+    // @Autowired
+    // SubmitTenderBidRole submitTenderBidRole;
+    //
+    // @Autowired
+    // FilterTenderBidsWithSufficientCashForDownpaymentRole
+    // filterTenderBidsWithSufficientCashflowRole;
 
     @Autowired
     ClearRenewableTenderRole clearRenewableTenderRole;
@@ -62,14 +64,9 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
     @Transactional
     public void act(RenewableSupportSchemeTender scheme) {
 
-        // Iterable<RenewableSupportSchemeTender> schemes = null;
-        // schemes = reps.renewableSupportSchemeTenderRepository.findAll();
+        // calculateRenewableTargetForTenderRole.act(scheme);
         //
-        // for (RenewableSupportSchemeTender currentScheme : schemes) {}
-
-        calculateRenewableTargetForTenderRole.act(scheme);
-
-        submitTenderBidRole.act(scheme);
+        // submitTenderBidRole.act(scheme);
 
         // this role needs to be adjusted for the techspec feature
         // Regulator regulator = scheme.getRegulator();
@@ -90,4 +87,5 @@ public class TenderMainRole extends AbstractRole<RenewableSupportSchemeTender> i
         organizeRenewableTenderPaymentsRole.act(scheme);
 
     }
+
 }
