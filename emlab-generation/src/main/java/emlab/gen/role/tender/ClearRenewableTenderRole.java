@@ -59,7 +59,7 @@ public class ClearRenewableTenderRole extends AbstractRole<RenewableSupportSchem
                 getCurrentTick(), scheme);
 
         double tenderQuota = scheme.getAnnualRenewableTargetInMwh();
-        logger.warn("TenderQuota; " + tenderQuota);
+        // logger.warn("TenderQuota; " + tenderQuota);
         double sumOfTenderBidQuantityAccepted = 0d;
         double acceptedSubsidyPrice = 0d;
         boolean isTheTenderCleared = false;
@@ -77,7 +77,7 @@ public class ClearRenewableTenderRole extends AbstractRole<RenewableSupportSchem
         // by price
         for (TenderBid currentTenderBid : sortedTenderBidsbyPriceAndScheme) {
 
-            logger.warn("current Tender bid; " + currentTenderBid);
+            // logger.warn("current Tender bid; " + currentTenderBid);
 
             // if the tender is not cleared yet, it collects complete bids
             if (isTheTenderCleared == false) {
@@ -86,11 +86,14 @@ public class ClearRenewableTenderRole extends AbstractRole<RenewableSupportSchem
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
 
-                    logger.warn("bidder; " + currentTenderBid.getBidder());
-                    logger.warn("bidAmount; " + currentTenderBid.getAmount());
-                    logger.warn("acceptedSubsidyPrice; " + acceptedSubsidyPrice);
-                    logger.warn("Technology; " + currentTenderBid.getTechnology());
-                    logger.warn("Status; " + currentTenderBid.getStatus());
+                    // logger.warn("bidder; " + currentTenderBid.getBidder());
+                    // logger.warn("bidAmount; " +
+                    // currentTenderBid.getAmount());
+                    // logger.warn("acceptedSubsidyPrice; " +
+                    // acceptedSubsidyPrice);
+                    // logger.warn("Technology; " +
+                    // currentTenderBid.getTechnology());
+                    // logger.warn("Status; " + currentTenderBid.getStatus());
 
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
 

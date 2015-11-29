@@ -65,7 +65,7 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Rene
 
         for (TenderBid currentTenderBid : acceptedTenderBidsByTime) {
 
-            logger.warn("current accepted bid: " + currentTenderBid);
+            // logger.warn("current accepted bid: " + currentTenderBid);
 
             // PowerPlant plant = currentTenderBid.getPowerPlant();
             PowerPlant plant = new PowerPlant();
@@ -95,9 +95,11 @@ public class CreatePowerPlantsOfAcceptedTenderBidsRole extends AbstractRole<Rene
             // Create the loan
             plant.createOrUpdateLoan(loan);
 
-            logger.warn("CreatingPowerPlant 69 - Agent " + bidder + " at tick " + getCurrentTick() + " in tech "
-                    + currentTenderBid.getTechnology() + " with plant name " + plant.getName() + " in zone "
-                    + currentTenderBid.getZone());
+            // logger.warn("CreatingPowerPlant 69 - Agent " + bidder +
+            // " at tick " + getCurrentTick() + " in tech "
+            // + currentTenderBid.getTechnology() + " with plant name " +
+            // plant.getName() + " in zone "
+            // + currentTenderBid.getZone());
         }
         // Remove the non accepted bid power plants
 

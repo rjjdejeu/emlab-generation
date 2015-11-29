@@ -979,17 +979,16 @@ ggsave(filename = paste(filePrefix, "Diff_ElectricityPriceAverageAB.pdf", sep=""
 #Tender Clearing Prices
 meanTenderClearingPriceA=0
 meanTenderClearingPriceB=0
-meanTenderClearingPriceATest=0
+
 
 for(j in 0:39) {
   meanTenderClearingPriceA[j] <- mean(subset(bigDF$tenderClearingPrice_Country_A, tick == j))
   meanTenderClearingPriceB[j] <- mean(subset(bigDF$tenderClearingPrice_Country_B, tick == j))
-  meanTenderClearingPriceATest[j] <- mean(subset(bigDF$tenderClearingPrice_Country_A, tick == 1))
+
 }
 meanTenderClearingPriceA
 meanTenderClearingPriceB
 
-meanTenderClearingPriceATest
 
 tenderClearingPriceCountryAplot = ggplot(data=tickDF, aes(x=X0, y=meanTenderClearingPriceA)) + 
   geom_point() +
@@ -1010,6 +1009,51 @@ tenderClearingPriceCountryBplot = ggplot(data=tickDF, aes(x=X0, y=meanTenderClea
         axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
 #plot(tenderClearingPriceCountryBplot)
 ggsave(filename = paste(filePrefix, "meanTenderClearingPriceB.pdf", sep=""),scale=1)
+
+
+
+## Tender clearing prices Tech Spec edition
+meanTenderClearingPricePVA=0
+meanTenderClearingPriceWindOffshoreA=0
+meanTenderClearingPriceWindA=0
+meanTenderClearingPriceBiomassA=0
+meanTenderClearingPriceBiogasA=0
+meanTenderClearingPricePVB=0
+meanTenderClearingPriceWindOffshoreB=0
+meanTenderClearingPriceWindB=0
+meanTenderClearingPriceBiomassB=0
+meanTenderClearingPriceBiogasB=0
+
+
+for(j in 0:39) {
+  meanTenderClearingPriceA[j] <- mean(subset(bigDF$tenderClearingPrice_Country_A, tick == j))
+  meanTenderClearingPriceB[j] <- mean(subset(bigDF$tenderClearingPrice_Country_B, tick == j))
+  
+}
+meanTenderClearingPriceA
+meanTenderClearingPriceB
+
+
+tenderClearingPriceCountryAplot = ggplot(data=tickDF, aes(x=X0, y=meanTenderClearingPriceA)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Mean tender clearing price \n Country A") + 
+  theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis), 
+        axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+#plot(tenderClearingPriceCountryAplot)
+ggsave(filename = paste(filePrefix, "meanTenderClearingPriceA.pdf", sep=""),scale=1)
+
+tenderClearingPriceCountryBplot = ggplot(data=tickDF, aes(x=X0, y=meanTenderClearingPriceB)) + 
+  geom_point() +
+  xlab("Year") +  
+  ylab("Eur/MWh") + 
+  ggtitle("Mean tender clearing price \n Country B") +   
+  theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis), 
+        axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+#plot(tenderClearingPriceCountryBplot)
+ggsave(filename = paste(filePrefix, "meanTenderClearingPriceB.pdf", sep=""),scale=1)
+
 
 
 # Tender subsidies

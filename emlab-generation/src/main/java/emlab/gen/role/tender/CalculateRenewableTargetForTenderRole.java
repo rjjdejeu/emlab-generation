@@ -63,7 +63,10 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                     * segmentLoad.getSegment().getLengthInHours();
 
         }
-        logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
+
+        scheme.setAnnualExpectedConsumption(totalExpectedConsumption);
+
+        // logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
         // renewable target for tender operation start year in MWh is
 
         double renewableTargetInMwh = targetFactor * totalExpectedConsumption;
@@ -87,7 +90,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnologyAvailable = 0d;
 
-            logger.warn("For PGT - technology; " + technology);
+            // logger.warn("For PGT - technology; " + technology);
             scheme.setCurrentTechnologyUnderConsideration(technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
@@ -143,9 +146,11 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         totalExpectedGeneration = totalExpectedGenerationAvailable + totalExpectedGenerationPipeline;
 
-        logger.warn("totalExpectedGenerationAvailable; " + totalExpectedGenerationAvailable);
-        logger.warn("totalExpectedGenerationPipeline; " + totalExpectedGenerationPipeline);
-        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
+        // logger.warn("totalExpectedGenerationAvailable; " +
+        // totalExpectedGenerationAvailable);
+        // logger.warn("totalExpectedGenerationPipeline; " +
+        // totalExpectedGenerationPipeline);
+        // logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
 
         scheme.setExpectedRenewableGeneration(totalExpectedGeneration);
 
@@ -158,7 +163,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         scheme.setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        logger.warn("actualRenewableTargetInMwh; " + renewableTargetInMwh);
+        // logger.warn("actualRenewableTargetInMwh; " + renewableTargetInMwh);
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,
