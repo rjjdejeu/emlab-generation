@@ -55,10 +55,13 @@ public class OrganizeRenewableTenderPaymentsRole extends AbstractRole<RenewableS
                     currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice(), CashFlow.TENDER_SUBSIDY,
                     getCurrentTick(), currentTenderBid.getPowerPlant());
 
-            logger.warn("In tick " + getCurrentTick() + " Bidder; " + currentTenderBid.getBidder() + " of plant "
-                    + currentTenderBid.getPowerPlant() + " receives "
-                    + (currentTenderBid.getAcceptedAmount() * tenderClearingPoint.getPrice()) + " from "
-                    + currentTenderBid.getStart() + " untill " + currentTenderBid.getFinish());
+            // logger.warn("In tick " + getCurrentTick() + " Bidder; " +
+            // currentTenderBid.getBidder() + " of plant "
+            // + currentTenderBid.getPowerPlant() + " receives "
+            // + (currentTenderBid.getAcceptedAmount() *
+            // tenderClearingPoint.getPrice()) + " from "
+            // + currentTenderBid.getStart() + " untill " +
+            // currentTenderBid.getFinish());
 
         }
 

@@ -129,7 +129,7 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
 
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
 
-            logger.warn("eligible are: " + technology);
+            // logger.warn("eligible are: " + technology);
 
             DecarbonizationModel model = reps.genericRepository.findAll(DecarbonizationModel.class).iterator().next();
 
@@ -424,12 +424,18 @@ public class SubmitTenderBidRole extends AbstractEnergyProducerRole<EnergyProduc
                                     finish, bidPricePerMWh, technology, getCurrentTick(), Bid.SUBMITTED, scheme,
                                     cashNeededForPlantDownpayments, investor);
 
-                            logger.warn("SubmitBid 454 - Agent " + agent + " ,generation "
-                                    + totalAnnualExpectedGenerationOfPlant + " ,plant " + plant + " ,zone " + zone
-                                    + " ,node " + node + " ,start " + start + " ,finish " + finish + " ,bid price "
-                                    + bidPricePerMWh + " ,tech " + technology + " ,current tick " + getCurrentTick()
-                                    + " ,status " + Bid.SUBMITTED + " ,scheme " + scheme + ", cash downpayment; "
-                                    + cashNeededForPlantDownpayments, " ,investor " + investor);
+                            // logger.warn("SubmitBid 454 - Agent " + agent +
+                            // " ,generation "
+                            // + totalAnnualExpectedGenerationOfPlant +
+                            // " ,plant " + plant + " ,zone " + zone
+                            // + " ,node " + node + " ,start " + start +
+                            // " ,finish " + finish + " ,bid price "
+                            // + bidPricePerMWh + " ,tech " + technology +
+                            // " ,current tick " + getCurrentTick()
+                            // + " ,status " + Bid.SUBMITTED + " ,scheme " +
+                            // scheme + ", cash downpayment; "
+                            // + cashNeededForPlantDownpayments, " ,investor " +
+                            // investor);
 
                         } // end for loop for tender bids
 

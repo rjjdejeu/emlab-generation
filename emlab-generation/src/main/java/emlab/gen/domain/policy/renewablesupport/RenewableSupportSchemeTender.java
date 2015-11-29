@@ -59,7 +59,15 @@ public class RenewableSupportSchemeTender extends DecarbonizationAgent implement
 
     // private long time;
     //
-    // private double totalExpectedConsumption;
+    private double annualExpectedConsumption;
+
+    public double getAnnualExpectedConsumption() {
+        return annualExpectedConsumption;
+    }
+
+    public void setAnnualExpectedConsumption(double annualExpectedConsumption) {
+        this.annualExpectedConsumption = annualExpectedConsumption;
+    }
 
     public double getYearlyTenderDemandTarget() {
         return yearlyTenderDemandTarget;

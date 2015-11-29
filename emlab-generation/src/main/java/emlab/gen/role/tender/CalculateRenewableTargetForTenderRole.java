@@ -40,7 +40,8 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         double targetFactor;
         Zone zone = scheme.getRegulator().getZone();
 
-        logger.warn("Calculate Renewable Target Role started of zone: " + zone);
+        // logger.warn("Calculate Renewable Target Role started of zone: " +
+        // zone);
 
         ElectricitySpotMarket market = reps.marketRepository.findElectricitySpotMarketForZone(zone);
 
@@ -53,7 +54,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                 .findRenewableTargetForTenderByRegulator(scheme.getRegulator());
 
         targetFactor = target.getYearlyRenewableTargetTimeSeries().getValue(futureStartingTenderTimePoint);
-        logger.warn("targetFactor; " + targetFactor);
+        // logger.warn("targetFactor; " + targetFactor);
 
         // get totalLoad in MWh
         double totalExpectedConsumption = 0d;
@@ -63,7 +64,10 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
                     * segmentLoad.getSegment().getLengthInHours();
 
         }
-        logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
+
+        scheme.setAnnualExpectedConsumption(totalExpectedConsumption);
+
+        // logger.warn("totalExpectedConsumption; " + totalExpectedConsumption);
         // renewable target for tender operation start year in MWh is
 
         double renewableTargetInMwh = targetFactor * totalExpectedConsumption;
@@ -87,7 +91,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         for (PowerGeneratingTechnology technology : scheme.getPowerGeneratingTechnologiesEligible()) {
             expectedGenerationPerTechnologyAvailable = 0d;
 
-            logger.warn("For PGT - technology; " + technology);
+            // logger.warn("For PGT - technology; " + technology);
 
             for (PowerPlant plant : reps.powerPlantRepository.findExpectedOperationalPowerPlantsInMarketByTechnology(
                     market, technology, futureStartingTenderTimePoint)) {
@@ -142,9 +146,11 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
 
         totalExpectedGeneration = totalExpectedGenerationAvailable + totalExpectedGenerationPipeline;
 
-        logger.warn("totalExpectedGenerationAvailable; " + totalExpectedGenerationAvailable);
-        logger.warn("totalExpectedGenerationPipeline; " + totalExpectedGenerationPipeline);
-        logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
+        // logger.warn("totalExpectedGenerationAvailable; " +
+        // totalExpectedGenerationAvailable);
+        // logger.warn("totalExpectedGenerationPipeline; " +
+        // totalExpectedGenerationPipeline);
+        // logger.warn("totalExpectedGeneration; " + totalExpectedGeneration);
         /*
          * To compare
          * 
@@ -191,7 +197,7 @@ public class CalculateRenewableTargetForTenderRole extends AbstractRole<Renewabl
         }
         scheme.getRegulator().setAnnualRenewableTargetInMwh(renewableTargetInMwh);
 
-        logger.warn("actualRenewableTargetInMwh; " + renewableTargetInMwh);
+        // logger.warn("actualRenewableTargetInMwh; " + renewableTargetInMwh);
     }
 
     public double predictDemandForElectricitySpotMarket(ElectricitySpotMarket market,
