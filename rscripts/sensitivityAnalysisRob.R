@@ -327,14 +327,23 @@ fixedOMcostsBplot = ggplot(data=tickDF, aes(x=X0, y=meanFixedOMCostsB)) +
 plot(fixedOMcostsBplot)
 ggsave(filename = paste(filePrefix, "fixedOMcostsBplot.png", sep=""),scale=1)
 
+# loanCostsBplot = ggplot(data=tickDF, aes(x=X0, y=meanLoanCostsB)) + 
+#   geom_errorbar(aes(ymin=meanLoanCostsB-seLoanCostsB, ymax=meanLoanCostsB+seLoanCostsB, width=1)) + 
+#   geom_point() +
+#   xlab("Year") +  
+#   ylab("Eur") + 
+#   ggtitle("Loan Costs \n Country B") #give the plot a title
+# plot(loanCostsBplot)
+# ggsave(filename = paste(filePrefix, "loanCostsBplot.png", sep=""),scale=1)
+
 loanCostsBplot = ggplot(data=tickDF, aes(x=X0, y=meanLoanCostsB)) + 
-  geom_errorbar(aes(ymin=meanLoanCostsB-seLoanCostsB, ymax=meanLoanCostsB+seLoanCostsB, width=1)) + 
-  geom_point() +
+  stat_summary(fun.data="median_hilow",conf.int=0.95, geom="smooth")+
   xlab("Year") +  
   ylab("Eur") + 
   ggtitle("Loan Costs \n Country B") #give the plot a title
 plot(loanCostsBplot)
 ggsave(filename = paste(filePrefix, "loanCostsBplot.png", sep=""),scale=1)
+
 
 commodityCostsBplot = ggplot(data=tickDF, aes(x=X0, y= meanCommodityCostsB)) + 
   geom_errorbar(aes(ymin=meanCommodityCostsB-seCommodityCostsB, ymax= meanCommodityCostsB+seCommodityCostsB, width=1)) + 

@@ -2189,3 +2189,49 @@ meanProfitExcSubI
 #   ylab("[%]") + 
 #   ggtitle("estimation Error Expected Generation 2 \n Country A") #give the plot a title
 # plot(estimationErrorExpectedGenerationAplot2)
+# realizedTargetAplot = ggplot(data=tickDF, aes(x=X0, y=meanRealizedTargetA*100)) + 
+#   geom_errorbar(aes(ymin=(meanRealizedTargetA-seRealizedTargetA)*100, ymax=(meanRealizedTargetA+seRealizedTargetA)*100), width=1) + 
+#   geom_point() +
+#   xlab("Year") +  
+#   ylab("[%]") + 
+#   ggtitle("RES-E generation in terms of demand \n Country A") + 
+#   theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis), 
+#         axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+# #plot(realizedTargetAplot)
+# ggsave(filename = paste(filePrefix, "realizedTargetAplot.pdf", sep=""),scale=1)
+# 
+# nreapAplot = ggplot(data=targetDF, aes(x=tick, y=nl_target*100)) + 
+#   geom_point() + 
+#   xlab("Year") +  
+#   ylab("[%]") + 
+#   ggtitle("NREAP Target \n Country A") +  
+#   theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis), 
+#         axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+# #plot(nreapAplot)
+# ggsave(filename = paste(filePrefix, "NREAP_target_nl.pdf", sep=""),scale=1)
+# 
+# 
+# 
+# 
+# realizedTargetBplot = ggplot(data=tickDF, aes(x=X0, y=meanRealizedTargetB*100)) + 
+#   geom_errorbar(aes(ymin=(meanRealizedTargetB-seRealizedTargetB)*100, ymax=(meanRealizedTargetB+seRealizedTargetB)*100), width=1) + 
+#   geom_point() +
+#   xlab("Year") +  
+#   ylab("[%]") + 
+#   ggtitle("RES-E generation in terms of demand \n Country B") +  
+#   theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis),   
+#         axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+# #plot(realizedTargetBplot)
+# ggsave(filename = paste(filePrefix, "realizedTargetBplot.pdf", sep=""),scale=1)
+# 
+# 
+# 
+# nreapBplot = ggplot(data=targetDF, aes(x=tick, y=de_target*100)) + 
+#   geom_point() + 
+#   xlab("Year") +  
+#   ylab("[%]") + 
+#   ggtitle("NREAP Target \n Country B") +   
+#   theme(axis.title.x = element_text(face="bold", size=xTitle), axis.text.x=element_text(size = xAxis),
+#         axis.title.y = element_text(face="bold", size=yTitle), axis.text.y=element_text(size = yAxis))
+# #plot(nreapBplot)
+# ggsave(filename = paste(filePrefix, "NREAP_target_de.pdf", sep=""),scale=1)

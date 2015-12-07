@@ -62,18 +62,16 @@ public class FilterTenderBidsWithSufficientCashForDownpaymentRole extends Abstra
 
         for (TenderBid currentTenderBid : sortedTenderBidsbyPrice) {
 
-            // logger.warn("currentTenderBid; " + currentTenderBid);
+            logger.warn("currentTenderBid; " + currentTenderBid);
 
             if (cashAvailableForPlantDownpayment > 0) {
                 cashAvailableForPlantDownpayment = cashAvailableForPlantDownpayment
                         - currentTenderBid.getCashNeededForPlantDownpayments();
 
-                // logger.warn("cashAvailableForPlantDownpayment; " +
-                // cashAvailableForPlantDownpayment);
-                // logger.warn("currentTenderBid.getCashNeededForPlantDownpayments; "
-                // + currentTenderBid.getCashNeededForPlantDownpayments());
-                // logger.warn("status of bid; " +
-                // currentTenderBid.getStatus());
+                logger.warn("cashAvailableForPlantDownpayment; " + cashAvailableForPlantDownpayment);
+                logger.warn("currentTenderBid.getCashNeededForPlantDownpayments; "
+                        + currentTenderBid.getCashNeededForPlantDownpayments());
+                logger.warn("status of bid; " + currentTenderBid.getStatus());
             }
 
             else {

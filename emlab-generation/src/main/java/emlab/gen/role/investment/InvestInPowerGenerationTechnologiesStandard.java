@@ -251,9 +251,10 @@ public class InvestInPowerGenerationTechnologiesStandard<T extends EnergyProduce
                     // " will not invest in {} technology because there's too
                     // much capacity planned by him",
                     // technology);
-                } else if (capacityInPipelineInMarket > 0.2 * marketInformation.maxExpectedLoad) {
-                    // logger.warn("Not investing because more than 20% of
-                    // demand in pipeline.");
+                    // } else if (capacityInPipelineInMarket > 0.2 *
+                    // marketInformation.maxExpectedLoad) {
+                    // // logger.warn("Not investing because more than 20% of
+                    // // demand in pipeline.");
 
                 } else if ((capacityOfTechnologyInPipeline > 2.0 * operationalCapacityOfTechnology)
                         && capacityOfTechnologyInPipeline > 9000) { // TODO:

@@ -87,14 +87,11 @@ public class ClearRenewableTenderRole extends AbstractRole<Regulator> implements
                     currentTenderBid.setStatus(Bid.ACCEPTED);
                     currentTenderBid.setAcceptedAmount(currentTenderBid.getAmount());
 
-                    // logger.warn("bidder; " + currentTenderBid.getBidder());
-                    // logger.warn("bidAmount; " +
-                    // currentTenderBid.getAmount());
-                    // logger.warn("acceptedSubsidyPrice; " +
-                    // acceptedSubsidyPrice);
-                    // logger.warn("Technology; " +
-                    // currentTenderBid.getTechnology());
-                    // logger.warn("Status; " + currentTenderBid.getStatus());
+                    logger.warn("bidder; " + currentTenderBid.getBidder());
+                    logger.warn("bidAmount; " + currentTenderBid.getAmount());
+                    logger.warn("acceptedSubsidyPrice; " + acceptedSubsidyPrice);
+                    logger.warn("Technology; " + currentTenderBid.getTechnology());
+                    logger.warn("Status; " + currentTenderBid.getStatus());
 
                     sumOfTenderBidQuantityAccepted = sumOfTenderBidQuantityAccepted + currentTenderBid.getAmount();
 
